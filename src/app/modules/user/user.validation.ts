@@ -43,6 +43,35 @@ export const CreateAdminSchema = UserBaseSchema.extend({
   role: z.literal("ADMIN"),
 }).extend(AdminSchema.shape);
 
+export const GuideSchema = z.object({
+  name: z.string().min(2),
+  contactNumber: z
+    .string()
+    .regex(/^\+?[0-9]+$/),
+
+  bio: z.string().max(2000).optional(),
+  profilePhoto: z.string().url().optional(),
+
+  experience: z.number().int().min(0),
+  experienceLevel: ExperienceLevelEnum,
+
+  languages: z.array(z.string()).nonempty(),
+  category: z.array(z.string()).nonempty(),
+
+  country: z.string().optional(),
+  city: z.string().optional(),
+
+  gender: GenderEnum,
+
+  isAvailable: z.boolean().default(true),
+});
+
+export const CreateGuideSchema = UserBaseSchema.extend({
+  role: z.literal("GUIDE"),
+}).extend(GuideSchema.shape);
+
+export type CreateGuideInput = z.infer<typeof CreateGuideSchema>;
+
 export type CreateAdminInput = z.infer<typeof CreateAdminSchema>;
 
 

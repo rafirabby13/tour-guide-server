@@ -1,7 +1,7 @@
 import express, { NextFunction, Request, Response } from "express"
 import { UserController } from "./user.controller"
 import { fileUploader } from "../../helpers/fileUploader"
-import { CreateAdminSchema, CreateTouristSchema, UserBaseSchema } from "./user.validation"
+import { CreateAdminSchema, CreateGuideSchema, CreateTouristSchema, UserBaseSchema } from "./user.validation"
 import auth from "../../middlewares/auth"
 import { UserRole } from "../../../../prisma/generated/prisma/enums"
 
@@ -28,10 +28,10 @@ router.post("/create-admin",
     }
 )
 router.post("/create-guide",
-    auth(UserRole.GUIDE),
+    auth(UserRole.ADMIN),
     fileUploader.upload.single('file'),
     (req: Request, res: Response, next: NextFunction) => {
-        req.body = CreateTouristSchema.parse(JSON.parse(req.body.data))
+        req.body = CreateGuideSchema.parse(JSON.parse(req.body.data))
         return UserController.createGuide(req, res, next)
     }
 )

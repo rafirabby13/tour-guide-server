@@ -98,6 +98,7 @@ const createGuide = async (req: Request): Promise<Guide> => {
 
     if (file) {
         const uploadToCloudinary = await fileUploader.uploadToCloudinary(file);
+        console.log(uploadToCloudinary)
         req.body.profilePhoto = uploadToCloudinary?.secure_url
     }
     const hashedPassword: string = await bcrypt.hash(req.body.password, 10)
@@ -109,12 +110,26 @@ const createGuide = async (req: Request): Promise<Guide> => {
     }
 
     const result = await prisma.$transaction(async (transactionClient) => {
-        await transactionClient.user.create({
+        const createdGuideUser = await transactionClient.user.create({
             data: userData
         });
 
         const createdGuideData = await transactionClient.guide.create({
-            data: req.body
+            data: {
+                userId: createdGuideUser.id,
+                contactNumber: req.body.contactNumber,
+                name: req.body.name,
+                gender: req.body.gender,
+                bio: req.body.bio,
+                category: req.body.category,
+                city: req.body.city,
+                country: req.body.country,
+                experienceLevel: req.body.experienceLevel,
+                isAvailable: req.body.isAvailable,
+                profilePhoto: req.body.profilePhoto,
+                experience: req.body.experience,
+                languages: req.body.languages
+            }
         });
 
         return createdGuideData;
