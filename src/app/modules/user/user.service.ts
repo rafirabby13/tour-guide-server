@@ -34,7 +34,7 @@ const createTourist = async (req: Request) => {
         await tnx.tourist.create({
             data: {
                 userId: createdUser.id,
-                name: payload.email,
+                name: payload.name,
                 contactNumber: payload.contactNumber,
                 gender: payload.gender,
                 category: payload.category,

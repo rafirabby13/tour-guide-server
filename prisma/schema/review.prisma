@@ -1,0 +1,13 @@
+model Review {
+  id         String   @id @default(uuid())
+  rating     Int      // 1–5
+  comment    String?
+
+  tourId     String
+  touristId  String
+
+  tour       Tour @relation(fields: [tourId], references: [id])
+  tourist    Tourist @relation(fields: [touristId], references: [id])
+
+  createdAt  DateTime @default(now())
+}

@@ -1,0 +1,24 @@
+
+enum BookingStatus {
+  PENDING
+  CONFIRMED
+  CANCELED_BY_TOURIST
+  CANCELED_BY_GUIDE
+  COMPLETED
+}
+model Booking {
+  id        String        @id @default(uuid())
+  date      DateTime
+  status    BookingStatus @default(PENDING)
+
+  tourId    String
+  touristId String
+
+  tour      Tour          @relation(fields: [tourId], references: [id])
+  tourist   Tourist          @relation(fields: [touristId], references: [id])
+
+  payment   Payment?
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+}

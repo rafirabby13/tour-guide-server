@@ -1,0 +1,20 @@
+
+model Tour {
+  id          String   @id @default(uuid())
+  title       String
+  description String
+  price       Float
+  location    String
+  maxGuests   Int
+  availableDates DateTime[]
+  images      String[]
+
+  guideId     String
+  guide       Guide      @relation("GuideTours", fields: [guideId], references: [id])
+
+  bookings    Booking[]
+  reviews     Review[]
+
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @updatedAt
+}
