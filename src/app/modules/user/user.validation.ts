@@ -10,11 +10,7 @@ export const UserBaseSchema = z.object({
   email: z.string().email(),
   password: z
     .string()
-    .min(8)
-    .regex(/[A-Z]/, "At least one uppercase")
-    .regex(/[a-z]/, "At least one lowercase")
-    .regex(/[0-9]/, "At least one number")
-    .regex(/[^A-Za-z0-9]/, "At least one special character"),
+    .min(6),
 
   role: UserRoleEnum,
 });
@@ -33,6 +29,23 @@ export const TouristSchema = z.object({
 
   gender: GenderEnum,
 });
+
+
+export const AdminSchema = z.object({
+  name: z.string().min(2),
+  contactNumber: z
+    .string()
+    .regex(/^\+?[0-9]+$/),
+
+  profilePhoto: z.string().url().optional(),
+});
+export const CreateAdminSchema = UserBaseSchema.extend({
+  role: z.literal("ADMIN"),
+}).extend(AdminSchema.shape);
+
+export type CreateAdminInput = z.infer<typeof CreateAdminSchema>;
+
+
 export const CreateTouristSchema = UserBaseSchema.extend({
   role: z.literal("TOURIST"), // force tourist role
 }).extend(TouristSchema.shape);
