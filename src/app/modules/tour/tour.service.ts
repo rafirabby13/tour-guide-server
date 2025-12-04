@@ -6,6 +6,9 @@ import { AppError } from "../../errors/AppError";
 import { validatePricingOverlaps } from "../../helpers/validatePricing";
 import { prisma } from "../../shared/prisma";
 import { BlockedDateInput, TourAvailabilityInput, TourPricingInput } from "./tour.interface";
+import { IOptions, paginationHelper } from "../../helpers/paginationHelper";
+import { tourSearchableFields } from "./tour.constant";
+import { Prisma } from "../../../../prisma/generated/prisma/client";
 
 
 
@@ -85,7 +88,7 @@ const createTour = async (req: Request) => {
                 }))
             });
         }
-
+ 
         // 5. Return complete tour with relations
         return tx.tour.findUnique({
             where: { id: tour.id },
@@ -128,7 +131,61 @@ const createTour = async (req: Request) => {
     return result
 }
 
+const getAllFromDB = async (params: any, options: IOptions) => {
+    const { page, limit, skip, sortBy, sortOrder } = paginationHelper.calculatePagination(options)
+    const { searchTerm, ...filterData } = params;
+
+    const andConditions: Prisma.TourWhereInput[] = [];
+
+    if (searchTerm) {
+        andConditions.push({
+            OR: tourSearchableFields.map(field => ({
+                [field]: {
+                    contains: searchTerm,
+                    mode: "insensitive"
+                }
+            }))
+        })
+    }
+
+    if (Object.keys(filterData).length > 0) {
+        andConditions.push({
+            AND: Object.keys(filterData).map(key => ({
+                [key]: {
+                    equals: (filterData as any)[key]
+                }
+            }))
+        })
+    }
+
+    const whereConditions: Prisma.TourWhereInput = andConditions.length > 0 ? {
+        AND: andConditions
+    } : {}
+
+    const result = await prisma.tour.findMany({
+        skip,
+        take: limit,
+
+        where: whereConditions,
+        orderBy: {
+            [sortBy]: sortOrder
+        }
+    });
+
+    const total = await prisma.tour.count({
+        where: whereConditions
+    });
+    return {
+        meta: {
+            page,
+            limit,
+            total
+        },
+        data: result
+    };
+}
 
 export const TourServices = {
-    createTour
+    createTour,
+    getAllFromDB
 }

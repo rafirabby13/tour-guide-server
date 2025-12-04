@@ -5,7 +5,7 @@ import { createTourSchema } from "./tour.validation"
 const router = express.Router()
 
 
-
+router.get("/all-tours", TourController.getAllFromDB)
 router.post("/create-tour", 
     fileUploader.upload.array("files"),
     (req: Request, res: Response, next: NextFunction) => {
