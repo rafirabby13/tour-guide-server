@@ -11,7 +11,7 @@ const createTour = catchAsync(async (req: Request, res: Response, next: NextFunc
     sendResponse(res, {
         statusCode: 201,
         success: true,
-        message: "Tourist created",
+        message: "Tour created",
         // data: {}
         data: result
     })

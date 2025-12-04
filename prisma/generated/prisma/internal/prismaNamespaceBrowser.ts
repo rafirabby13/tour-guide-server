@@ -51,6 +51,13 @@ export const AnyNull = runtime.AnyNull
 
 
 export const ModelName = {
+  Booking: 'Booking',
+  Payment: 'Payment',
+  Review: 'Review',
+  TourPricing: 'TourPricing',
+  Tour: 'Tour',
+  TourAvailability: 'TourAvailability',
+  BlockedDate: 'BlockedDate',
   User: 'User',
   Admin: 'Admin',
   Guide: 'Guide',
@@ -71,6 +78,104 @@ export const TransactionIsolationLevel = {
 } as const
 
 export type TransactionIsolationLevel = (typeof TransactionIsolationLevel)[keyof typeof TransactionIsolationLevel]
+
+
+export const BookingScalarFieldEnum = {
+  id: 'id',
+  date: 'date',
+  status: 'status',
+  duration: 'duration',
+  numGuests: 'numGuests',
+  totalPrice: 'totalPrice',
+  tourId: 'tourId',
+  touristId: 'touristId',
+  createdAt: 'createdAt',
+  updatedAt: 'updatedAt'
+} as const
+
+export type BookingScalarFieldEnum = (typeof BookingScalarFieldEnum)[keyof typeof BookingScalarFieldEnum]
+
+
+export const PaymentScalarFieldEnum = {
+  id: 'id',
+  amount: 'amount',
+  status: 'status',
+  bookingId: 'bookingId',
+  createdAt: 'createdAt'
+} as const
+
+export type PaymentScalarFieldEnum = (typeof PaymentScalarFieldEnum)[keyof typeof PaymentScalarFieldEnum]
+
+
+export const ReviewScalarFieldEnum = {
+  id: 'id',
+  rating: 'rating',
+  comment: 'comment',
+  tourId: 'tourId',
+  touristId: 'touristId',
+  createdAt: 'createdAt'
+} as const
+
+export type ReviewScalarFieldEnum = (typeof ReviewScalarFieldEnum)[keyof typeof ReviewScalarFieldEnum]
+
+
+export const TourPricingScalarFieldEnum = {
+  id: 'id',
+  tourId: 'tourId',
+  minGuests: 'minGuests',
+  maxGuests: 'maxGuests',
+  pricePerHour: 'pricePerHour',
+  createdAt: 'createdAt',
+  updatedAt: 'updatedAt'
+} as const
+
+export type TourPricingScalarFieldEnum = (typeof TourPricingScalarFieldEnum)[keyof typeof TourPricingScalarFieldEnum]
+
+
+export const TourScalarFieldEnum = {
+  id: 'id',
+  title: 'title',
+  description: 'description',
+  location: 'location',
+  availableDates: 'availableDates',
+  images: 'images',
+  guideId: 'guideId',
+  createdAt: 'createdAt',
+  updatedAt: 'updatedAt'
+} as const
+
+export type TourScalarFieldEnum = (typeof TourScalarFieldEnum)[keyof typeof TourScalarFieldEnum]
+
+
+export const TourAvailabilityScalarFieldEnum = {
+  id: 'id',
+  tourId: 'tourId',
+  dayOfWeek: 'dayOfWeek',
+  startTime: 'startTime',
+  endTime: 'endTime',
+  maxBookings: 'maxBookings',
+  isActive: 'isActive',
+  createdAt: 'createdAt',
+  updatedAt: 'updatedAt'
+} as const
+
+export type TourAvailabilityScalarFieldEnum = (typeof TourAvailabilityScalarFieldEnum)[keyof typeof TourAvailabilityScalarFieldEnum]
+
+
+export const BlockedDateScalarFieldEnum = {
+  id: 'id',
+  tourId: 'tourId',
+  guideId: 'guideId',
+  blockedDate: 'blockedDate',
+  startTime: 'startTime',
+  endTime: 'endTime',
+  reason: 'reason',
+  isAllDay: 'isAllDay',
+  createdAt: 'createdAt',
+  updatedAt: 'updatedAt'
+} as const
+
+export type BlockedDateScalarFieldEnum = (typeof BlockedDateScalarFieldEnum)[keyof typeof BlockedDateScalarFieldEnum]
 
 
 export const UserScalarFieldEnum = {

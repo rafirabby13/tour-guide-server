@@ -18,6 +18,41 @@ export { Prisma }
 export * as $Enums from './enums.js'
 export * from './enums.js';
 /**
+ * Model Booking
+ * 
+ */
+export type Booking = Prisma.BookingModel
+/**
+ * Model Payment
+ * 
+ */
+export type Payment = Prisma.PaymentModel
+/**
+ * Model Review
+ * 
+ */
+export type Review = Prisma.ReviewModel
+/**
+ * Model TourPricing
+ * 
+ */
+export type TourPricing = Prisma.TourPricingModel
+/**
+ * Model Tour
+ * 
+ */
+export type Tour = Prisma.TourModel
+/**
+ * Model TourAvailability
+ * 
+ */
+export type TourAvailability = Prisma.TourAvailabilityModel
+/**
+ * Model BlockedDate
+ * 
+ */
+export type BlockedDate = Prisma.BlockedDateModel
+/**
  * Model User
  * 
  */

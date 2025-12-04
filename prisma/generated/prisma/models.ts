@@ -8,6 +8,13 @@
  *
  * 🟢 You can import this file directly.
  */
+export type * from './models/Booking.js'
+export type * from './models/Payment.js'
+export type * from './models/Review.js'
+export type * from './models/TourPricing.js'
+export type * from './models/Tour.js'
+export type * from './models/TourAvailability.js'
+export type * from './models/BlockedDate.js'
 export type * from './models/User.js'
 export type * from './models/Admin.js'
 export type * from './models/Guide.js'

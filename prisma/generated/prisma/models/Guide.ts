@@ -341,6 +341,8 @@ export type GuideWhereInput = {
   createdAt?: Prisma.DateTimeFilter<"Guide"> | Date | string
   updatedAt?: Prisma.DateTimeFilter<"Guide"> | Date | string
   user?: Prisma.XOR<Prisma.UserScalarRelationFilter, Prisma.UserWhereInput>
+  tour?: Prisma.TourListRelationFilter
+  blockedDates?: Prisma.BlockedDateListRelationFilter
 }
 
 export type GuideOrderByWithRelationInput = {
@@ -365,6 +367,8 @@ export type GuideOrderByWithRelationInput = {
   createdAt?: Prisma.SortOrder
   updatedAt?: Prisma.SortOrder
   user?: Prisma.UserOrderByWithRelationInput
+  tour?: Prisma.TourOrderByRelationAggregateInput
+  blockedDates?: Prisma.BlockedDateOrderByRelationAggregateInput
 }
 
 export type GuideWhereUniqueInput = Prisma.AtLeast<{
@@ -392,6 +396,8 @@ export type GuideWhereUniqueInput = Prisma.AtLeast<{
   createdAt?: Prisma.DateTimeFilter<"Guide"> | Date | string
   updatedAt?: Prisma.DateTimeFilter<"Guide"> | Date | string
   user?: Prisma.XOR<Prisma.UserScalarRelationFilter, Prisma.UserWhereInput>
+  tour?: Prisma.TourListRelationFilter
+  blockedDates?: Prisma.BlockedDateListRelationFilter
 }, "id" | "userId">
 
 export type GuideOrderByWithAggregationInput = {
@@ -469,6 +475,8 @@ export type GuideCreateInput = {
   createdAt?: Date | string
   updatedAt?: Date | string
   user: Prisma.UserCreateNestedOneWithoutGuideInput
+  tour?: Prisma.TourCreateNestedManyWithoutGuideInput
+  blockedDates?: Prisma.BlockedDateCreateNestedManyWithoutGuideInput
 }
 
 export type GuideUncheckedCreateInput = {
@@ -492,6 +500,8 @@ export type GuideUncheckedCreateInput = {
   isDeleted?: boolean
   createdAt?: Date | string
   updatedAt?: Date | string
+  tour?: Prisma.TourUncheckedCreateNestedManyWithoutGuideInput
+  blockedDates?: Prisma.BlockedDateUncheckedCreateNestedManyWithoutGuideInput
 }
 
 export type GuideUpdateInput = {
@@ -515,6 +525,8 @@ export type GuideUpdateInput = {
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   user?: Prisma.UserUpdateOneRequiredWithoutGuideNestedInput
+  tour?: Prisma.TourUpdateManyWithoutGuideNestedInput
+  blockedDates?: Prisma.BlockedDateUpdateManyWithoutGuideNestedInput
 }
 
 export type GuideUncheckedUpdateInput = {
@@ -538,6 +550,8 @@ export type GuideUncheckedUpdateInput = {
   isDeleted?: Prisma.BoolFieldUpdateOperationsInput | boolean
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  tour?: Prisma.TourUncheckedUpdateManyWithoutGuideNestedInput
+  blockedDates?: Prisma.BlockedDateUncheckedUpdateManyWithoutGuideNestedInput
 }
 
 export type GuideCreateManyInput = {
@@ -608,17 +622,14 @@ export type GuideUncheckedUpdateManyInput = {
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
 }
 
+export type GuideScalarRelationFilter = {
+  is?: Prisma.GuideWhereInput
+  isNot?: Prisma.GuideWhereInput
+}
+
 export type GuideNullableScalarRelationFilter = {
   is?: Prisma.GuideWhereInput | null
   isNot?: Prisma.GuideWhereInput | null
-}
-
-export type StringNullableListFilter<$PrismaModel = never> = {
-  equals?: string[] | Prisma.ListStringFieldRefInput<$PrismaModel> | null
-  has?: string | Prisma.StringFieldRefInput<$PrismaModel> | null
-  hasEvery?: string[] | Prisma.ListStringFieldRefInput<$PrismaModel>
-  hasSome?: string[] | Prisma.ListStringFieldRefInput<$PrismaModel>
-  isEmpty?: boolean
 }
 
 export type GuideCountOrderByAggregateInput = {
@@ -700,6 +711,34 @@ export type GuideSumOrderByAggregateInput = {
   totalTours?: Prisma.SortOrder
 }
 
+export type GuideCreateNestedOneWithoutTourInput = {
+  create?: Prisma.XOR<Prisma.GuideCreateWithoutTourInput, Prisma.GuideUncheckedCreateWithoutTourInput>
+  connectOrCreate?: Prisma.GuideCreateOrConnectWithoutTourInput
+  connect?: Prisma.GuideWhereUniqueInput
+}
+
+export type GuideUpdateOneRequiredWithoutTourNestedInput = {
+  create?: Prisma.XOR<Prisma.GuideCreateWithoutTourInput, Prisma.GuideUncheckedCreateWithoutTourInput>
+  connectOrCreate?: Prisma.GuideCreateOrConnectWithoutTourInput
+  upsert?: Prisma.GuideUpsertWithoutTourInput
+  connect?: Prisma.GuideWhereUniqueInput
+  update?: Prisma.XOR<Prisma.XOR<Prisma.GuideUpdateToOneWithWhereWithoutTourInput, Prisma.GuideUpdateWithoutTourInput>, Prisma.GuideUncheckedUpdateWithoutTourInput>
+}
+
+export type GuideCreateNestedOneWithoutBlockedDatesInput = {
+  create?: Prisma.XOR<Prisma.GuideCreateWithoutBlockedDatesInput, Prisma.GuideUncheckedCreateWithoutBlockedDatesInput>
+  connectOrCreate?: Prisma.GuideCreateOrConnectWithoutBlockedDatesInput
+  connect?: Prisma.GuideWhereUniqueInput
+}
+
+export type GuideUpdateOneRequiredWithoutBlockedDatesNestedInput = {
+  create?: Prisma.XOR<Prisma.GuideCreateWithoutBlockedDatesInput, Prisma.GuideUncheckedCreateWithoutBlockedDatesInput>
+  connectOrCreate?: Prisma.GuideCreateOrConnectWithoutBlockedDatesInput
+  upsert?: Prisma.GuideUpsertWithoutBlockedDatesInput
+  connect?: Prisma.GuideWhereUniqueInput
+  update?: Prisma.XOR<Prisma.XOR<Prisma.GuideUpdateToOneWithWhereWithoutBlockedDatesInput, Prisma.GuideUpdateWithoutBlockedDatesInput>, Prisma.GuideUncheckedUpdateWithoutBlockedDatesInput>
+}
+
 export type GuideCreateNestedOneWithoutUserInput = {
   create?: Prisma.XOR<Prisma.GuideCreateWithoutUserInput, Prisma.GuideUncheckedCreateWithoutUserInput>
   connectOrCreate?: Prisma.GuideCreateOrConnectWithoutUserInput
@@ -740,14 +779,6 @@ export type GuideCreatecategoryInput = {
   set: string[]
 }
 
-export type IntFieldUpdateOperationsInput = {
-  set?: number
-  increment?: number
-  decrement?: number
-  multiply?: number
-  divide?: number
-}
-
 export type EnumExperienceLevelFieldUpdateOperationsInput = {
   set?: $Enums.ExperienceLevel
 }
@@ -766,12 +797,228 @@ export type EnumGenderFieldUpdateOperationsInput = {
   set?: $Enums.Gender
 }
 
-export type FloatFieldUpdateOperationsInput = {
-  set?: number
-  increment?: number
-  decrement?: number
-  multiply?: number
-  divide?: number
+export type GuideCreateWithoutTourInput = {
+  id?: string
+  name: string
+  profilePhoto?: string | null
+  contactNumber: string
+  bio?: string | null
+  experience?: number
+  experienceLevel?: $Enums.ExperienceLevel
+  languages?: Prisma.GuideCreatelanguagesInput | string[]
+  category?: Prisma.GuideCreatecategoryInput | string[]
+  country?: string | null
+  city?: string | null
+  gender: $Enums.Gender
+  isAvailable?: boolean
+  rating?: number
+  totalReviews?: number
+  totalTours?: number
+  isDeleted?: boolean
+  createdAt?: Date | string
+  updatedAt?: Date | string
+  user: Prisma.UserCreateNestedOneWithoutGuideInput
+  blockedDates?: Prisma.BlockedDateCreateNestedManyWithoutGuideInput
+}
+
+export type GuideUncheckedCreateWithoutTourInput = {
+  id?: string
+  name: string
+  userId: string
+  profilePhoto?: string | null
+  contactNumber: string
+  bio?: string | null
+  experience?: number
+  experienceLevel?: $Enums.ExperienceLevel
+  languages?: Prisma.GuideCreatelanguagesInput | string[]
+  category?: Prisma.GuideCreatecategoryInput | string[]
+  country?: string | null
+  city?: string | null
+  gender: $Enums.Gender
+  isAvailable?: boolean
+  rating?: number
+  totalReviews?: number
+  totalTours?: number
+  isDeleted?: boolean
+  createdAt?: Date | string
+  updatedAt?: Date | string
+  blockedDates?: Prisma.BlockedDateUncheckedCreateNestedManyWithoutGuideInput
+}
+
+export type GuideCreateOrConnectWithoutTourInput = {
+  where: Prisma.GuideWhereUniqueInput
+  create: Prisma.XOR<Prisma.GuideCreateWithoutTourInput, Prisma.GuideUncheckedCreateWithoutTourInput>
+}
+
+export type GuideUpsertWithoutTourInput = {
+  update: Prisma.XOR<Prisma.GuideUpdateWithoutTourInput, Prisma.GuideUncheckedUpdateWithoutTourInput>
+  create: Prisma.XOR<Prisma.GuideCreateWithoutTourInput, Prisma.GuideUncheckedCreateWithoutTourInput>
+  where?: Prisma.GuideWhereInput
+}
+
+export type GuideUpdateToOneWithWhereWithoutTourInput = {
+  where?: Prisma.GuideWhereInput
+  data: Prisma.XOR<Prisma.GuideUpdateWithoutTourInput, Prisma.GuideUncheckedUpdateWithoutTourInput>
+}
+
+export type GuideUpdateWithoutTourInput = {
+  id?: Prisma.StringFieldUpdateOperationsInput | string
+  name?: Prisma.StringFieldUpdateOperationsInput | string
+  profilePhoto?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  contactNumber?: Prisma.StringFieldUpdateOperationsInput | string
+  bio?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  experience?: Prisma.IntFieldUpdateOperationsInput | number
+  experienceLevel?: Prisma.EnumExperienceLevelFieldUpdateOperationsInput | $Enums.ExperienceLevel
+  languages?: Prisma.GuideUpdatelanguagesInput | string[]
+  category?: Prisma.GuideUpdatecategoryInput | string[]
+  country?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  city?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  gender?: Prisma.EnumGenderFieldUpdateOperationsInput | $Enums.Gender
+  isAvailable?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  rating?: Prisma.FloatFieldUpdateOperationsInput | number
+  totalReviews?: Prisma.IntFieldUpdateOperationsInput | number
+  totalTours?: Prisma.IntFieldUpdateOperationsInput | number
+  isDeleted?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  user?: Prisma.UserUpdateOneRequiredWithoutGuideNestedInput
+  blockedDates?: Prisma.BlockedDateUpdateManyWithoutGuideNestedInput
+}
+
+export type GuideUncheckedUpdateWithoutTourInput = {
+  id?: Prisma.StringFieldUpdateOperationsInput | string
+  name?: Prisma.StringFieldUpdateOperationsInput | string
+  userId?: Prisma.StringFieldUpdateOperationsInput | string
+  profilePhoto?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  contactNumber?: Prisma.StringFieldUpdateOperationsInput | string
+  bio?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  experience?: Prisma.IntFieldUpdateOperationsInput | number
+  experienceLevel?: Prisma.EnumExperienceLevelFieldUpdateOperationsInput | $Enums.ExperienceLevel
+  languages?: Prisma.GuideUpdatelanguagesInput | string[]
+  category?: Prisma.GuideUpdatecategoryInput | string[]
+  country?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  city?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  gender?: Prisma.EnumGenderFieldUpdateOperationsInput | $Enums.Gender
+  isAvailable?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  rating?: Prisma.FloatFieldUpdateOperationsInput | number
+  totalReviews?: Prisma.IntFieldUpdateOperationsInput | number
+  totalTours?: Prisma.IntFieldUpdateOperationsInput | number
+  isDeleted?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  blockedDates?: Prisma.BlockedDateUncheckedUpdateManyWithoutGuideNestedInput
+}
+
+export type GuideCreateWithoutBlockedDatesInput = {
+  id?: string
+  name: string
+  profilePhoto?: string | null
+  contactNumber: string
+  bio?: string | null
+  experience?: number
+  experienceLevel?: $Enums.ExperienceLevel
+  languages?: Prisma.GuideCreatelanguagesInput | string[]
+  category?: Prisma.GuideCreatecategoryInput | string[]
+  country?: string | null
+  city?: string | null
+  gender: $Enums.Gender
+  isAvailable?: boolean
+  rating?: number
+  totalReviews?: number
+  totalTours?: number
+  isDeleted?: boolean
+  createdAt?: Date | string
+  updatedAt?: Date | string
+  user: Prisma.UserCreateNestedOneWithoutGuideInput
+  tour?: Prisma.TourCreateNestedManyWithoutGuideInput
+}
+
+export type GuideUncheckedCreateWithoutBlockedDatesInput = {
+  id?: string
+  name: string
+  userId: string
+  profilePhoto?: string | null
+  contactNumber: string
+  bio?: string | null
+  experience?: number
+  experienceLevel?: $Enums.ExperienceLevel
+  languages?: Prisma.GuideCreatelanguagesInput | string[]
+  category?: Prisma.GuideCreatecategoryInput | string[]
+  country?: string | null
+  city?: string | null
+  gender: $Enums.Gender
+  isAvailable?: boolean
+  rating?: number
+  totalReviews?: number
+  totalTours?: number
+  isDeleted?: boolean
+  createdAt?: Date | string
+  updatedAt?: Date | string
+  tour?: Prisma.TourUncheckedCreateNestedManyWithoutGuideInput
+}
+
+export type GuideCreateOrConnectWithoutBlockedDatesInput = {
+  where: Prisma.GuideWhereUniqueInput
+  create: Prisma.XOR<Prisma.GuideCreateWithoutBlockedDatesInput, Prisma.GuideUncheckedCreateWithoutBlockedDatesInput>
+}
+
+export type GuideUpsertWithoutBlockedDatesInput = {
+  update: Prisma.XOR<Prisma.GuideUpdateWithoutBlockedDatesInput, Prisma.GuideUncheckedUpdateWithoutBlockedDatesInput>
+  create: Prisma.XOR<Prisma.GuideCreateWithoutBlockedDatesInput, Prisma.GuideUncheckedCreateWithoutBlockedDatesInput>
+  where?: Prisma.GuideWhereInput
+}
+
+export type GuideUpdateToOneWithWhereWithoutBlockedDatesInput = {
+  where?: Prisma.GuideWhereInput
+  data: Prisma.XOR<Prisma.GuideUpdateWithoutBlockedDatesInput, Prisma.GuideUncheckedUpdateWithoutBlockedDatesInput>
+}
+
+export type GuideUpdateWithoutBlockedDatesInput = {
+  id?: Prisma.StringFieldUpdateOperationsInput | string
+  name?: Prisma.StringFieldUpdateOperationsInput | string
+  profilePhoto?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  contactNumber?: Prisma.StringFieldUpdateOperationsInput | string
+  bio?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  experience?: Prisma.IntFieldUpdateOperationsInput | number
+  experienceLevel?: Prisma.EnumExperienceLevelFieldUpdateOperationsInput | $Enums.ExperienceLevel
+  languages?: Prisma.GuideUpdatelanguagesInput | string[]
+  category?: Prisma.GuideUpdatecategoryInput | string[]
+  country?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  city?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  gender?: Prisma.EnumGenderFieldUpdateOperationsInput | $Enums.Gender
+  isAvailable?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  rating?: Prisma.FloatFieldUpdateOperationsInput | number
+  totalReviews?: Prisma.IntFieldUpdateOperationsInput | number
+  totalTours?: Prisma.IntFieldUpdateOperationsInput | number
+  isDeleted?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  user?: Prisma.UserUpdateOneRequiredWithoutGuideNestedInput
+  tour?: Prisma.TourUpdateManyWithoutGuideNestedInput
+}
+
+export type GuideUncheckedUpdateWithoutBlockedDatesInput = {
+  id?: Prisma.StringFieldUpdateOperationsInput | string
+  name?: Prisma.StringFieldUpdateOperationsInput | string
+  userId?: Prisma.StringFieldUpdateOperationsInput | string
+  profilePhoto?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  contactNumber?: Prisma.StringFieldUpdateOperationsInput | string
+  bio?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  experience?: Prisma.IntFieldUpdateOperationsInput | number
+  experienceLevel?: Prisma.EnumExperienceLevelFieldUpdateOperationsInput | $Enums.ExperienceLevel
+  languages?: Prisma.GuideUpdatelanguagesInput | string[]
+  category?: Prisma.GuideUpdatecategoryInput | string[]
+  country?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  city?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  gender?: Prisma.EnumGenderFieldUpdateOperationsInput | $Enums.Gender
+  isAvailable?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  rating?: Prisma.FloatFieldUpdateOperationsInput | number
+  totalReviews?: Prisma.IntFieldUpdateOperationsInput | number
+  totalTours?: Prisma.IntFieldUpdateOperationsInput | number
+  isDeleted?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  tour?: Prisma.TourUncheckedUpdateManyWithoutGuideNestedInput
 }
 
 export type GuideCreateWithoutUserInput = {
@@ -794,6 +1041,8 @@ export type GuideCreateWithoutUserInput = {
   isDeleted?: boolean
   createdAt?: Date | string
   updatedAt?: Date | string
+  tour?: Prisma.TourCreateNestedManyWithoutGuideInput
+  blockedDates?: Prisma.BlockedDateCreateNestedManyWithoutGuideInput
 }
 
 export type GuideUncheckedCreateWithoutUserInput = {
@@ -816,6 +1065,8 @@ export type GuideUncheckedCreateWithoutUserInput = {
   isDeleted?: boolean
   createdAt?: Date | string
   updatedAt?: Date | string
+  tour?: Prisma.TourUncheckedCreateNestedManyWithoutGuideInput
+  blockedDates?: Prisma.BlockedDateUncheckedCreateNestedManyWithoutGuideInput
 }
 
 export type GuideCreateOrConnectWithoutUserInput = {
@@ -854,6 +1105,8 @@ export type GuideUpdateWithoutUserInput = {
   isDeleted?: Prisma.BoolFieldUpdateOperationsInput | boolean
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  tour?: Prisma.TourUpdateManyWithoutGuideNestedInput
+  blockedDates?: Prisma.BlockedDateUpdateManyWithoutGuideNestedInput
 }
 
 export type GuideUncheckedUpdateWithoutUserInput = {
@@ -876,8 +1129,48 @@ export type GuideUncheckedUpdateWithoutUserInput = {
   isDeleted?: Prisma.BoolFieldUpdateOperationsInput | boolean
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  tour?: Prisma.TourUncheckedUpdateManyWithoutGuideNestedInput
+  blockedDates?: Prisma.BlockedDateUncheckedUpdateManyWithoutGuideNestedInput
 }
 
+
+/**
+ * Count Type GuideCountOutputType
+ */
+
+export type GuideCountOutputType = {
+  tour: number
+  blockedDates: number
+}
+
+export type GuideCountOutputTypeSelect<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
+  tour?: boolean | GuideCountOutputTypeCountTourArgs
+  blockedDates?: boolean | GuideCountOutputTypeCountBlockedDatesArgs
+}
+
+/**
+ * GuideCountOutputType without action
+ */
+export type GuideCountOutputTypeDefaultArgs<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
+  /**
+   * Select specific fields to fetch from the GuideCountOutputType
+   */
+  select?: Prisma.GuideCountOutputTypeSelect<ExtArgs> | null
+}
+
+/**
+ * GuideCountOutputType without action
+ */
+export type GuideCountOutputTypeCountTourArgs<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
+  where?: Prisma.TourWhereInput
+}
+
+/**
+ * GuideCountOutputType without action
+ */
+export type GuideCountOutputTypeCountBlockedDatesArgs<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
+  where?: Prisma.BlockedDateWhereInput
+}
 
 
 export type GuideSelect<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = runtime.Types.Extensions.GetSelect<{
@@ -902,6 +1195,9 @@ export type GuideSelect<ExtArgs extends runtime.Types.Extensions.InternalArgs = 
   createdAt?: boolean
   updatedAt?: boolean
   user?: boolean | Prisma.UserDefaultArgs<ExtArgs>
+  tour?: boolean | Prisma.Guide$tourArgs<ExtArgs>
+  blockedDates?: boolean | Prisma.Guide$blockedDatesArgs<ExtArgs>
+  _count?: boolean | Prisma.GuideCountOutputTypeDefaultArgs<ExtArgs>
 }, ExtArgs["result"]["guide"]>
 
 export type GuideSelectCreateManyAndReturn<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = runtime.Types.Extensions.GetSelect<{
@@ -978,6 +1274,9 @@ export type GuideSelectScalar = {
 export type GuideOmit<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = runtime.Types.Extensions.GetOmit<"id" | "name" | "userId" | "profilePhoto" | "contactNumber" | "bio" | "experience" | "experienceLevel" | "languages" | "category" | "country" | "city" | "gender" | "isAvailable" | "rating" | "totalReviews" | "totalTours" | "isDeleted" | "createdAt" | "updatedAt", ExtArgs["result"]["guide"]>
 export type GuideInclude<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
   user?: boolean | Prisma.UserDefaultArgs<ExtArgs>
+  tour?: boolean | Prisma.Guide$tourArgs<ExtArgs>
+  blockedDates?: boolean | Prisma.Guide$blockedDatesArgs<ExtArgs>
+  _count?: boolean | Prisma.GuideCountOutputTypeDefaultArgs<ExtArgs>
 }
 export type GuideIncludeCreateManyAndReturn<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
   user?: boolean | Prisma.UserDefaultArgs<ExtArgs>
@@ -990,6 +1289,8 @@ export type $GuidePayload<ExtArgs extends runtime.Types.Extensions.InternalArgs 
   name: "Guide"
   objects: {
     user: Prisma.$UserPayload<ExtArgs>
+    tour: Prisma.$TourPayload<ExtArgs>[]
+    blockedDates: Prisma.$BlockedDatePayload<ExtArgs>[]
   }
   scalars: runtime.Types.Extensions.GetPayloadResult<{
     id: string
@@ -1407,6 +1708,8 @@ readonly fields: GuideFieldRefs;
 export interface Prisma__GuideClient<T, Null = never, ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs, GlobalOmitOptions = {}> extends Prisma.PrismaPromise<T> {
   readonly [Symbol.toStringTag]: "PrismaPromise"
   user<T extends Prisma.UserDefaultArgs<ExtArgs> = {}>(args?: Prisma.Subset<T, Prisma.UserDefaultArgs<ExtArgs>>): Prisma.Prisma__UserClient<runtime.Types.Result.GetResult<Prisma.$UserPayload<ExtArgs>, T, "findUniqueOrThrow", GlobalOmitOptions> | Null, Null, ExtArgs, GlobalOmitOptions>
+  tour<T extends Prisma.Guide$tourArgs<ExtArgs> = {}>(args?: Prisma.Subset<T, Prisma.Guide$tourArgs<ExtArgs>>): Prisma.PrismaPromise<runtime.Types.Result.GetResult<Prisma.$TourPayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
+  blockedDates<T extends Prisma.Guide$blockedDatesArgs<ExtArgs> = {}>(args?: Prisma.Subset<T, Prisma.Guide$blockedDatesArgs<ExtArgs>>): Prisma.PrismaPromise<runtime.Types.Result.GetResult<Prisma.$BlockedDatePayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
   /**
    * Attaches callbacks for the resolution and/or rejection of the Promise.
    * @param onfulfilled The callback to execute when the Promise is resolved.
@@ -1849,6 +2152,54 @@ export type GuideDeleteManyArgs<ExtArgs extends runtime.Types.Extensions.Interna
    * Limit how many Guides to delete.
    */
   limit?: number
+}
+
+/**
+ * Guide.tour
+ */
+export type Guide$tourArgs<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
+  /**
+   * Select specific fields to fetch from the Tour
+   */
+  select?: Prisma.TourSelect<ExtArgs> | null
+  /**
+   * Omit specific fields from the Tour
+   */
+  omit?: Prisma.TourOmit<ExtArgs> | null
+  /**
+   * Choose, which related nodes to fetch as well
+   */
+  include?: Prisma.TourInclude<ExtArgs> | null
+  where?: Prisma.TourWhereInput
+  orderBy?: Prisma.TourOrderByWithRelationInput | Prisma.TourOrderByWithRelationInput[]
+  cursor?: Prisma.TourWhereUniqueInput
+  take?: number
+  skip?: number
+  distinct?: Prisma.TourScalarFieldEnum | Prisma.TourScalarFieldEnum[]
+}
+
+/**
+ * Guide.blockedDates
+ */
+export type Guide$blockedDatesArgs<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
+  /**
+   * Select specific fields to fetch from the BlockedDate
+   */
+  select?: Prisma.BlockedDateSelect<ExtArgs> | null
+  /**
+   * Omit specific fields from the BlockedDate
+   */
+  omit?: Prisma.BlockedDateOmit<ExtArgs> | null
+  /**
+   * Choose, which related nodes to fetch as well
+   */
+  include?: Prisma.BlockedDateInclude<ExtArgs> | null
+  where?: Prisma.BlockedDateWhereInput
+  orderBy?: Prisma.BlockedDateOrderByWithRelationInput | Prisma.BlockedDateOrderByWithRelationInput[]
+  cursor?: Prisma.BlockedDateWhereUniqueInput
+  take?: number
+  skip?: number
+  distinct?: Prisma.BlockedDateScalarFieldEnum | Prisma.BlockedDateScalarFieldEnum[]
 }
 
 /**

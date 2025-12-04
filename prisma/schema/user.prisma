@@ -80,6 +80,7 @@ model Guide {
   @@index([city, country])
   @@index([isAvailable])
   @@map("guides")
+  blockedDates BlockedDate[]
 }
 
 model Tourist {

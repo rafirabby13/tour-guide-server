@@ -1,20 +1,92 @@
+model TourPricing {
+  id     String @id @default(uuid())
+  tourId String
+  tour   Tour   @relation(fields: [tourId], references: [id], onDelete: Cascade)
+
+  minGuests    Int // e.g., 1
+  maxGuests    Int // e.g., 2
+  pricePerHour Float // e.g., 10 USD per person per hour
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  @@unique([tourId, minGuests, maxGuests])
+  @@index([tourId])
+}
 
 model Tour {
-  id          String   @id @default(uuid())
-  title       String
-  description String
-  price       Float
-  location    String
-  maxGuests   Int
+  id             String     @id @default(uuid())
+  title          String
+  description    String
+  location       String
   availableDates DateTime[]
-  images      String[]
+  images         String[]
 
-  guideId     String
-  guide       Guide      @relation("GuideTours", fields: [guideId], references: [id])
+  guideId String
+  guide   Guide  @relation("GuideTours", fields: [guideId], references: [id])
 
-  bookings    Booking[]
-  reviews     Review[]
+  bookings     Booking[]
+  reviews      Review[]
+  createdAt    DateTime      @default(now())
+  updatedAt    DateTime      @updatedAt
 
-  createdAt   DateTime @default(now())
-  updatedAt   DateTime @updatedAt
+  blockedDates BlockedDate[]
+
+  tourAvailabilities TourAvailability[]
+
+  tourPricings TourPricing[]
+}
+
+model TourAvailability {
+  id     String @id @default(uuid())
+  tourId String
+  tour   Tour   @relation(fields: [tourId], references: [id], onDelete: Cascade)
+
+  // Day of week (0 = Sunday, 6 = Saturday)
+  dayOfWeek Int // 0-6
+
+  // Time slots
+  startTime String // "09:00"
+  endTime   String // "17:00"
+
+  // Max bookings per slot
+  maxBookings Int @default(1)
+
+  isActive Boolean @default(true)
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  @@index([tourId])
+  @@index([dayOfWeek])
+}
+
+model BlockedDate {
+  id String @id @default(uuid())
+
+  // Can be tour-specific or guide-wide
+  tourId String?
+  tour   Tour?   @relation(fields: [tourId], references: [id], onDelete: Cascade)
+
+  guideId String
+  guide   Guide  @relation(fields: [guideId], references: [id], onDelete: Cascade)
+
+  // Date blocking
+  blockedDate DateTime // Specific date blocked
+  startTime   String? // Optional: block specific time slot "09:00"
+  endTime     String? // Optional: "17:00"
+
+  // If null = whole day blocked
+  // If set = only this time range blocked
+
+  reason   String? // "Vacation", "Personal", "Maintenance"
+  isAllDay Boolean @default(true)
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  @@unique([tourId, blockedDate, startTime]) // Prevent duplicate blocks
+  @@index([guideId])
+  @@index([tourId])
+  @@index([blockedDate])
 }
