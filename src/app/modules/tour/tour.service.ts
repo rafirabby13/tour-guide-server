@@ -7,7 +7,7 @@ import { validatePricingOverlaps } from "../../helpers/validatePricing";
 import { prisma } from "../../shared/prisma";
 import { BlockedDateInput, TourAvailabilityInput, TourPricingInput } from "./tour.interface";
 import { IOptions, paginationHelper } from "../../helpers/paginationHelper";
-import { tourSearchableFields } from "./tour.constant";
+import { DEFAULT_TOUR_INCLUDES, tourSearchableFields } from "./tour.constant";
 import { Prisma } from "../../../../prisma/generated/prisma/client";
 
 
@@ -184,8 +184,281 @@ const getAllFromDB = async (params: any, options: IOptions) => {
         data: result
     };
 }
+const getSingleFromDB = async (id: string) => {
+  const tour = await prisma.tour.findUnique({
+    where: { id },
+    include: {
+      ...DEFAULT_TOUR_INCLUDES,
+      reviews: {
+        orderBy: { createdAt: 'desc' },
+        take: 10
+      }
+    }
+  });
+
+  if (!tour) {
+    throw new AppError(404, "Tour not found");
+  }
+
+  return tour;
+};
+
+const updateIntoDB = async (id: string, req: Request) => {
+  const existingTour = await prisma.tour.findUnique({
+    where: { id }
+  });
+
+  if (!existingTour) {
+    throw new AppError(404, "Tour not found");
+  }
+
+  // Handle image uploads
+  if (req.files && Array.isArray(req.files)) {
+    const uploadedResult = await fileUploader.uploadMMultipleFilesToCloudinary(req.files);
+    req.body.images = req.body.images || [];
+    uploadedResult.forEach(element => {
+      req.body.images.push(element);
+    });
+  }
+
+  const payload = req.body;
+
+  // Validate pricing if provided
+  if (payload.tourPricings) {
+    validatePricingOverlaps(payload.tourPricings);
+  }
+
+  const availableDates = payload.availableDates
+    ? payload.availableDates.map((date: string | number | Date) => new Date(date))
+    : undefined;
+
+  const result = await prisma.$transaction(async (tx) => {
+    // Update main tour
+    const updatedTour = await tx.tour.update({
+      where: { id },
+      data: {
+        ...(payload.title && { title: payload.title }),
+        ...(payload.description && { description: payload.description }),
+        ...(payload.location && { location: payload.location }),
+        ...(availableDates && { availableDates }),
+        ...(payload.images && { images: payload.images }),
+      }
+    });
+
+    // Update availabilities if provided
+    if (payload.tourAvailabilities) {
+      await tx.tourAvailability.deleteMany({
+        where: { tourId: id }
+      });
+
+      await tx.tourAvailability.createMany({
+        data: payload.tourAvailabilities.map((slot: TourAvailabilityInput) => ({
+          tourId: id,
+          dayOfWeek: slot.dayOfWeek,
+          startTime: slot.startTime,
+          endTime: slot.endTime,
+          maxBookings: slot.maxBookings,
+        }))
+      });
+    }
+
+    // Update pricings if provided
+    if (payload.tourPricings) {
+      await tx.tourPricing.deleteMany({
+        where: { tourId: id }
+      });
+
+      await tx.tourPricing.createMany({
+        data: payload.tourPricings.map((tier: TourPricingInput) => ({
+          tourId: id,
+          minGuests: tier.minGuests,
+          maxGuests: tier.maxGuests,
+          pricePerHour: tier.pricePerHour,
+        }))
+      });
+    }
+
+    // Update blocked dates if provided
+    if (payload.blockedDates) {
+      await tx.blockedDate.deleteMany({
+        where: { tourId: id }
+      });
+
+      await tx.blockedDate.createMany({
+        data: payload.blockedDates.map((blocked: BlockedDateInput) => ({
+          tourId: id,
+          guideId: existingTour.guideId,
+          blockedDate: new Date(blocked.blockedDate),
+          startTime: blocked.startTime,
+          endTime: blocked.endTime,
+          isAllDay: blocked.isAllDay,
+          reason: blocked.reason,
+        }))
+      });
+    }
+
+    return tx.tour.findUnique({
+      where: { id },
+      include: DEFAULT_TOUR_INCLUDES
+    });
+  });
+
+  return result;
+};
+
+const deleteFromDB = async (id: string) => {
+  const tour = await prisma.tour.findUnique({
+    where: { id }
+  });
+
+  if (!tour) {
+    throw new AppError(404, "Tour not found");
+  }
+
+  // Check for active bookings
+  const activeBookings = await prisma.booking.count({
+    where: {
+      tourId: id,
+      status: {
+        in: ['PENDING', 'CONFIRMED']
+      }
+    }
+  });
+
+  if (activeBookings > 0) {
+    throw new AppError(400, "Cannot delete tour with active bookings");
+  }
+
+  await prisma.tour.delete({
+    where: { id }
+  });
+
+  return { message: "Tour deleted successfully" };
+};
+
+
+const checkAvailability = async (tourId: string, date: Date, guestCount: number) => {
+  const tour = await prisma.tour.findUnique({
+    where: { id: tourId },
+    include: {
+      tourPricings: true,
+      tourAvailabilities: true,
+      blockedDates: {
+        where: {
+          blockedDate: {
+            equals: date
+          }
+        }
+      }
+    }
+  });
+
+  if (!tour) {
+    throw new AppError(404, "Tour not found");
+  }
+
+  // Check if date is blocked
+  if (tour.blockedDates.length > 0) {
+    return {
+      available: false,
+      reason: "Date is blocked",
+      blockedReason: tour.blockedDates[0].reason
+    };
+  }
+
+  // Check day availability
+  const dayOfWeek = date.getDay();
+  const dayAvailability = tour.tourAvailabilities.find(
+    av => av.dayOfWeek === dayOfWeek && av.isActive
+  );
+
+  if (!dayAvailability) {
+    return {
+      available: false,
+      reason: "No availability on this day"
+    };
+  }
+
+  // Check pricing for guest count
+  const pricing = tour.tourPricings.find(
+    p => guestCount >= p.minGuests && guestCount <= p.maxGuests
+  );
+
+  if (!pricing) {
+    return {
+      available: false,
+      reason: "Guest count not supported",
+      supportedRanges: tour.tourPricings.map(p => ({
+        min: p.minGuests,
+        max: p.maxGuests,
+        price: p.pricePerHour
+      }))
+    };
+  }
+
+  // Check existing bookings
+  const existingBookings = await prisma.booking.count({
+    where: {
+      tourId,
+      date: date,
+      status: {
+        in: ['CONFIRMED', 'PENDING']
+      }
+    }
+  });
+
+  if (existingBookings >= dayAvailability.maxBookings) {
+    return {
+      available: false,
+      reason: "Fully booked for this date"
+    };
+  }
+
+  return {
+    available: true,
+    pricing: {
+      pricePerHour: pricing.pricePerHour,
+      minGuests: pricing.minGuests,
+      maxGuests: pricing.maxGuests
+    },
+    availability: {
+      startTime: dayAvailability.startTime,
+      endTime: dayAvailability.endTime,
+      spotsRemaining: dayAvailability.maxBookings - existingBookings
+    }
+  };
+};
+
+
+const getMyTours = async (guideId: string, options: IOptions) => {
+  const { page, limit, skip, sortBy, sortOrder } = paginationHelper.calculatePagination(options);
+
+  const result = await prisma.tour.findMany({
+    where: { guideId },
+    skip,
+    take: limit,
+    include: DEFAULT_TOUR_INCLUDES,
+    orderBy: {
+      [sortBy]: sortOrder
+    }
+  });
+
+  const total = await prisma.tour.count({
+    where: { guideId }
+  });
+
+  return {
+    meta: { page, limit, total },
+    data: result
+  };
+};
 
 export const TourServices = {
     createTour,
-    getAllFromDB
+  getAllFromDB,
+  getSingleFromDB,
+  updateIntoDB,
+  deleteFromDB,
+  checkAvailability,
+  getMyTours
 }
