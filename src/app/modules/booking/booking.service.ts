@@ -1,9 +1,11 @@
 import { prisma } from "../../shared/prisma";
 import { AppError } from "../../errors/AppError";
-import { CreateBookingPayload} from "./booking.interface";
-import { BookingStatus } from "../../../../prisma/generated/prisma/enums";
+import { BookingQueryParams, CreateBookingPayload, RefundCalculation} from "./booking.interface";
+import { BookingStatus, PaymentStatus } from "../../../../prisma/generated/prisma/enums";
 import { generateTransactionId } from "../../helpers/transactionId";
-import { DEFAULT_BOOKING_INCLUDES } from "./booking.constant";
+import { CANCELLATION_POLICY, DEFAULT_BOOKING_INCLUDES } from "./booking.constant";
+import { IOptions, paginationHelper } from "../../helpers/paginationHelper";
+import { Prisma } from "../../../../prisma/generated/prisma/client";
 
 const createBooking = async (payload: CreateBookingPayload, touristId: string) => {
   const { tourId, date, duration, numGuests ,startTime, endTime} = payload;
@@ -146,235 +148,235 @@ console.log({bookingDate})
   return result;
 };
 
-// const getAllBookings = async (params: BookingQueryParams, options: IOptions) => {
-//   const { page, limit, skip, sortBy, sortOrder } = paginationHelper.calculatePagination(options);
-//   const { status, tourId, touristId, startDate, endDate } = params;
+const getAllBookings = async (params: BookingQueryParams, options: IOptions) => {
+  const { page, limit, skip, sortBy, sortOrder } = paginationHelper.calculatePagination(options);
+  const { status, tourId, touristId, startDate, endDate } = params;
 
-//   const andConditions: Prisma.BookingWhereInput[] = [];
+  const andConditions: Prisma.BookingWhereInput[] = [];
 
-//   if (status) {
-//     andConditions.push({ status });
-//   }
+  if (status) {
+    andConditions.push({ status });
+  }
 
-//   if (tourId) {
-//     andConditions.push({ tourId });
-//   }
+  if (tourId) {
+    andConditions.push({ tourId });
+  }
 
-//   if (touristId) {
-//     andConditions.push({ touristId });
-//   }
+  if (touristId) {
+    andConditions.push({ touristId });
+  }
 
-//   if (startDate || endDate) {
-//     andConditions.push({
-//       date: {
-//         ...(startDate && { gte: new Date(startDate) }),
-//         ...(endDate && { lte: new Date(endDate) }),
-//       }
-//     });
-//   }
+  if (startDate || endDate) {
+    andConditions.push({
+      date: {
+        ...(startDate && { gte: new Date(startDate) }),
+        ...(endDate && { lte: new Date(endDate) }),
+      }
+    });
+  }
 
-//   const whereConditions: Prisma.BookingWhereInput = andConditions.length > 0 
-//     ? { AND: andConditions } 
-//     : {};
+  const whereConditions: Prisma.BookingWhereInput = andConditions.length > 0 
+    ? { AND: andConditions } 
+    : {};
 
-//   const result = await prisma.booking.findMany({
-//     skip,
-//     take: limit,
-//     where: whereConditions,
-//     include: DEFAULT_BOOKING_INCLUDES,
-//     orderBy: {
-//       [sortBy]: sortOrder
-//     }
-//   });
+  const result = await prisma.booking.findMany({
+    skip,
+    take: limit,
+    where: whereConditions,
+    include: DEFAULT_BOOKING_INCLUDES,
+    orderBy: {
+      [sortBy]: sortOrder
+    }
+  });
 
-//   const total = await prisma.booking.count({
-//     where: whereConditions
-//   });
+  const total = await prisma.booking.count({
+    where: whereConditions
+  });
 
-//   return {
-//     meta: { page, limit, total },
-//     data: result
-//   };
-// };
+  return {
+    meta: { page, limit, total },
+    data: result
+  };
+};
 
-// const getSingleBooking = async (id: string) => {
-//   const booking = await prisma.booking.findUnique({
-//     where: { id },
-//     include: DEFAULT_BOOKING_INCLUDES
-//   });
+const getSingleBooking = async (id: string) => {
+  const booking = await prisma.booking.findUnique({
+    where: { id },
+    include: DEFAULT_BOOKING_INCLUDES
+  });
 
-//   if (!booking) {
-//     throw new AppError(404, "Booking not found");
-//   }
+  if (!booking) {
+    throw new AppError(404, "Booking not found");
+  }
 
-//   return booking;
-// };
+  return booking;
+};
 
-// const getMyBookings = async (touristId: string, options: IOptions) => {
-//   const { page, limit, skip, sortBy, sortOrder } = paginationHelper.calculatePagination(options);
+const getMyBookings = async (touristId: string, options: IOptions) => {
+  const { page, limit, skip, sortBy, sortOrder } = paginationHelper.calculatePagination(options);
 
-//   const result = await prisma.booking.findMany({
-//     where: { touristId },
-//     skip,
-//     take: limit,
-//     include: DEFAULT_BOOKING_INCLUDES,
-//     orderBy: {
-//       [sortBy]: sortOrder
-//     }
-//   });
+  const result = await prisma.booking.findMany({
+    where: { touristId },
+    skip,
+    take: limit,
+    include: DEFAULT_BOOKING_INCLUDES,
+    orderBy: {
+      [sortBy]: sortOrder
+    }
+  });
 
-//   const total = await prisma.booking.count({
-//     where: { touristId }
-//   });
+  const total = await prisma.booking.count({
+    where: { touristId }
+  });
 
-//   return {
-//     meta: { page, limit, total },
-//     data: result
-//   };
-// };
+  return {
+    meta: { page, limit, total },
+    data: result
+  };
+};
 
-// const getGuideBookings = async (guideId: string, options: IOptions) => {
-//   const { page, limit, skip, sortBy, sortOrder } = paginationHelper.calculatePagination(options);
+const getGuideBookings = async (guideId: string, options: IOptions) => {
+  const { page, limit, skip, sortBy, sortOrder } = paginationHelper.calculatePagination(options);
 
-//   const result = await prisma.booking.findMany({
-//     where: {
-//       tour: {
-//         guideId
-//       }
-//     },
-//     skip,
-//     take: limit,
-//     include: DEFAULT_BOOKING_INCLUDES,
-//     orderBy: {
-//       [sortBy]: sortOrder
-//     }
-//   });
+  const result = await prisma.booking.findMany({
+    where: {
+      tour: {
+        guideId
+      }
+    },
+    skip,
+    take: limit,
+    include: DEFAULT_BOOKING_INCLUDES,
+    orderBy: {
+      [sortBy]: sortOrder
+    }
+  });
 
-//   const total = await prisma.booking.count({
-//     where: {
-//       tour: {
-//         guideId
-//       }
-//     }
-//   });
+  const total = await prisma.booking.count({
+    where: {
+      tour: {
+        guideId
+      }
+    }
+  });
 
-//   return {
-//     meta: { page, limit, total },
-//     data: result
-//   };
-// };
+  return {
+    meta: { page, limit, total },
+    data: result
+  };
+};
 
-// const calculateRefund = (booking: any): RefundCalculation => {
-//   const now = new Date();
-//   const bookingDate = new Date(booking.date);
-//   const hoursUntilBooking = (bookingDate.getTime() - now.getTime()) / (1000 * 60 * 60);
+const calculateRefund = (booking: any): RefundCalculation => {
+  const now = new Date();
+  const bookingDate = new Date(booking.date);
+  const hoursUntilBooking = (bookingDate.getTime() - now.getTime()) / (1000 * 60 * 60);
 
-//   let refundPercentage = 0;
-//   let reason = "";
+  let refundPercentage = 0;
+  let reason = "";
 
-//   if (hoursUntilBooking >= CANCELLATION_POLICY.FULL_REFUND_HOURS) {
-//     refundPercentage = CANCELLATION_POLICY.FULL_REFUND_PERCENT;
-//     reason = "Cancelled more than 48 hours before booking";
-//   } else if (hoursUntilBooking >= CANCELLATION_POLICY.PARTIAL_REFUND_HOURS) {
-//     refundPercentage = CANCELLATION_POLICY.PARTIAL_REFUND_PERCENT;
-//     reason = "Cancelled 24-48 hours before booking";
-//   } else {
-//     refundPercentage = CANCELLATION_POLICY.NO_REFUND_PERCENT;
-//     reason = "Cancelled less than 24 hours before booking";
-//   }
+  if (hoursUntilBooking >= CANCELLATION_POLICY.FULL_REFUND_HOURS) {
+    refundPercentage = CANCELLATION_POLICY.FULL_REFUND_PERCENT;
+    reason = "Cancelled more than 48 hours before booking";
+  } else if (hoursUntilBooking >= CANCELLATION_POLICY.PARTIAL_REFUND_HOURS) {
+    refundPercentage = CANCELLATION_POLICY.PARTIAL_REFUND_PERCENT;
+    reason = "Cancelled 24-48 hours before booking";
+  } else {
+    refundPercentage = CANCELLATION_POLICY.NO_REFUND_PERCENT;
+    reason = "Cancelled less than 24 hours before booking";
+  }
 
-//   const refundAmount = (booking.totalPrice * refundPercentage) / 100;
-//   const cancellationFee = booking.totalPrice - refundAmount;
+  const refundAmount = (booking.totalPrice * refundPercentage) / 100;
+  const cancellationFee = booking.totalPrice - refundAmount;
 
-//   return {
-//     refundPercentage,
-//     refundAmount,
-//     cancellationFee,
-//     reason
-//   };
-// };
+  return {
+    refundPercentage,
+    refundAmount,
+    cancellationFee,
+    reason
+  };
+};
 
-// const cancelBooking = async (id: string, userId: string, userRole: string, reason?: string) => {
-//   const booking = await prisma.booking.findUnique({
-//     where: { id },
-//     include: {
-//       tourist: {
-//         include: {
-//           user: true
-//         }
-//       },
-//       tour: {
-//         include: {
-//           guide: {
-//             include: {
-//               user: true
-//             }
-//           }
-//         }
-//       },
-//       payment: true
-//     }
-//   });
+const cancelBooking = async (id: string, userId: string, userRole: string, reason?: string) => {
+  const booking = await prisma.booking.findUnique({
+    where: { id },
+    include: {
+      tourist: {
+        include: {
+          user: true
+        }
+      },
+      tour: {
+        include: {
+          guide: {
+            include: {
+              user: true
+            }
+          }
+        }
+      },
+      payment: true
+    }
+  });
 
-//   if (!booking) {
-//     throw new AppError(404, "Booking not found");
-//   }
+  if (!booking) {
+    throw new AppError(404, "Booking not found");
+  }
 
-//   // Check if already cancelled or completed
-//   if (booking.status === BookingStatus.CANCELED_BY_GUIDE || 
-//       booking.status === BookingStatus.CANCELED_BY_TOURIST ||
-//       booking.status === BookingStatus.COMPLETED) {
-//     throw new AppError(400, "Cannot cancel this booking");
-//   }
+  // Check if already cancelled or completed
+  if (booking.status === BookingStatus.CANCELED_BY_GUIDE || 
+      booking.status === BookingStatus.CANCELED_BY_TOURIST ||
+      booking.status === BookingStatus.COMPLETED) {
+    throw new AppError(400, "Cannot cancel this booking");
+  }
 
-//   // Verify authorization
-//   const isTourist = booking.tourist.userId === userId;
-//   const isGuide = booking.tour.guide.userId === userId;
-//   const isAdmin = userRole === 'ADMIN';
+  // Verify authorization
+  const isTourist = booking.tourist.userId === userId;
+  const isGuide = booking.tour.guide.userId === userId;
+  const isAdmin = userRole === 'ADMIN';
 
-//   if (!isTourist && !isGuide && !isAdmin) {
-//     throw new AppError(403, "Not authorized to cancel this booking");
-//   }
+  if (!isTourist && !isGuide && !isAdmin) {
+    throw new AppError(403, "Not authorized to cancel this booking");
+  }
 
-//   // Calculate refund
-//   const refundCalc = calculateRefund(booking);
+  // Calculate refund
+  const refundCalc = calculateRefund(booking);
   
-//   // If guide cancels, full refund
-//   if (isGuide) {
-//     refundCalc.refundPercentage = 100;
-//     refundCalc.refundAmount = booking.totalPrice;
-//     refundCalc.cancellationFee = 0;
-//     refundCalc.reason = "Cancelled by guide - Full refund";
-//   }
+  // If guide cancels, full refund
+  if (isGuide) {
+    refundCalc.refundPercentage = 100;
+    refundCalc.refundAmount = booking.totalPrice;
+    refundCalc.cancellationFee = 0;
+    refundCalc.reason = "Cancelled by guide - Full refund";
+  }
 
-//   const result = await prisma.$transaction(async (tx) => {
-//     // Update booking status
-//     const updatedBooking = await tx.booking.update({
-//       where: { id },
-//       data: {
-//         status: isGuide ? BookingStatus.CANCELED_BY_GUIDE : BookingStatus.CANCELED_BY_TOURIST
-//       },
-//       include: DEFAULT_BOOKING_INCLUDES
-//     });
+  const result = await prisma.$transaction(async (tx) => {
+    // Update booking status
+    const updatedBooking = await tx.booking.update({
+      where: { id },
+      data: {
+        status: isGuide ? BookingStatus.CANCELED_BY_GUIDE : BookingStatus.CANCELED_BY_TOURIST
+      },
+      include: DEFAULT_BOOKING_INCLUDES
+    });
 
-//     // Update payment if refund applicable
-//     if (refundCalc.refundAmount > 0 && booking.payment) {
-//       await tx.payment.update({
-//         where: { id: booking.payment.id },
-//         data: {
-//           status: PaymentStatus.REFUNDED
-//         }
-//       });
-//     }
+    // Update payment if refund applicable
+    if (refundCalc.refundAmount > 0 && booking.payment) {
+      await tx.payment.update({
+        where: { id: booking.payment.id },
+        data: {
+          status: PaymentStatus.REFUNDED
+        }
+      });
+    }
 
-//     return {
-//       booking: updatedBooking,
-//       refund: refundCalc
-//     };
-//   });
+    return {
+      booking: updatedBooking,
+      refund: refundCalc
+    };
+  });
 
-//   return result;
-// };
+  return result;
+};
 
 // const handlePaymentSuccess = async (paymentData: any) => {
 //   const { val_id, tran_id, amount, value_a: bookingId } = paymentData;
@@ -443,58 +445,56 @@ console.log({bookingDate})
 //   return result;
 // };
 
-// const getBookingStats = async (guideId?: string) => {
-//   const whereCondition = guideId ? {
-//     tour: {
-//       guideId
-//     }
-//   } : {};
+const getBookingStats = async (guideId?: string) => {
+  const whereCondition = guideId ? {
+    tour: {
+      guideId
+    }
+  } : {};
 
-//   const [total, pending, confirmed, cancelled, completed] = await Promise.all([
-//     prisma.booking.count({ where: whereCondition }),
-//     prisma.booking.count({ where: { ...whereCondition, status: BookingStatus.PENDING } }),
-//     prisma.booking.count({ where: { ...whereCondition, status: BookingStatus.CONFIRMED } }),
-//     prisma.booking.count({ 
-//       where: { 
-//         ...whereCondition, 
-//         status: {
-//           in: [BookingStatus.CANCELED_BY_GUIDE, BookingStatus.CANCELED_BY_TOURIST]
-//         }
-//       } 
-//     }),
-//     prisma.booking.count({ where: { ...whereCondition, status: BookingStatus.COMPLETED } }),
-//   ]);
+  const [total, pending, confirmed, cancelled, completed] = await Promise.all([
+    prisma.booking.count({ where: whereCondition }),
+    prisma.booking.count({ where: { ...whereCondition, status: BookingStatus.PENDING } }),
+    prisma.booking.count({ where: { ...whereCondition, status: BookingStatus.CONFIRMED } }),
+    prisma.booking.count({ 
+      where: { 
+        ...whereCondition, 
+        status: {
+          in: [BookingStatus.CANCELED_BY_GUIDE, BookingStatus.CANCELED_BY_TOURIST]
+        }
+      } 
+    }),
+    prisma.booking.count({ where: { ...whereCondition, status: BookingStatus.COMPLETED } }),
+  ]);
 
-//   const totalRevenue = await prisma.booking.aggregate({
-//     where: {
-//       ...whereCondition,
-//       status: {
-//         in: [BookingStatus.CONFIRMED, BookingStatus.COMPLETED]
-//       }
-//     },
-//     _sum: {
-//       totalPrice: true
-//     }
-//   });
+  const totalRevenue = await prisma.booking.aggregate({
+    where: {
+      ...whereCondition,
+      status: {
+        in: [BookingStatus.CONFIRMED, BookingStatus.COMPLETED]
+      }
+    },
+    _sum: {
+      totalPrice: true
+    }
+  });
 
-//   return {
-//     total,
-//     pending,
-//     confirmed,
-//     cancelled,
-//     completed,
-//     totalRevenue: totalRevenue._sum.totalPrice || 0
-//   };
-// };
+  return {
+    total,
+    pending,
+    confirmed,
+    cancelled,
+    completed,
+    totalRevenue: totalRevenue._sum.totalPrice || 0
+  };
+};
 
 export const BookingServices = {
   createBooking,
-//   getAllBookings,
-//   getSingleBooking,
-//   getMyBookings,
-//   getGuideBookings,
-//   cancelBooking,
-//   handlePaymentSuccess,
-//   handlePaymentFailed,
-//   getBookingStats
+  getAllBookings,
+  getSingleBooking,
+  getMyBookings,
+  getGuideBookings,
+  cancelBooking,
+  getBookingStats
 };

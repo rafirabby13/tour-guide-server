@@ -16,47 +16,45 @@ router.post(
   BookingControllers.createBooking
 );
 
-// router.get(
-//   "/my-bookings",
-//   auth(UserRole.TOURIST),
-//   BookingControllers.getMyBookings
-// );
+router.get(
+  "/all-bookings",
+  auth(UserRole.ADMIN),
+  BookingControllers.getAllBookings
+);
 
-// // Protected routes - Guide
-// router.get(
-//   "/guide-bookings",
-//   auth(UserRole.GUIDE),
-//   BookingControllers.getGuideBookings
-// );
 
-// // Protected routes - Tourist/Guide/Admin
-// router.get(
-//   "/stats",
-//   auth(UserRole.TOURIST, UserRole.GUIDE, UserRole.ADMIN),
-//   BookingControllers.getBookingStats
-// );
+router.get(
+  "/my-bookings",
+  auth(UserRole.TOURIST),
+  BookingControllers.getMyBookings
+);
 
-// router.get(
-//   "/:id",
-//   auth(UserRole.TOURIST, UserRole.GUIDE, UserRole.ADMIN),
-//   validateRequest(uuidParamSchema),
-//   BookingControllers.getSingleBooking
-// );
+// Protected routes - Guide
+router.get(
+  "/guide-bookings",
+  auth(UserRole.GUIDE),
+  BookingControllers.getGuideBookings
+);
 
-// router.patch(
-//   "/:id/cancel",
-//   auth(UserRole.TOURIST, UserRole.GUIDE, UserRole.ADMIN),
-//   validateRequest(uuidParamSchema),
-//   validateRequest(cancelBookingSchema),
-//   BookingControllers.cancelBooking
-// );
+// Protected routes - Tourist/Guide/Admin
+router.get(
+  "/stats",
+  auth(UserRole.TOURIST, UserRole.GUIDE, UserRole.ADMIN),
+  BookingControllers.getBookingStats
+);
 
-// // Protected routes - Admin
-// router.get(
-//   "/",
-//   auth(UserRole.ADMIN),
-//   validateRequest(getBookingsQuerySchema),
-//   BookingControllers.getAllBookings
-// );
+router.get(
+  "/:id",
+  auth(UserRole.TOURIST, UserRole.GUIDE, UserRole.ADMIN),
+  BookingControllers.getSingleBooking
+);
+
+router.patch(
+  "/:id/cancel",
+  auth(UserRole.TOURIST, UserRole.GUIDE, UserRole.ADMIN),
+  BookingControllers.cancelBooking
+);
+
+
 
 export const BookingRoutes = router;

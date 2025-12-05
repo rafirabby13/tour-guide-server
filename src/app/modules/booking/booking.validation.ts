@@ -1,4 +1,5 @@
 import { z } from "zod";
+import { BookingStatus } from "../../../../prisma/generated/prisma/enums";
 
 const createBookingZodSchema = z.object({
   body: z.object({
@@ -35,7 +36,20 @@ const createBookingZodSchema = z.object({
     }),
   }),
 });
-
+export const getBookingsQuerySchema = z.object({
+  query: z.object({
+    status: z.nativeEnum(BookingStatus).optional(),
+    tourId: z.string().uuid().optional(),
+    touristId: z.string().uuid().optional(),
+    startDate: z.string().datetime().optional(),
+    endDate: z.string().datetime().optional(),
+    page: z.string().transform(Number).pipe(z.number().positive()).optional(),
+    limit: z.string().transform(Number).pipe(z.number().positive()).optional(),
+    sortBy: z.string().optional(),
+    sortOrder: z.enum(['asc', 'desc']).optional(),
+  })
+});
 export const BookingValidation = {
   createBookingZodSchema,
+  getBookingsQuerySchema
 };
