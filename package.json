@@ -32,6 +32,7 @@
     "multer": "^2.0.2",
     "pg": "^8.16.3",
     "ts-node-dev": "^2.0.0",
+    "uuidv4": "^6.2.13",
     "zod": "^4.1.13"
   },
   "devDependencies": {

@@ -7,22 +7,25 @@ enum BookingStatus {
 }
 
 model Booking {
-  id     String        @id @default(uuid())
-  date   DateTime
-  status BookingStatus @default(PENDING)
-
+  id         String        @id @default(uuid())
+  startTime  DateTime
+  endTime    DateTime
+  status     BookingStatus @default(PENDING)
+  date       DateTime
   duration   Int // in hours
   numGuests  Int
   totalPrice Float
-  
-  tourId     String
-  touristId  String
+
+  tourId    String
+  touristId String
 
   tour    Tour    @relation(fields: [tourId], references: [id])
   tourist Tourist @relation(fields: [touristId], references: [id])
 
-  payment Payment?
+  payment       Payment?
+  paymentStatus PaymentStatus @default(PENDING)
+  createdAt     DateTime      @default(now())
+  updatedAt     DateTime      @updatedAt
 
-  createdAt DateTime @default(now())
-  updatedAt DateTime @updatedAt
+  @@map("bookings")
 }
