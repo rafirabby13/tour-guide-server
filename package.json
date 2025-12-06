@@ -31,12 +31,14 @@
     "jsonwebtoken": "^9.0.2",
     "multer": "^2.0.2",
     "pg": "^8.16.3",
+    "stripe": "^20.0.0",
     "ts-node-dev": "^2.0.0",
     "uuidv4": "^6.2.13",
     "zod": "^4.1.13"
   },
   "devDependencies": {
     "@types/node": "^24.10.1",
+    "@types/stripe": "^8.0.417",
     "prisma": "^7.0.1",
     "tsx": "^4.20.6"
   }

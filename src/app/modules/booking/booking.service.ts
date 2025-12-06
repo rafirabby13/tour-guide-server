@@ -6,13 +6,14 @@ import { generateTransactionId } from "../../helpers/transactionId";
 import { CANCELLATION_POLICY, DEFAULT_BOOKING_INCLUDES } from "./booking.constant";
 import { IOptions, paginationHelper } from "../../helpers/paginationHelper";
 import { Prisma } from "../../../../prisma/generated/prisma/client";
+import { PaymentService } from "../payment/payment.service";
 
 const createBooking = async (payload: CreateBookingPayload, touristId: string) => {
   const { tourId, date, duration, numGuests ,startTime, endTime} = payload;
   const bookingDate = new Date(date);
 
   const startDateTime = new Date(`${date}T${startTime}:00`); 
-  
+  console.log({startDateTime})
   // Calculate End Time
   const durationInMs = duration * 60 * 60 * 1000;
   const endDateTime = new Date(startDateTime.getTime() + durationInMs);
@@ -144,8 +145,14 @@ console.log({bookingDate})
       transactionId
     };
   });
+  const paymentSession = await PaymentService.initiatePayment(result.booking?.id as string);
 
-  return result;
+  return {
+    bookingId: result.booking?.id,
+    transactionId: result.transactionId,
+    paymentUrl: paymentSession.paymentUrl,
+    sessionId: paymentSession.sessionId,
+  };
 };
 
 const getAllBookings = async (params: BookingQueryParams, options: IOptions) => {
