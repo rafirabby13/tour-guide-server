@@ -59,12 +59,11 @@ console.log("Event type:", event.type);
           where: { id: bookingId },
           data: {
             paymentStatus: PaymentStatus.SUCCESS,
-            status: BookingStatus.CONFIRMED,   // Or your Enum value
+            status: BookingStatus.CONFIRMED,  
           },
         });
 
-        // Update/Create Payment Record
-        // Assuming you have a Payment model. If not, create one.
+       
         await tx.payment.update({
           where: {bookingId},
           data: {

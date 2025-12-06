@@ -1,4 +1,5 @@
 import { z } from "zod";
+import { Gender, UserRole } from "../../../../prisma/generated/prisma/enums";
 
 export const UserRoleEnum = z.enum(["TOURIST", "GUIDE", "ADMIN"]);
 export const UserStatusEnum = z.enum(["ACTIVE", "INACTIVE", "DELETED"]);
@@ -80,3 +81,38 @@ export const CreateTouristSchema = UserBaseSchema.extend({
 }).extend(TouristSchema.shape);
 
 export type CreateTouristInput = z.infer<typeof CreateTouristSchema>;
+
+
+const updateProfileSchema = z.object({
+    email: z.string().email("Invalid email address").optional(),
+    name: z.string().min(1).optional(),
+    contactNumber: z.string().min(10).optional(),
+    gender: z.nativeEnum(Gender).optional(),
+    bio: z.string().optional(),
+    category: z.array(z.string()).optional(),
+    city: z.string().optional(),
+    country: z.string().optional(),
+    experienceLevel: z.string().optional(),
+    experience: z.number().optional(),
+    languages: z.array(z.string()).optional(),
+    isAvailable: z.boolean().optional()
+});
+
+const changePasswordSchema = z.object({
+    body: z.object({
+        oldPassword: z.string().min(6, "Old password is required"),
+        newPassword: z.string().min(6, "New password must be at least 6 characters")
+    })
+});
+
+const updateUserRoleSchema = z.object({
+    body: z.object({
+        role: z.nativeEnum(UserRole)
+    })
+});
+
+export const UserValidation = {
+    updateProfileSchema,
+    changePasswordSchema,
+    updateUserRoleSchema
+};
