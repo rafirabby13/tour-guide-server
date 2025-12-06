@@ -1278,6 +1278,7 @@ export const BookingScalarFieldEnum = {
   totalPrice: 'totalPrice',
   tourId: 'tourId',
   touristId: 'touristId',
+  guideId: 'guideId',
   paymentStatus: 'paymentStatus',
   createdAt: 'createdAt',
   updatedAt: 'updatedAt'
@@ -1306,7 +1307,10 @@ export const ReviewScalarFieldEnum = {
   comment: 'comment',
   tourId: 'tourId',
   touristId: 'touristId',
-  createdAt: 'createdAt'
+  bookingId: 'bookingId',
+  guideId: 'guideId',
+  createdAt: 'createdAt',
+  updatedAt: 'updatedAt'
 } as const
 
 export type ReviewScalarFieldEnum = (typeof ReviewScalarFieldEnum)[keyof typeof ReviewScalarFieldEnum]

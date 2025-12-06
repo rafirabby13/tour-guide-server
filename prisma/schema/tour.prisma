@@ -35,6 +35,8 @@ model Tour {
   tourAvailabilities TourAvailability[]
 
   tourPricings TourPricing[]
+
+ 
 }
 
 model TourAvailability {

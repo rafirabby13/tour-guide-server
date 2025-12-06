@@ -82,6 +82,8 @@ model Guide {
   @@index([isAvailable])
   @@map("guides")
   blockedDates BlockedDate[]
+  booking Booking[]
+  reviews Review[]
 }
 
 model Tourist {

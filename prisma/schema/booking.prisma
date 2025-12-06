@@ -18,14 +18,16 @@ model Booking {
 
   tourId    String
   touristId String
-
-  tour    Tour    @relation(fields: [tourId], references: [id])
-  tourist Tourist @relation(fields: [touristId], references: [id])
+  guideId   String
+  tour      Tour    @relation(fields: [tourId], references: [id])
+  tourist   Tourist @relation(fields: [touristId], references: [id])
+  guide     Guide   @relation(fields: [guideId], references: [id]) 
 
   payment       Payment?
   paymentStatus PaymentStatus @default(PENDING)
   createdAt     DateTime      @default(now())
   updatedAt     DateTime      @updatedAt
+  reviews       Review[]
 
   @@map("bookings")
 }

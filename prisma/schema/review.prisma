@@ -1,13 +1,20 @@
 model Review {
-  id         String   @id @default(uuid())
-  rating     Int      // 1–5
-  comment    String?
+  id      String  @id @default(uuid())
+  rating  Int // 1–5
+  comment String?
 
-  tourId     String
-  touristId  String
+  tourId    String
+  touristId String
+  bookingId String
+  guideId   String
+  tour      Tour    @relation(fields: [tourId], references: [id])
+  tourist   Tourist @relation(fields: [touristId], references: [id])
+  booking   Booking @relation(fields: [bookingId], references: [id])
+  guide     Guide  @relation(fields: [guideId], references: [id])
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
 
-  tour       Tour @relation(fields: [tourId], references: [id])
-  tourist    Tourist @relation(fields: [touristId], references: [id])
-
-  createdAt  DateTime @default(now())
+  @@index([touristId])
+  @@index([bookingId])
+  @@map("reviews")
 }
