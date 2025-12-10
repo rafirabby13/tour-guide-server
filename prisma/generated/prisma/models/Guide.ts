@@ -275,10 +275,10 @@ export type GuideGroupByArgs<ExtArgs extends runtime.Types.Extensions.InternalAr
 
 export type GuideGroupByOutputType = {
   id: string
-  name: string
+  name: string | null
   userId: string
   profilePhoto: string | null
-  contactNumber: string
+  contactNumber: string | null
   bio: string | null
   experience: number
   experienceLevel: $Enums.ExperienceLevel
@@ -286,7 +286,7 @@ export type GuideGroupByOutputType = {
   category: string[]
   country: string | null
   city: string | null
-  gender: $Enums.Gender
+  gender: $Enums.Gender | null
   isAvailable: boolean
   rating: number
   totalReviews: number
@@ -321,10 +321,10 @@ export type GuideWhereInput = {
   OR?: Prisma.GuideWhereInput[]
   NOT?: Prisma.GuideWhereInput | Prisma.GuideWhereInput[]
   id?: Prisma.StringFilter<"Guide"> | string
-  name?: Prisma.StringFilter<"Guide"> | string
+  name?: Prisma.StringNullableFilter<"Guide"> | string | null
   userId?: Prisma.StringFilter<"Guide"> | string
   profilePhoto?: Prisma.StringNullableFilter<"Guide"> | string | null
-  contactNumber?: Prisma.StringFilter<"Guide"> | string
+  contactNumber?: Prisma.StringNullableFilter<"Guide"> | string | null
   bio?: Prisma.StringNullableFilter<"Guide"> | string | null
   experience?: Prisma.IntFilter<"Guide"> | number
   experienceLevel?: Prisma.EnumExperienceLevelFilter<"Guide"> | $Enums.ExperienceLevel
@@ -332,7 +332,7 @@ export type GuideWhereInput = {
   category?: Prisma.StringNullableListFilter<"Guide">
   country?: Prisma.StringNullableFilter<"Guide"> | string | null
   city?: Prisma.StringNullableFilter<"Guide"> | string | null
-  gender?: Prisma.EnumGenderFilter<"Guide"> | $Enums.Gender
+  gender?: Prisma.EnumGenderNullableFilter<"Guide"> | $Enums.Gender | null
   isAvailable?: Prisma.BoolFilter<"Guide"> | boolean
   rating?: Prisma.FloatFilter<"Guide"> | number
   totalReviews?: Prisma.IntFilter<"Guide"> | number
@@ -349,10 +349,10 @@ export type GuideWhereInput = {
 
 export type GuideOrderByWithRelationInput = {
   id?: Prisma.SortOrder
-  name?: Prisma.SortOrder
+  name?: Prisma.SortOrderInput | Prisma.SortOrder
   userId?: Prisma.SortOrder
   profilePhoto?: Prisma.SortOrderInput | Prisma.SortOrder
-  contactNumber?: Prisma.SortOrder
+  contactNumber?: Prisma.SortOrderInput | Prisma.SortOrder
   bio?: Prisma.SortOrderInput | Prisma.SortOrder
   experience?: Prisma.SortOrder
   experienceLevel?: Prisma.SortOrder
@@ -360,7 +360,7 @@ export type GuideOrderByWithRelationInput = {
   category?: Prisma.SortOrder
   country?: Prisma.SortOrderInput | Prisma.SortOrder
   city?: Prisma.SortOrderInput | Prisma.SortOrder
-  gender?: Prisma.SortOrder
+  gender?: Prisma.SortOrderInput | Prisma.SortOrder
   isAvailable?: Prisma.SortOrder
   rating?: Prisma.SortOrder
   totalReviews?: Prisma.SortOrder
@@ -381,9 +381,9 @@ export type GuideWhereUniqueInput = Prisma.AtLeast<{
   AND?: Prisma.GuideWhereInput | Prisma.GuideWhereInput[]
   OR?: Prisma.GuideWhereInput[]
   NOT?: Prisma.GuideWhereInput | Prisma.GuideWhereInput[]
-  name?: Prisma.StringFilter<"Guide"> | string
+  name?: Prisma.StringNullableFilter<"Guide"> | string | null
   profilePhoto?: Prisma.StringNullableFilter<"Guide"> | string | null
-  contactNumber?: Prisma.StringFilter<"Guide"> | string
+  contactNumber?: Prisma.StringNullableFilter<"Guide"> | string | null
   bio?: Prisma.StringNullableFilter<"Guide"> | string | null
   experience?: Prisma.IntFilter<"Guide"> | number
   experienceLevel?: Prisma.EnumExperienceLevelFilter<"Guide"> | $Enums.ExperienceLevel
@@ -391,7 +391,7 @@ export type GuideWhereUniqueInput = Prisma.AtLeast<{
   category?: Prisma.StringNullableListFilter<"Guide">
   country?: Prisma.StringNullableFilter<"Guide"> | string | null
   city?: Prisma.StringNullableFilter<"Guide"> | string | null
-  gender?: Prisma.EnumGenderFilter<"Guide"> | $Enums.Gender
+  gender?: Prisma.EnumGenderNullableFilter<"Guide"> | $Enums.Gender | null
   isAvailable?: Prisma.BoolFilter<"Guide"> | boolean
   rating?: Prisma.FloatFilter<"Guide"> | number
   totalReviews?: Prisma.IntFilter<"Guide"> | number
@@ -408,10 +408,10 @@ export type GuideWhereUniqueInput = Prisma.AtLeast<{
 
 export type GuideOrderByWithAggregationInput = {
   id?: Prisma.SortOrder
-  name?: Prisma.SortOrder
+  name?: Prisma.SortOrderInput | Prisma.SortOrder
   userId?: Prisma.SortOrder
   profilePhoto?: Prisma.SortOrderInput | Prisma.SortOrder
-  contactNumber?: Prisma.SortOrder
+  contactNumber?: Prisma.SortOrderInput | Prisma.SortOrder
   bio?: Prisma.SortOrderInput | Prisma.SortOrder
   experience?: Prisma.SortOrder
   experienceLevel?: Prisma.SortOrder
@@ -419,7 +419,7 @@ export type GuideOrderByWithAggregationInput = {
   category?: Prisma.SortOrder
   country?: Prisma.SortOrderInput | Prisma.SortOrder
   city?: Prisma.SortOrderInput | Prisma.SortOrder
-  gender?: Prisma.SortOrder
+  gender?: Prisma.SortOrderInput | Prisma.SortOrder
   isAvailable?: Prisma.SortOrder
   rating?: Prisma.SortOrder
   totalReviews?: Prisma.SortOrder
@@ -439,10 +439,10 @@ export type GuideScalarWhereWithAggregatesInput = {
   OR?: Prisma.GuideScalarWhereWithAggregatesInput[]
   NOT?: Prisma.GuideScalarWhereWithAggregatesInput | Prisma.GuideScalarWhereWithAggregatesInput[]
   id?: Prisma.StringWithAggregatesFilter<"Guide"> | string
-  name?: Prisma.StringWithAggregatesFilter<"Guide"> | string
+  name?: Prisma.StringNullableWithAggregatesFilter<"Guide"> | string | null
   userId?: Prisma.StringWithAggregatesFilter<"Guide"> | string
   profilePhoto?: Prisma.StringNullableWithAggregatesFilter<"Guide"> | string | null
-  contactNumber?: Prisma.StringWithAggregatesFilter<"Guide"> | string
+  contactNumber?: Prisma.StringNullableWithAggregatesFilter<"Guide"> | string | null
   bio?: Prisma.StringNullableWithAggregatesFilter<"Guide"> | string | null
   experience?: Prisma.IntWithAggregatesFilter<"Guide"> | number
   experienceLevel?: Prisma.EnumExperienceLevelWithAggregatesFilter<"Guide"> | $Enums.ExperienceLevel
@@ -450,7 +450,7 @@ export type GuideScalarWhereWithAggregatesInput = {
   category?: Prisma.StringNullableListFilter<"Guide">
   country?: Prisma.StringNullableWithAggregatesFilter<"Guide"> | string | null
   city?: Prisma.StringNullableWithAggregatesFilter<"Guide"> | string | null
-  gender?: Prisma.EnumGenderWithAggregatesFilter<"Guide"> | $Enums.Gender
+  gender?: Prisma.EnumGenderNullableWithAggregatesFilter<"Guide"> | $Enums.Gender | null
   isAvailable?: Prisma.BoolWithAggregatesFilter<"Guide"> | boolean
   rating?: Prisma.FloatWithAggregatesFilter<"Guide"> | number
   totalReviews?: Prisma.IntWithAggregatesFilter<"Guide"> | number
@@ -462,9 +462,9 @@ export type GuideScalarWhereWithAggregatesInput = {
 
 export type GuideCreateInput = {
   id?: string
-  name: string
+  name?: string | null
   profilePhoto?: string | null
-  contactNumber: string
+  contactNumber?: string | null
   bio?: string | null
   experience?: number
   experienceLevel?: $Enums.ExperienceLevel
@@ -472,7 +472,7 @@ export type GuideCreateInput = {
   category?: Prisma.GuideCreatecategoryInput | string[]
   country?: string | null
   city?: string | null
-  gender: $Enums.Gender
+  gender?: $Enums.Gender | null
   isAvailable?: boolean
   rating?: number
   totalReviews?: number
@@ -489,10 +489,10 @@ export type GuideCreateInput = {
 
 export type GuideUncheckedCreateInput = {
   id?: string
-  name: string
+  name?: string | null
   userId: string
   profilePhoto?: string | null
-  contactNumber: string
+  contactNumber?: string | null
   bio?: string | null
   experience?: number
   experienceLevel?: $Enums.ExperienceLevel
@@ -500,7 +500,7 @@ export type GuideUncheckedCreateInput = {
   category?: Prisma.GuideCreatecategoryInput | string[]
   country?: string | null
   city?: string | null
-  gender: $Enums.Gender
+  gender?: $Enums.Gender | null
   isAvailable?: boolean
   rating?: number
   totalReviews?: number
@@ -516,9 +516,9 @@ export type GuideUncheckedCreateInput = {
 
 export type GuideUpdateInput = {
   id?: Prisma.StringFieldUpdateOperationsInput | string
-  name?: Prisma.StringFieldUpdateOperationsInput | string
+  name?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   profilePhoto?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
-  contactNumber?: Prisma.StringFieldUpdateOperationsInput | string
+  contactNumber?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   bio?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   experience?: Prisma.IntFieldUpdateOperationsInput | number
   experienceLevel?: Prisma.EnumExperienceLevelFieldUpdateOperationsInput | $Enums.ExperienceLevel
@@ -526,7 +526,7 @@ export type GuideUpdateInput = {
   category?: Prisma.GuideUpdatecategoryInput | string[]
   country?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   city?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
-  gender?: Prisma.EnumGenderFieldUpdateOperationsInput | $Enums.Gender
+  gender?: Prisma.NullableEnumGenderFieldUpdateOperationsInput | $Enums.Gender | null
   isAvailable?: Prisma.BoolFieldUpdateOperationsInput | boolean
   rating?: Prisma.FloatFieldUpdateOperationsInput | number
   totalReviews?: Prisma.IntFieldUpdateOperationsInput | number
@@ -543,10 +543,10 @@ export type GuideUpdateInput = {
 
 export type GuideUncheckedUpdateInput = {
   id?: Prisma.StringFieldUpdateOperationsInput | string
-  name?: Prisma.StringFieldUpdateOperationsInput | string
+  name?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   userId?: Prisma.StringFieldUpdateOperationsInput | string
   profilePhoto?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
-  contactNumber?: Prisma.StringFieldUpdateOperationsInput | string
+  contactNumber?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   bio?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   experience?: Prisma.IntFieldUpdateOperationsInput | number
   experienceLevel?: Prisma.EnumExperienceLevelFieldUpdateOperationsInput | $Enums.ExperienceLevel
@@ -554,7 +554,7 @@ export type GuideUncheckedUpdateInput = {
   category?: Prisma.GuideUpdatecategoryInput | string[]
   country?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   city?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
-  gender?: Prisma.EnumGenderFieldUpdateOperationsInput | $Enums.Gender
+  gender?: Prisma.NullableEnumGenderFieldUpdateOperationsInput | $Enums.Gender | null
   isAvailable?: Prisma.BoolFieldUpdateOperationsInput | boolean
   rating?: Prisma.FloatFieldUpdateOperationsInput | number
   totalReviews?: Prisma.IntFieldUpdateOperationsInput | number
@@ -570,10 +570,10 @@ export type GuideUncheckedUpdateInput = {
 
 export type GuideCreateManyInput = {
   id?: string
-  name: string
+  name?: string | null
   userId: string
   profilePhoto?: string | null
-  contactNumber: string
+  contactNumber?: string | null
   bio?: string | null
   experience?: number
   experienceLevel?: $Enums.ExperienceLevel
@@ -581,7 +581,7 @@ export type GuideCreateManyInput = {
   category?: Prisma.GuideCreatecategoryInput | string[]
   country?: string | null
   city?: string | null
-  gender: $Enums.Gender
+  gender?: $Enums.Gender | null
   isAvailable?: boolean
   rating?: number
   totalReviews?: number
@@ -593,9 +593,9 @@ export type GuideCreateManyInput = {
 
 export type GuideUpdateManyMutationInput = {
   id?: Prisma.StringFieldUpdateOperationsInput | string
-  name?: Prisma.StringFieldUpdateOperationsInput | string
+  name?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   profilePhoto?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
-  contactNumber?: Prisma.StringFieldUpdateOperationsInput | string
+  contactNumber?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   bio?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   experience?: Prisma.IntFieldUpdateOperationsInput | number
   experienceLevel?: Prisma.EnumExperienceLevelFieldUpdateOperationsInput | $Enums.ExperienceLevel
@@ -603,7 +603,7 @@ export type GuideUpdateManyMutationInput = {
   category?: Prisma.GuideUpdatecategoryInput | string[]
   country?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   city?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
-  gender?: Prisma.EnumGenderFieldUpdateOperationsInput | $Enums.Gender
+  gender?: Prisma.NullableEnumGenderFieldUpdateOperationsInput | $Enums.Gender | null
   isAvailable?: Prisma.BoolFieldUpdateOperationsInput | boolean
   rating?: Prisma.FloatFieldUpdateOperationsInput | number
   totalReviews?: Prisma.IntFieldUpdateOperationsInput | number
@@ -615,10 +615,10 @@ export type GuideUpdateManyMutationInput = {
 
 export type GuideUncheckedUpdateManyInput = {
   id?: Prisma.StringFieldUpdateOperationsInput | string
-  name?: Prisma.StringFieldUpdateOperationsInput | string
+  name?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   userId?: Prisma.StringFieldUpdateOperationsInput | string
   profilePhoto?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
-  contactNumber?: Prisma.StringFieldUpdateOperationsInput | string
+  contactNumber?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   bio?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   experience?: Prisma.IntFieldUpdateOperationsInput | number
   experienceLevel?: Prisma.EnumExperienceLevelFieldUpdateOperationsInput | $Enums.ExperienceLevel
@@ -626,7 +626,7 @@ export type GuideUncheckedUpdateManyInput = {
   category?: Prisma.GuideUpdatecategoryInput | string[]
   country?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   city?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
-  gender?: Prisma.EnumGenderFieldUpdateOperationsInput | $Enums.Gender
+  gender?: Prisma.NullableEnumGenderFieldUpdateOperationsInput | $Enums.Gender | null
   isAvailable?: Prisma.BoolFieldUpdateOperationsInput | boolean
   rating?: Prisma.FloatFieldUpdateOperationsInput | number
   totalReviews?: Prisma.IntFieldUpdateOperationsInput | number
@@ -835,15 +835,15 @@ export type GuideUpdatecategoryInput = {
   push?: string | string[]
 }
 
-export type EnumGenderFieldUpdateOperationsInput = {
-  set?: $Enums.Gender
+export type NullableEnumGenderFieldUpdateOperationsInput = {
+  set?: $Enums.Gender | null
 }
 
 export type GuideCreateWithoutBookingInput = {
   id?: string
-  name: string
+  name?: string | null
   profilePhoto?: string | null
-  contactNumber: string
+  contactNumber?: string | null
   bio?: string | null
   experience?: number
   experienceLevel?: $Enums.ExperienceLevel
@@ -851,7 +851,7 @@ export type GuideCreateWithoutBookingInput = {
   category?: Prisma.GuideCreatecategoryInput | string[]
   country?: string | null
   city?: string | null
-  gender: $Enums.Gender
+  gender?: $Enums.Gender | null
   isAvailable?: boolean
   rating?: number
   totalReviews?: number
@@ -867,10 +867,10 @@ export type GuideCreateWithoutBookingInput = {
 
 export type GuideUncheckedCreateWithoutBookingInput = {
   id?: string
-  name: string
+  name?: string | null
   userId: string
   profilePhoto?: string | null
-  contactNumber: string
+  contactNumber?: string | null
   bio?: string | null
   experience?: number
   experienceLevel?: $Enums.ExperienceLevel
@@ -878,7 +878,7 @@ export type GuideUncheckedCreateWithoutBookingInput = {
   category?: Prisma.GuideCreatecategoryInput | string[]
   country?: string | null
   city?: string | null
-  gender: $Enums.Gender
+  gender?: $Enums.Gender | null
   isAvailable?: boolean
   rating?: number
   totalReviews?: number
@@ -909,9 +909,9 @@ export type GuideUpdateToOneWithWhereWithoutBookingInput = {
 
 export type GuideUpdateWithoutBookingInput = {
   id?: Prisma.StringFieldUpdateOperationsInput | string
-  name?: Prisma.StringFieldUpdateOperationsInput | string
+  name?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   profilePhoto?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
-  contactNumber?: Prisma.StringFieldUpdateOperationsInput | string
+  contactNumber?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   bio?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   experience?: Prisma.IntFieldUpdateOperationsInput | number
   experienceLevel?: Prisma.EnumExperienceLevelFieldUpdateOperationsInput | $Enums.ExperienceLevel
@@ -919,7 +919,7 @@ export type GuideUpdateWithoutBookingInput = {
   category?: Prisma.GuideUpdatecategoryInput | string[]
   country?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   city?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
-  gender?: Prisma.EnumGenderFieldUpdateOperationsInput | $Enums.Gender
+  gender?: Prisma.NullableEnumGenderFieldUpdateOperationsInput | $Enums.Gender | null
   isAvailable?: Prisma.BoolFieldUpdateOperationsInput | boolean
   rating?: Prisma.FloatFieldUpdateOperationsInput | number
   totalReviews?: Prisma.IntFieldUpdateOperationsInput | number
@@ -935,10 +935,10 @@ export type GuideUpdateWithoutBookingInput = {
 
 export type GuideUncheckedUpdateWithoutBookingInput = {
   id?: Prisma.StringFieldUpdateOperationsInput | string
-  name?: Prisma.StringFieldUpdateOperationsInput | string
+  name?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   userId?: Prisma.StringFieldUpdateOperationsInput | string
   profilePhoto?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
-  contactNumber?: Prisma.StringFieldUpdateOperationsInput | string
+  contactNumber?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   bio?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   experience?: Prisma.IntFieldUpdateOperationsInput | number
   experienceLevel?: Prisma.EnumExperienceLevelFieldUpdateOperationsInput | $Enums.ExperienceLevel
@@ -946,7 +946,7 @@ export type GuideUncheckedUpdateWithoutBookingInput = {
   category?: Prisma.GuideUpdatecategoryInput | string[]
   country?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   city?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
-  gender?: Prisma.EnumGenderFieldUpdateOperationsInput | $Enums.Gender
+  gender?: Prisma.NullableEnumGenderFieldUpdateOperationsInput | $Enums.Gender | null
   isAvailable?: Prisma.BoolFieldUpdateOperationsInput | boolean
   rating?: Prisma.FloatFieldUpdateOperationsInput | number
   totalReviews?: Prisma.IntFieldUpdateOperationsInput | number
@@ -961,9 +961,9 @@ export type GuideUncheckedUpdateWithoutBookingInput = {
 
 export type GuideCreateWithoutReviewsInput = {
   id?: string
-  name: string
+  name?: string | null
   profilePhoto?: string | null
-  contactNumber: string
+  contactNumber?: string | null
   bio?: string | null
   experience?: number
   experienceLevel?: $Enums.ExperienceLevel
@@ -971,7 +971,7 @@ export type GuideCreateWithoutReviewsInput = {
   category?: Prisma.GuideCreatecategoryInput | string[]
   country?: string | null
   city?: string | null
-  gender: $Enums.Gender
+  gender?: $Enums.Gender | null
   isAvailable?: boolean
   rating?: number
   totalReviews?: number
@@ -987,10 +987,10 @@ export type GuideCreateWithoutReviewsInput = {
 
 export type GuideUncheckedCreateWithoutReviewsInput = {
   id?: string
-  name: string
+  name?: string | null
   userId: string
   profilePhoto?: string | null
-  contactNumber: string
+  contactNumber?: string | null
   bio?: string | null
   experience?: number
   experienceLevel?: $Enums.ExperienceLevel
@@ -998,7 +998,7 @@ export type GuideUncheckedCreateWithoutReviewsInput = {
   category?: Prisma.GuideCreatecategoryInput | string[]
   country?: string | null
   city?: string | null
-  gender: $Enums.Gender
+  gender?: $Enums.Gender | null
   isAvailable?: boolean
   rating?: number
   totalReviews?: number
@@ -1029,9 +1029,9 @@ export type GuideUpdateToOneWithWhereWithoutReviewsInput = {
 
 export type GuideUpdateWithoutReviewsInput = {
   id?: Prisma.StringFieldUpdateOperationsInput | string
-  name?: Prisma.StringFieldUpdateOperationsInput | string
+  name?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   profilePhoto?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
-  contactNumber?: Prisma.StringFieldUpdateOperationsInput | string
+  contactNumber?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   bio?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   experience?: Prisma.IntFieldUpdateOperationsInput | number
   experienceLevel?: Prisma.EnumExperienceLevelFieldUpdateOperationsInput | $Enums.ExperienceLevel
@@ -1039,7 +1039,7 @@ export type GuideUpdateWithoutReviewsInput = {
   category?: Prisma.GuideUpdatecategoryInput | string[]
   country?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   city?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
-  gender?: Prisma.EnumGenderFieldUpdateOperationsInput | $Enums.Gender
+  gender?: Prisma.NullableEnumGenderFieldUpdateOperationsInput | $Enums.Gender | null
   isAvailable?: Prisma.BoolFieldUpdateOperationsInput | boolean
   rating?: Prisma.FloatFieldUpdateOperationsInput | number
   totalReviews?: Prisma.IntFieldUpdateOperationsInput | number
@@ -1055,10 +1055,10 @@ export type GuideUpdateWithoutReviewsInput = {
 
 export type GuideUncheckedUpdateWithoutReviewsInput = {
   id?: Prisma.StringFieldUpdateOperationsInput | string
-  name?: Prisma.StringFieldUpdateOperationsInput | string
+  name?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   userId?: Prisma.StringFieldUpdateOperationsInput | string
   profilePhoto?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
-  contactNumber?: Prisma.StringFieldUpdateOperationsInput | string
+  contactNumber?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   bio?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   experience?: Prisma.IntFieldUpdateOperationsInput | number
   experienceLevel?: Prisma.EnumExperienceLevelFieldUpdateOperationsInput | $Enums.ExperienceLevel
@@ -1066,7 +1066,7 @@ export type GuideUncheckedUpdateWithoutReviewsInput = {
   category?: Prisma.GuideUpdatecategoryInput | string[]
   country?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   city?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
-  gender?: Prisma.EnumGenderFieldUpdateOperationsInput | $Enums.Gender
+  gender?: Prisma.NullableEnumGenderFieldUpdateOperationsInput | $Enums.Gender | null
   isAvailable?: Prisma.BoolFieldUpdateOperationsInput | boolean
   rating?: Prisma.FloatFieldUpdateOperationsInput | number
   totalReviews?: Prisma.IntFieldUpdateOperationsInput | number
@@ -1081,9 +1081,9 @@ export type GuideUncheckedUpdateWithoutReviewsInput = {
 
 export type GuideCreateWithoutTourInput = {
   id?: string
-  name: string
+  name?: string | null
   profilePhoto?: string | null
-  contactNumber: string
+  contactNumber?: string | null
   bio?: string | null
   experience?: number
   experienceLevel?: $Enums.ExperienceLevel
@@ -1091,7 +1091,7 @@ export type GuideCreateWithoutTourInput = {
   category?: Prisma.GuideCreatecategoryInput | string[]
   country?: string | null
   city?: string | null
-  gender: $Enums.Gender
+  gender?: $Enums.Gender | null
   isAvailable?: boolean
   rating?: number
   totalReviews?: number
@@ -1107,10 +1107,10 @@ export type GuideCreateWithoutTourInput = {
 
 export type GuideUncheckedCreateWithoutTourInput = {
   id?: string
-  name: string
+  name?: string | null
   userId: string
   profilePhoto?: string | null
-  contactNumber: string
+  contactNumber?: string | null
   bio?: string | null
   experience?: number
   experienceLevel?: $Enums.ExperienceLevel
@@ -1118,7 +1118,7 @@ export type GuideUncheckedCreateWithoutTourInput = {
   category?: Prisma.GuideCreatecategoryInput | string[]
   country?: string | null
   city?: string | null
-  gender: $Enums.Gender
+  gender?: $Enums.Gender | null
   isAvailable?: boolean
   rating?: number
   totalReviews?: number
@@ -1149,9 +1149,9 @@ export type GuideUpdateToOneWithWhereWithoutTourInput = {
 
 export type GuideUpdateWithoutTourInput = {
   id?: Prisma.StringFieldUpdateOperationsInput | string
-  name?: Prisma.StringFieldUpdateOperationsInput | string
+  name?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   profilePhoto?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
-  contactNumber?: Prisma.StringFieldUpdateOperationsInput | string
+  contactNumber?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   bio?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   experience?: Prisma.IntFieldUpdateOperationsInput | number
   experienceLevel?: Prisma.EnumExperienceLevelFieldUpdateOperationsInput | $Enums.ExperienceLevel
@@ -1159,7 +1159,7 @@ export type GuideUpdateWithoutTourInput = {
   category?: Prisma.GuideUpdatecategoryInput | string[]
   country?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   city?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
-  gender?: Prisma.EnumGenderFieldUpdateOperationsInput | $Enums.Gender
+  gender?: Prisma.NullableEnumGenderFieldUpdateOperationsInput | $Enums.Gender | null
   isAvailable?: Prisma.BoolFieldUpdateOperationsInput | boolean
   rating?: Prisma.FloatFieldUpdateOperationsInput | number
   totalReviews?: Prisma.IntFieldUpdateOperationsInput | number
@@ -1175,10 +1175,10 @@ export type GuideUpdateWithoutTourInput = {
 
 export type GuideUncheckedUpdateWithoutTourInput = {
   id?: Prisma.StringFieldUpdateOperationsInput | string
-  name?: Prisma.StringFieldUpdateOperationsInput | string
+  name?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   userId?: Prisma.StringFieldUpdateOperationsInput | string
   profilePhoto?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
-  contactNumber?: Prisma.StringFieldUpdateOperationsInput | string
+  contactNumber?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   bio?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   experience?: Prisma.IntFieldUpdateOperationsInput | number
   experienceLevel?: Prisma.EnumExperienceLevelFieldUpdateOperationsInput | $Enums.ExperienceLevel
@@ -1186,7 +1186,7 @@ export type GuideUncheckedUpdateWithoutTourInput = {
   category?: Prisma.GuideUpdatecategoryInput | string[]
   country?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   city?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
-  gender?: Prisma.EnumGenderFieldUpdateOperationsInput | $Enums.Gender
+  gender?: Prisma.NullableEnumGenderFieldUpdateOperationsInput | $Enums.Gender | null
   isAvailable?: Prisma.BoolFieldUpdateOperationsInput | boolean
   rating?: Prisma.FloatFieldUpdateOperationsInput | number
   totalReviews?: Prisma.IntFieldUpdateOperationsInput | number
@@ -1201,9 +1201,9 @@ export type GuideUncheckedUpdateWithoutTourInput = {
 
 export type GuideCreateWithoutBlockedDatesInput = {
   id?: string
-  name: string
+  name?: string | null
   profilePhoto?: string | null
-  contactNumber: string
+  contactNumber?: string | null
   bio?: string | null
   experience?: number
   experienceLevel?: $Enums.ExperienceLevel
@@ -1211,7 +1211,7 @@ export type GuideCreateWithoutBlockedDatesInput = {
   category?: Prisma.GuideCreatecategoryInput | string[]
   country?: string | null
   city?: string | null
-  gender: $Enums.Gender
+  gender?: $Enums.Gender | null
   isAvailable?: boolean
   rating?: number
   totalReviews?: number
@@ -1227,10 +1227,10 @@ export type GuideCreateWithoutBlockedDatesInput = {
 
 export type GuideUncheckedCreateWithoutBlockedDatesInput = {
   id?: string
-  name: string
+  name?: string | null
   userId: string
   profilePhoto?: string | null
-  contactNumber: string
+  contactNumber?: string | null
   bio?: string | null
   experience?: number
   experienceLevel?: $Enums.ExperienceLevel
@@ -1238,7 +1238,7 @@ export type GuideUncheckedCreateWithoutBlockedDatesInput = {
   category?: Prisma.GuideCreatecategoryInput | string[]
   country?: string | null
   city?: string | null
-  gender: $Enums.Gender
+  gender?: $Enums.Gender | null
   isAvailable?: boolean
   rating?: number
   totalReviews?: number
@@ -1269,9 +1269,9 @@ export type GuideUpdateToOneWithWhereWithoutBlockedDatesInput = {
 
 export type GuideUpdateWithoutBlockedDatesInput = {
   id?: Prisma.StringFieldUpdateOperationsInput | string
-  name?: Prisma.StringFieldUpdateOperationsInput | string
+  name?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   profilePhoto?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
-  contactNumber?: Prisma.StringFieldUpdateOperationsInput | string
+  contactNumber?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   bio?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   experience?: Prisma.IntFieldUpdateOperationsInput | number
   experienceLevel?: Prisma.EnumExperienceLevelFieldUpdateOperationsInput | $Enums.ExperienceLevel
@@ -1279,7 +1279,7 @@ export type GuideUpdateWithoutBlockedDatesInput = {
   category?: Prisma.GuideUpdatecategoryInput | string[]
   country?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   city?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
-  gender?: Prisma.EnumGenderFieldUpdateOperationsInput | $Enums.Gender
+  gender?: Prisma.NullableEnumGenderFieldUpdateOperationsInput | $Enums.Gender | null
   isAvailable?: Prisma.BoolFieldUpdateOperationsInput | boolean
   rating?: Prisma.FloatFieldUpdateOperationsInput | number
   totalReviews?: Prisma.IntFieldUpdateOperationsInput | number
@@ -1295,10 +1295,10 @@ export type GuideUpdateWithoutBlockedDatesInput = {
 
 export type GuideUncheckedUpdateWithoutBlockedDatesInput = {
   id?: Prisma.StringFieldUpdateOperationsInput | string
-  name?: Prisma.StringFieldUpdateOperationsInput | string
+  name?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   userId?: Prisma.StringFieldUpdateOperationsInput | string
   profilePhoto?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
-  contactNumber?: Prisma.StringFieldUpdateOperationsInput | string
+  contactNumber?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   bio?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   experience?: Prisma.IntFieldUpdateOperationsInput | number
   experienceLevel?: Prisma.EnumExperienceLevelFieldUpdateOperationsInput | $Enums.ExperienceLevel
@@ -1306,7 +1306,7 @@ export type GuideUncheckedUpdateWithoutBlockedDatesInput = {
   category?: Prisma.GuideUpdatecategoryInput | string[]
   country?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   city?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
-  gender?: Prisma.EnumGenderFieldUpdateOperationsInput | $Enums.Gender
+  gender?: Prisma.NullableEnumGenderFieldUpdateOperationsInput | $Enums.Gender | null
   isAvailable?: Prisma.BoolFieldUpdateOperationsInput | boolean
   rating?: Prisma.FloatFieldUpdateOperationsInput | number
   totalReviews?: Prisma.IntFieldUpdateOperationsInput | number
@@ -1321,9 +1321,9 @@ export type GuideUncheckedUpdateWithoutBlockedDatesInput = {
 
 export type GuideCreateWithoutUserInput = {
   id?: string
-  name: string
+  name?: string | null
   profilePhoto?: string | null
-  contactNumber: string
+  contactNumber?: string | null
   bio?: string | null
   experience?: number
   experienceLevel?: $Enums.ExperienceLevel
@@ -1331,7 +1331,7 @@ export type GuideCreateWithoutUserInput = {
   category?: Prisma.GuideCreatecategoryInput | string[]
   country?: string | null
   city?: string | null
-  gender: $Enums.Gender
+  gender?: $Enums.Gender | null
   isAvailable?: boolean
   rating?: number
   totalReviews?: number
@@ -1347,9 +1347,9 @@ export type GuideCreateWithoutUserInput = {
 
 export type GuideUncheckedCreateWithoutUserInput = {
   id?: string
-  name: string
+  name?: string | null
   profilePhoto?: string | null
-  contactNumber: string
+  contactNumber?: string | null
   bio?: string | null
   experience?: number
   experienceLevel?: $Enums.ExperienceLevel
@@ -1357,7 +1357,7 @@ export type GuideUncheckedCreateWithoutUserInput = {
   category?: Prisma.GuideCreatecategoryInput | string[]
   country?: string | null
   city?: string | null
-  gender: $Enums.Gender
+  gender?: $Enums.Gender | null
   isAvailable?: boolean
   rating?: number
   totalReviews?: number
@@ -1389,9 +1389,9 @@ export type GuideUpdateToOneWithWhereWithoutUserInput = {
 
 export type GuideUpdateWithoutUserInput = {
   id?: Prisma.StringFieldUpdateOperationsInput | string
-  name?: Prisma.StringFieldUpdateOperationsInput | string
+  name?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   profilePhoto?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
-  contactNumber?: Prisma.StringFieldUpdateOperationsInput | string
+  contactNumber?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   bio?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   experience?: Prisma.IntFieldUpdateOperationsInput | number
   experienceLevel?: Prisma.EnumExperienceLevelFieldUpdateOperationsInput | $Enums.ExperienceLevel
@@ -1399,7 +1399,7 @@ export type GuideUpdateWithoutUserInput = {
   category?: Prisma.GuideUpdatecategoryInput | string[]
   country?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   city?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
-  gender?: Prisma.EnumGenderFieldUpdateOperationsInput | $Enums.Gender
+  gender?: Prisma.NullableEnumGenderFieldUpdateOperationsInput | $Enums.Gender | null
   isAvailable?: Prisma.BoolFieldUpdateOperationsInput | boolean
   rating?: Prisma.FloatFieldUpdateOperationsInput | number
   totalReviews?: Prisma.IntFieldUpdateOperationsInput | number
@@ -1415,9 +1415,9 @@ export type GuideUpdateWithoutUserInput = {
 
 export type GuideUncheckedUpdateWithoutUserInput = {
   id?: Prisma.StringFieldUpdateOperationsInput | string
-  name?: Prisma.StringFieldUpdateOperationsInput | string
+  name?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   profilePhoto?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
-  contactNumber?: Prisma.StringFieldUpdateOperationsInput | string
+  contactNumber?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   bio?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   experience?: Prisma.IntFieldUpdateOperationsInput | number
   experienceLevel?: Prisma.EnumExperienceLevelFieldUpdateOperationsInput | $Enums.ExperienceLevel
@@ -1425,7 +1425,7 @@ export type GuideUncheckedUpdateWithoutUserInput = {
   category?: Prisma.GuideUpdatecategoryInput | string[]
   country?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   city?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
-  gender?: Prisma.EnumGenderFieldUpdateOperationsInput | $Enums.Gender
+  gender?: Prisma.NullableEnumGenderFieldUpdateOperationsInput | $Enums.Gender | null
   isAvailable?: Prisma.BoolFieldUpdateOperationsInput | boolean
   rating?: Prisma.FloatFieldUpdateOperationsInput | number
   totalReviews?: Prisma.IntFieldUpdateOperationsInput | number
@@ -1624,10 +1624,10 @@ export type $GuidePayload<ExtArgs extends runtime.Types.Extensions.InternalArgs 
   }
   scalars: runtime.Types.Extensions.GetPayloadResult<{
     id: string
-    name: string
+    name: string | null
     userId: string
     profilePhoto: string | null
-    contactNumber: string
+    contactNumber: string | null
     bio: string | null
     experience: number
     experienceLevel: $Enums.ExperienceLevel
@@ -1635,7 +1635,7 @@ export type $GuidePayload<ExtArgs extends runtime.Types.Extensions.InternalArgs 
     category: string[]
     country: string | null
     city: string | null
-    gender: $Enums.Gender
+    gender: $Enums.Gender | null
     isAvailable: boolean
     rating: number
     totalReviews: number

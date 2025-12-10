@@ -29,10 +29,6 @@ export type BlockedDateMinAggregateOutputType = {
   tourId: string | null
   guideId: string | null
   blockedDate: Date | null
-  startTime: string | null
-  endTime: string | null
-  reason: string | null
-  isAllDay: boolean | null
   createdAt: Date | null
   updatedAt: Date | null
 }
@@ -42,10 +38,6 @@ export type BlockedDateMaxAggregateOutputType = {
   tourId: string | null
   guideId: string | null
   blockedDate: Date | null
-  startTime: string | null
-  endTime: string | null
-  reason: string | null
-  isAllDay: boolean | null
   createdAt: Date | null
   updatedAt: Date | null
 }
@@ -55,10 +47,6 @@ export type BlockedDateCountAggregateOutputType = {
   tourId: number
   guideId: number
   blockedDate: number
-  startTime: number
-  endTime: number
-  reason: number
-  isAllDay: number
   createdAt: number
   updatedAt: number
   _all: number
@@ -70,10 +58,6 @@ export type BlockedDateMinAggregateInputType = {
   tourId?: true
   guideId?: true
   blockedDate?: true
-  startTime?: true
-  endTime?: true
-  reason?: true
-  isAllDay?: true
   createdAt?: true
   updatedAt?: true
 }
@@ -83,10 +67,6 @@ export type BlockedDateMaxAggregateInputType = {
   tourId?: true
   guideId?: true
   blockedDate?: true
-  startTime?: true
-  endTime?: true
-  reason?: true
-  isAllDay?: true
   createdAt?: true
   updatedAt?: true
 }
@@ -96,10 +76,6 @@ export type BlockedDateCountAggregateInputType = {
   tourId?: true
   guideId?: true
   blockedDate?: true
-  startTime?: true
-  endTime?: true
-  reason?: true
-  isAllDay?: true
   createdAt?: true
   updatedAt?: true
   _all?: true
@@ -182,10 +158,6 @@ export type BlockedDateGroupByOutputType = {
   tourId: string | null
   guideId: string
   blockedDate: Date
-  startTime: string | null
-  endTime: string | null
-  reason: string | null
-  isAllDay: boolean
   createdAt: Date
   updatedAt: Date
   _count: BlockedDateCountAggregateOutputType | null
@@ -216,10 +188,6 @@ export type BlockedDateWhereInput = {
   tourId?: Prisma.StringNullableFilter<"BlockedDate"> | string | null
   guideId?: Prisma.StringFilter<"BlockedDate"> | string
   blockedDate?: Prisma.DateTimeFilter<"BlockedDate"> | Date | string
-  startTime?: Prisma.StringNullableFilter<"BlockedDate"> | string | null
-  endTime?: Prisma.StringNullableFilter<"BlockedDate"> | string | null
-  reason?: Prisma.StringNullableFilter<"BlockedDate"> | string | null
-  isAllDay?: Prisma.BoolFilter<"BlockedDate"> | boolean
   createdAt?: Prisma.DateTimeFilter<"BlockedDate"> | Date | string
   updatedAt?: Prisma.DateTimeFilter<"BlockedDate"> | Date | string
   tour?: Prisma.XOR<Prisma.TourNullableScalarRelationFilter, Prisma.TourWhereInput> | null
@@ -231,10 +199,6 @@ export type BlockedDateOrderByWithRelationInput = {
   tourId?: Prisma.SortOrderInput | Prisma.SortOrder
   guideId?: Prisma.SortOrder
   blockedDate?: Prisma.SortOrder
-  startTime?: Prisma.SortOrderInput | Prisma.SortOrder
-  endTime?: Prisma.SortOrderInput | Prisma.SortOrder
-  reason?: Prisma.SortOrderInput | Prisma.SortOrder
-  isAllDay?: Prisma.SortOrder
   createdAt?: Prisma.SortOrder
   updatedAt?: Prisma.SortOrder
   tour?: Prisma.TourOrderByWithRelationInput
@@ -243,32 +207,24 @@ export type BlockedDateOrderByWithRelationInput = {
 
 export type BlockedDateWhereUniqueInput = Prisma.AtLeast<{
   id?: string
-  tourId_blockedDate_startTime?: Prisma.BlockedDateTourIdBlockedDateStartTimeCompoundUniqueInput
+  tourId_guideId_blockedDate?: Prisma.BlockedDateTourIdGuideIdBlockedDateCompoundUniqueInput
   AND?: Prisma.BlockedDateWhereInput | Prisma.BlockedDateWhereInput[]
   OR?: Prisma.BlockedDateWhereInput[]
   NOT?: Prisma.BlockedDateWhereInput | Prisma.BlockedDateWhereInput[]
   tourId?: Prisma.StringNullableFilter<"BlockedDate"> | string | null
   guideId?: Prisma.StringFilter<"BlockedDate"> | string
   blockedDate?: Prisma.DateTimeFilter<"BlockedDate"> | Date | string
-  startTime?: Prisma.StringNullableFilter<"BlockedDate"> | string | null
-  endTime?: Prisma.StringNullableFilter<"BlockedDate"> | string | null
-  reason?: Prisma.StringNullableFilter<"BlockedDate"> | string | null
-  isAllDay?: Prisma.BoolFilter<"BlockedDate"> | boolean
   createdAt?: Prisma.DateTimeFilter<"BlockedDate"> | Date | string
   updatedAt?: Prisma.DateTimeFilter<"BlockedDate"> | Date | string
   tour?: Prisma.XOR<Prisma.TourNullableScalarRelationFilter, Prisma.TourWhereInput> | null
   guide?: Prisma.XOR<Prisma.GuideScalarRelationFilter, Prisma.GuideWhereInput>
-}, "id" | "tourId_blockedDate_startTime">
+}, "id" | "tourId_guideId_blockedDate">
 
 export type BlockedDateOrderByWithAggregationInput = {
   id?: Prisma.SortOrder
   tourId?: Prisma.SortOrderInput | Prisma.SortOrder
   guideId?: Prisma.SortOrder
   blockedDate?: Prisma.SortOrder
-  startTime?: Prisma.SortOrderInput | Prisma.SortOrder
-  endTime?: Prisma.SortOrderInput | Prisma.SortOrder
-  reason?: Prisma.SortOrderInput | Prisma.SortOrder
-  isAllDay?: Prisma.SortOrder
   createdAt?: Prisma.SortOrder
   updatedAt?: Prisma.SortOrder
   _count?: Prisma.BlockedDateCountOrderByAggregateInput
@@ -284,10 +240,6 @@ export type BlockedDateScalarWhereWithAggregatesInput = {
   tourId?: Prisma.StringNullableWithAggregatesFilter<"BlockedDate"> | string | null
   guideId?: Prisma.StringWithAggregatesFilter<"BlockedDate"> | string
   blockedDate?: Prisma.DateTimeWithAggregatesFilter<"BlockedDate"> | Date | string
-  startTime?: Prisma.StringNullableWithAggregatesFilter<"BlockedDate"> | string | null
-  endTime?: Prisma.StringNullableWithAggregatesFilter<"BlockedDate"> | string | null
-  reason?: Prisma.StringNullableWithAggregatesFilter<"BlockedDate"> | string | null
-  isAllDay?: Prisma.BoolWithAggregatesFilter<"BlockedDate"> | boolean
   createdAt?: Prisma.DateTimeWithAggregatesFilter<"BlockedDate"> | Date | string
   updatedAt?: Prisma.DateTimeWithAggregatesFilter<"BlockedDate"> | Date | string
 }
@@ -295,10 +247,6 @@ export type BlockedDateScalarWhereWithAggregatesInput = {
 export type BlockedDateCreateInput = {
   id?: string
   blockedDate: Date | string
-  startTime?: string | null
-  endTime?: string | null
-  reason?: string | null
-  isAllDay?: boolean
   createdAt?: Date | string
   updatedAt?: Date | string
   tour?: Prisma.TourCreateNestedOneWithoutBlockedDatesInput
@@ -310,10 +258,6 @@ export type BlockedDateUncheckedCreateInput = {
   tourId?: string | null
   guideId: string
   blockedDate: Date | string
-  startTime?: string | null
-  endTime?: string | null
-  reason?: string | null
-  isAllDay?: boolean
   createdAt?: Date | string
   updatedAt?: Date | string
 }
@@ -321,10 +265,6 @@ export type BlockedDateUncheckedCreateInput = {
 export type BlockedDateUpdateInput = {
   id?: Prisma.StringFieldUpdateOperationsInput | string
   blockedDate?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
-  startTime?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
-  endTime?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
-  reason?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
-  isAllDay?: Prisma.BoolFieldUpdateOperationsInput | boolean
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   tour?: Prisma.TourUpdateOneWithoutBlockedDatesNestedInput
@@ -336,10 +276,6 @@ export type BlockedDateUncheckedUpdateInput = {
   tourId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   guideId?: Prisma.StringFieldUpdateOperationsInput | string
   blockedDate?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
-  startTime?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
-  endTime?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
-  reason?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
-  isAllDay?: Prisma.BoolFieldUpdateOperationsInput | boolean
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
 }
@@ -349,10 +285,6 @@ export type BlockedDateCreateManyInput = {
   tourId?: string | null
   guideId: string
   blockedDate: Date | string
-  startTime?: string | null
-  endTime?: string | null
-  reason?: string | null
-  isAllDay?: boolean
   createdAt?: Date | string
   updatedAt?: Date | string
 }
@@ -360,10 +292,6 @@ export type BlockedDateCreateManyInput = {
 export type BlockedDateUpdateManyMutationInput = {
   id?: Prisma.StringFieldUpdateOperationsInput | string
   blockedDate?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
-  startTime?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
-  endTime?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
-  reason?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
-  isAllDay?: Prisma.BoolFieldUpdateOperationsInput | boolean
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
 }
@@ -373,10 +301,6 @@ export type BlockedDateUncheckedUpdateManyInput = {
   tourId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   guideId?: Prisma.StringFieldUpdateOperationsInput | string
   blockedDate?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
-  startTime?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
-  endTime?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
-  reason?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
-  isAllDay?: Prisma.BoolFieldUpdateOperationsInput | boolean
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
 }
@@ -391,10 +315,10 @@ export type BlockedDateOrderByRelationAggregateInput = {
   _count?: Prisma.SortOrder
 }
 
-export type BlockedDateTourIdBlockedDateStartTimeCompoundUniqueInput = {
+export type BlockedDateTourIdGuideIdBlockedDateCompoundUniqueInput = {
   tourId: string
+  guideId: string
   blockedDate: Date | string
-  startTime: string
 }
 
 export type BlockedDateCountOrderByAggregateInput = {
@@ -402,10 +326,6 @@ export type BlockedDateCountOrderByAggregateInput = {
   tourId?: Prisma.SortOrder
   guideId?: Prisma.SortOrder
   blockedDate?: Prisma.SortOrder
-  startTime?: Prisma.SortOrder
-  endTime?: Prisma.SortOrder
-  reason?: Prisma.SortOrder
-  isAllDay?: Prisma.SortOrder
   createdAt?: Prisma.SortOrder
   updatedAt?: Prisma.SortOrder
 }
@@ -415,10 +335,6 @@ export type BlockedDateMaxOrderByAggregateInput = {
   tourId?: Prisma.SortOrder
   guideId?: Prisma.SortOrder
   blockedDate?: Prisma.SortOrder
-  startTime?: Prisma.SortOrder
-  endTime?: Prisma.SortOrder
-  reason?: Prisma.SortOrder
-  isAllDay?: Prisma.SortOrder
   createdAt?: Prisma.SortOrder
   updatedAt?: Prisma.SortOrder
 }
@@ -428,10 +344,6 @@ export type BlockedDateMinOrderByAggregateInput = {
   tourId?: Prisma.SortOrder
   guideId?: Prisma.SortOrder
   blockedDate?: Prisma.SortOrder
-  startTime?: Prisma.SortOrder
-  endTime?: Prisma.SortOrder
-  reason?: Prisma.SortOrder
-  isAllDay?: Prisma.SortOrder
   createdAt?: Prisma.SortOrder
   updatedAt?: Prisma.SortOrder
 }
@@ -523,10 +435,6 @@ export type BlockedDateUncheckedUpdateManyWithoutGuideNestedInput = {
 export type BlockedDateCreateWithoutTourInput = {
   id?: string
   blockedDate: Date | string
-  startTime?: string | null
-  endTime?: string | null
-  reason?: string | null
-  isAllDay?: boolean
   createdAt?: Date | string
   updatedAt?: Date | string
   guide: Prisma.GuideCreateNestedOneWithoutBlockedDatesInput
@@ -536,10 +444,6 @@ export type BlockedDateUncheckedCreateWithoutTourInput = {
   id?: string
   guideId: string
   blockedDate: Date | string
-  startTime?: string | null
-  endTime?: string | null
-  reason?: string | null
-  isAllDay?: boolean
   createdAt?: Date | string
   updatedAt?: Date | string
 }
@@ -578,10 +482,6 @@ export type BlockedDateScalarWhereInput = {
   tourId?: Prisma.StringNullableFilter<"BlockedDate"> | string | null
   guideId?: Prisma.StringFilter<"BlockedDate"> | string
   blockedDate?: Prisma.DateTimeFilter<"BlockedDate"> | Date | string
-  startTime?: Prisma.StringNullableFilter<"BlockedDate"> | string | null
-  endTime?: Prisma.StringNullableFilter<"BlockedDate"> | string | null
-  reason?: Prisma.StringNullableFilter<"BlockedDate"> | string | null
-  isAllDay?: Prisma.BoolFilter<"BlockedDate"> | boolean
   createdAt?: Prisma.DateTimeFilter<"BlockedDate"> | Date | string
   updatedAt?: Prisma.DateTimeFilter<"BlockedDate"> | Date | string
 }
@@ -589,10 +489,6 @@ export type BlockedDateScalarWhereInput = {
 export type BlockedDateCreateWithoutGuideInput = {
   id?: string
   blockedDate: Date | string
-  startTime?: string | null
-  endTime?: string | null
-  reason?: string | null
-  isAllDay?: boolean
   createdAt?: Date | string
   updatedAt?: Date | string
   tour?: Prisma.TourCreateNestedOneWithoutBlockedDatesInput
@@ -602,10 +498,6 @@ export type BlockedDateUncheckedCreateWithoutGuideInput = {
   id?: string
   tourId?: string | null
   blockedDate: Date | string
-  startTime?: string | null
-  endTime?: string | null
-  reason?: string | null
-  isAllDay?: boolean
   createdAt?: Date | string
   updatedAt?: Date | string
 }
@@ -640,10 +532,6 @@ export type BlockedDateCreateManyTourInput = {
   id?: string
   guideId: string
   blockedDate: Date | string
-  startTime?: string | null
-  endTime?: string | null
-  reason?: string | null
-  isAllDay?: boolean
   createdAt?: Date | string
   updatedAt?: Date | string
 }
@@ -651,10 +539,6 @@ export type BlockedDateCreateManyTourInput = {
 export type BlockedDateUpdateWithoutTourInput = {
   id?: Prisma.StringFieldUpdateOperationsInput | string
   blockedDate?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
-  startTime?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
-  endTime?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
-  reason?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
-  isAllDay?: Prisma.BoolFieldUpdateOperationsInput | boolean
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   guide?: Prisma.GuideUpdateOneRequiredWithoutBlockedDatesNestedInput
@@ -664,10 +548,6 @@ export type BlockedDateUncheckedUpdateWithoutTourInput = {
   id?: Prisma.StringFieldUpdateOperationsInput | string
   guideId?: Prisma.StringFieldUpdateOperationsInput | string
   blockedDate?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
-  startTime?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
-  endTime?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
-  reason?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
-  isAllDay?: Prisma.BoolFieldUpdateOperationsInput | boolean
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
 }
@@ -676,10 +556,6 @@ export type BlockedDateUncheckedUpdateManyWithoutTourInput = {
   id?: Prisma.StringFieldUpdateOperationsInput | string
   guideId?: Prisma.StringFieldUpdateOperationsInput | string
   blockedDate?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
-  startTime?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
-  endTime?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
-  reason?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
-  isAllDay?: Prisma.BoolFieldUpdateOperationsInput | boolean
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
 }
@@ -688,10 +564,6 @@ export type BlockedDateCreateManyGuideInput = {
   id?: string
   tourId?: string | null
   blockedDate: Date | string
-  startTime?: string | null
-  endTime?: string | null
-  reason?: string | null
-  isAllDay?: boolean
   createdAt?: Date | string
   updatedAt?: Date | string
 }
@@ -699,10 +571,6 @@ export type BlockedDateCreateManyGuideInput = {
 export type BlockedDateUpdateWithoutGuideInput = {
   id?: Prisma.StringFieldUpdateOperationsInput | string
   blockedDate?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
-  startTime?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
-  endTime?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
-  reason?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
-  isAllDay?: Prisma.BoolFieldUpdateOperationsInput | boolean
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   tour?: Prisma.TourUpdateOneWithoutBlockedDatesNestedInput
@@ -712,10 +580,6 @@ export type BlockedDateUncheckedUpdateWithoutGuideInput = {
   id?: Prisma.StringFieldUpdateOperationsInput | string
   tourId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   blockedDate?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
-  startTime?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
-  endTime?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
-  reason?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
-  isAllDay?: Prisma.BoolFieldUpdateOperationsInput | boolean
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
 }
@@ -724,10 +588,6 @@ export type BlockedDateUncheckedUpdateManyWithoutGuideInput = {
   id?: Prisma.StringFieldUpdateOperationsInput | string
   tourId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   blockedDate?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
-  startTime?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
-  endTime?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
-  reason?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
-  isAllDay?: Prisma.BoolFieldUpdateOperationsInput | boolean
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
 }
@@ -739,10 +599,6 @@ export type BlockedDateSelect<ExtArgs extends runtime.Types.Extensions.InternalA
   tourId?: boolean
   guideId?: boolean
   blockedDate?: boolean
-  startTime?: boolean
-  endTime?: boolean
-  reason?: boolean
-  isAllDay?: boolean
   createdAt?: boolean
   updatedAt?: boolean
   tour?: boolean | Prisma.BlockedDate$tourArgs<ExtArgs>
@@ -754,10 +610,6 @@ export type BlockedDateSelectCreateManyAndReturn<ExtArgs extends runtime.Types.E
   tourId?: boolean
   guideId?: boolean
   blockedDate?: boolean
-  startTime?: boolean
-  endTime?: boolean
-  reason?: boolean
-  isAllDay?: boolean
   createdAt?: boolean
   updatedAt?: boolean
   tour?: boolean | Prisma.BlockedDate$tourArgs<ExtArgs>
@@ -769,10 +621,6 @@ export type BlockedDateSelectUpdateManyAndReturn<ExtArgs extends runtime.Types.E
   tourId?: boolean
   guideId?: boolean
   blockedDate?: boolean
-  startTime?: boolean
-  endTime?: boolean
-  reason?: boolean
-  isAllDay?: boolean
   createdAt?: boolean
   updatedAt?: boolean
   tour?: boolean | Prisma.BlockedDate$tourArgs<ExtArgs>
@@ -784,15 +632,11 @@ export type BlockedDateSelectScalar = {
   tourId?: boolean
   guideId?: boolean
   blockedDate?: boolean
-  startTime?: boolean
-  endTime?: boolean
-  reason?: boolean
-  isAllDay?: boolean
   createdAt?: boolean
   updatedAt?: boolean
 }
 
-export type BlockedDateOmit<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = runtime.Types.Extensions.GetOmit<"id" | "tourId" | "guideId" | "blockedDate" | "startTime" | "endTime" | "reason" | "isAllDay" | "createdAt" | "updatedAt", ExtArgs["result"]["blockedDate"]>
+export type BlockedDateOmit<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = runtime.Types.Extensions.GetOmit<"id" | "tourId" | "guideId" | "blockedDate" | "createdAt" | "updatedAt", ExtArgs["result"]["blockedDate"]>
 export type BlockedDateInclude<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
   tour?: boolean | Prisma.BlockedDate$tourArgs<ExtArgs>
   guide?: boolean | Prisma.GuideDefaultArgs<ExtArgs>
@@ -817,10 +661,6 @@ export type $BlockedDatePayload<ExtArgs extends runtime.Types.Extensions.Interna
     tourId: string | null
     guideId: string
     blockedDate: Date
-    startTime: string | null
-    endTime: string | null
-    reason: string | null
-    isAllDay: boolean
     createdAt: Date
     updatedAt: Date
   }, ExtArgs["result"]["blockedDate"]>
@@ -1252,10 +1092,6 @@ export interface BlockedDateFieldRefs {
   readonly tourId: Prisma.FieldRef<"BlockedDate", 'String'>
   readonly guideId: Prisma.FieldRef<"BlockedDate", 'String'>
   readonly blockedDate: Prisma.FieldRef<"BlockedDate", 'DateTime'>
-  readonly startTime: Prisma.FieldRef<"BlockedDate", 'String'>
-  readonly endTime: Prisma.FieldRef<"BlockedDate", 'String'>
-  readonly reason: Prisma.FieldRef<"BlockedDate", 'String'>
-  readonly isAllDay: Prisma.FieldRef<"BlockedDate", 'Boolean'>
   readonly createdAt: Prisma.FieldRef<"BlockedDate", 'DateTime'>
   readonly updatedAt: Prisma.FieldRef<"BlockedDate", 'DateTime'>
 }

@@ -1,22 +1,19 @@
+export interface TourAvailabilityInput {
+  dayOfWeek: number;
+  startTime: string; // Frontend sends "09:00"
+  endTime: string;   // Frontend sends "17:00"
+  maxBookings: number;
+  isActive: boolean;
+}
+
 export interface TourPricingInput {
   minGuests: number;
   maxGuests: number;
   pricePerHour: number;
 }
 
-export interface TourAvailabilityInput {
-  dayOfWeek: number;
-  startTime: string;
-  endTime: string;
-  maxBookings: number;
-}
-
 export interface BlockedDateInput {
-  blockedDate: string | Date;
-  startTime?: string;
-  endTime?: string;
-  isAllDay: boolean;
-  reason?: string;
+  blockedDate: string;
 }
 
 export interface CreateTourPayload {

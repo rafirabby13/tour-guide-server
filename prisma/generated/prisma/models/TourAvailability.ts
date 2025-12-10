@@ -28,11 +28,15 @@ export type AggregateTourAvailability = {
 
 export type TourAvailabilityAvgAggregateOutputType = {
   dayOfWeek: number | null
+  startTimeMinutes: number | null
+  endTimeMinutes: number | null
   maxBookings: number | null
 }
 
 export type TourAvailabilitySumAggregateOutputType = {
   dayOfWeek: number | null
+  startTimeMinutes: number | null
+  endTimeMinutes: number | null
   maxBookings: number | null
 }
 
@@ -40,8 +44,8 @@ export type TourAvailabilityMinAggregateOutputType = {
   id: string | null
   tourId: string | null
   dayOfWeek: number | null
-  startTime: string | null
-  endTime: string | null
+  startTimeMinutes: number | null
+  endTimeMinutes: number | null
   maxBookings: number | null
   isActive: boolean | null
   createdAt: Date | null
@@ -52,8 +56,8 @@ export type TourAvailabilityMaxAggregateOutputType = {
   id: string | null
   tourId: string | null
   dayOfWeek: number | null
-  startTime: string | null
-  endTime: string | null
+  startTimeMinutes: number | null
+  endTimeMinutes: number | null
   maxBookings: number | null
   isActive: boolean | null
   createdAt: Date | null
@@ -64,8 +68,8 @@ export type TourAvailabilityCountAggregateOutputType = {
   id: number
   tourId: number
   dayOfWeek: number
-  startTime: number
-  endTime: number
+  startTimeMinutes: number
+  endTimeMinutes: number
   maxBookings: number
   isActive: number
   createdAt: number
@@ -76,11 +80,15 @@ export type TourAvailabilityCountAggregateOutputType = {
 
 export type TourAvailabilityAvgAggregateInputType = {
   dayOfWeek?: true
+  startTimeMinutes?: true
+  endTimeMinutes?: true
   maxBookings?: true
 }
 
 export type TourAvailabilitySumAggregateInputType = {
   dayOfWeek?: true
+  startTimeMinutes?: true
+  endTimeMinutes?: true
   maxBookings?: true
 }
 
@@ -88,8 +96,8 @@ export type TourAvailabilityMinAggregateInputType = {
   id?: true
   tourId?: true
   dayOfWeek?: true
-  startTime?: true
-  endTime?: true
+  startTimeMinutes?: true
+  endTimeMinutes?: true
   maxBookings?: true
   isActive?: true
   createdAt?: true
@@ -100,8 +108,8 @@ export type TourAvailabilityMaxAggregateInputType = {
   id?: true
   tourId?: true
   dayOfWeek?: true
-  startTime?: true
-  endTime?: true
+  startTimeMinutes?: true
+  endTimeMinutes?: true
   maxBookings?: true
   isActive?: true
   createdAt?: true
@@ -112,8 +120,8 @@ export type TourAvailabilityCountAggregateInputType = {
   id?: true
   tourId?: true
   dayOfWeek?: true
-  startTime?: true
-  endTime?: true
+  startTimeMinutes?: true
+  endTimeMinutes?: true
   maxBookings?: true
   isActive?: true
   createdAt?: true
@@ -211,8 +219,8 @@ export type TourAvailabilityGroupByOutputType = {
   id: string
   tourId: string
   dayOfWeek: number
-  startTime: string
-  endTime: string
+  startTimeMinutes: number
+  endTimeMinutes: number
   maxBookings: number
   isActive: boolean
   createdAt: Date
@@ -246,8 +254,8 @@ export type TourAvailabilityWhereInput = {
   id?: Prisma.StringFilter<"TourAvailability"> | string
   tourId?: Prisma.StringFilter<"TourAvailability"> | string
   dayOfWeek?: Prisma.IntFilter<"TourAvailability"> | number
-  startTime?: Prisma.StringFilter<"TourAvailability"> | string
-  endTime?: Prisma.StringFilter<"TourAvailability"> | string
+  startTimeMinutes?: Prisma.IntFilter<"TourAvailability"> | number
+  endTimeMinutes?: Prisma.IntFilter<"TourAvailability"> | number
   maxBookings?: Prisma.IntFilter<"TourAvailability"> | number
   isActive?: Prisma.BoolFilter<"TourAvailability"> | boolean
   createdAt?: Prisma.DateTimeFilter<"TourAvailability"> | Date | string
@@ -259,8 +267,8 @@ export type TourAvailabilityOrderByWithRelationInput = {
   id?: Prisma.SortOrder
   tourId?: Prisma.SortOrder
   dayOfWeek?: Prisma.SortOrder
-  startTime?: Prisma.SortOrder
-  endTime?: Prisma.SortOrder
+  startTimeMinutes?: Prisma.SortOrder
+  endTimeMinutes?: Prisma.SortOrder
   maxBookings?: Prisma.SortOrder
   isActive?: Prisma.SortOrder
   createdAt?: Prisma.SortOrder
@@ -270,26 +278,27 @@ export type TourAvailabilityOrderByWithRelationInput = {
 
 export type TourAvailabilityWhereUniqueInput = Prisma.AtLeast<{
   id?: string
+  tourId_dayOfWeek_startTimeMinutes_endTimeMinutes?: Prisma.TourAvailabilityTourIdDayOfWeekStartTimeMinutesEndTimeMinutesCompoundUniqueInput
   AND?: Prisma.TourAvailabilityWhereInput | Prisma.TourAvailabilityWhereInput[]
   OR?: Prisma.TourAvailabilityWhereInput[]
   NOT?: Prisma.TourAvailabilityWhereInput | Prisma.TourAvailabilityWhereInput[]
   tourId?: Prisma.StringFilter<"TourAvailability"> | string
   dayOfWeek?: Prisma.IntFilter<"TourAvailability"> | number
-  startTime?: Prisma.StringFilter<"TourAvailability"> | string
-  endTime?: Prisma.StringFilter<"TourAvailability"> | string
+  startTimeMinutes?: Prisma.IntFilter<"TourAvailability"> | number
+  endTimeMinutes?: Prisma.IntFilter<"TourAvailability"> | number
   maxBookings?: Prisma.IntFilter<"TourAvailability"> | number
   isActive?: Prisma.BoolFilter<"TourAvailability"> | boolean
   createdAt?: Prisma.DateTimeFilter<"TourAvailability"> | Date | string
   updatedAt?: Prisma.DateTimeFilter<"TourAvailability"> | Date | string
   tour?: Prisma.XOR<Prisma.TourScalarRelationFilter, Prisma.TourWhereInput>
-}, "id">
+}, "id" | "tourId_dayOfWeek_startTimeMinutes_endTimeMinutes">
 
 export type TourAvailabilityOrderByWithAggregationInput = {
   id?: Prisma.SortOrder
   tourId?: Prisma.SortOrder
   dayOfWeek?: Prisma.SortOrder
-  startTime?: Prisma.SortOrder
-  endTime?: Prisma.SortOrder
+  startTimeMinutes?: Prisma.SortOrder
+  endTimeMinutes?: Prisma.SortOrder
   maxBookings?: Prisma.SortOrder
   isActive?: Prisma.SortOrder
   createdAt?: Prisma.SortOrder
@@ -308,8 +317,8 @@ export type TourAvailabilityScalarWhereWithAggregatesInput = {
   id?: Prisma.StringWithAggregatesFilter<"TourAvailability"> | string
   tourId?: Prisma.StringWithAggregatesFilter<"TourAvailability"> | string
   dayOfWeek?: Prisma.IntWithAggregatesFilter<"TourAvailability"> | number
-  startTime?: Prisma.StringWithAggregatesFilter<"TourAvailability"> | string
-  endTime?: Prisma.StringWithAggregatesFilter<"TourAvailability"> | string
+  startTimeMinutes?: Prisma.IntWithAggregatesFilter<"TourAvailability"> | number
+  endTimeMinutes?: Prisma.IntWithAggregatesFilter<"TourAvailability"> | number
   maxBookings?: Prisma.IntWithAggregatesFilter<"TourAvailability"> | number
   isActive?: Prisma.BoolWithAggregatesFilter<"TourAvailability"> | boolean
   createdAt?: Prisma.DateTimeWithAggregatesFilter<"TourAvailability"> | Date | string
@@ -319,8 +328,8 @@ export type TourAvailabilityScalarWhereWithAggregatesInput = {
 export type TourAvailabilityCreateInput = {
   id?: string
   dayOfWeek: number
-  startTime: string
-  endTime: string
+  startTimeMinutes: number
+  endTimeMinutes: number
   maxBookings?: number
   isActive?: boolean
   createdAt?: Date | string
@@ -332,8 +341,8 @@ export type TourAvailabilityUncheckedCreateInput = {
   id?: string
   tourId: string
   dayOfWeek: number
-  startTime: string
-  endTime: string
+  startTimeMinutes: number
+  endTimeMinutes: number
   maxBookings?: number
   isActive?: boolean
   createdAt?: Date | string
@@ -343,8 +352,8 @@ export type TourAvailabilityUncheckedCreateInput = {
 export type TourAvailabilityUpdateInput = {
   id?: Prisma.StringFieldUpdateOperationsInput | string
   dayOfWeek?: Prisma.IntFieldUpdateOperationsInput | number
-  startTime?: Prisma.StringFieldUpdateOperationsInput | string
-  endTime?: Prisma.StringFieldUpdateOperationsInput | string
+  startTimeMinutes?: Prisma.IntFieldUpdateOperationsInput | number
+  endTimeMinutes?: Prisma.IntFieldUpdateOperationsInput | number
   maxBookings?: Prisma.IntFieldUpdateOperationsInput | number
   isActive?: Prisma.BoolFieldUpdateOperationsInput | boolean
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
@@ -356,8 +365,8 @@ export type TourAvailabilityUncheckedUpdateInput = {
   id?: Prisma.StringFieldUpdateOperationsInput | string
   tourId?: Prisma.StringFieldUpdateOperationsInput | string
   dayOfWeek?: Prisma.IntFieldUpdateOperationsInput | number
-  startTime?: Prisma.StringFieldUpdateOperationsInput | string
-  endTime?: Prisma.StringFieldUpdateOperationsInput | string
+  startTimeMinutes?: Prisma.IntFieldUpdateOperationsInput | number
+  endTimeMinutes?: Prisma.IntFieldUpdateOperationsInput | number
   maxBookings?: Prisma.IntFieldUpdateOperationsInput | number
   isActive?: Prisma.BoolFieldUpdateOperationsInput | boolean
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
@@ -368,8 +377,8 @@ export type TourAvailabilityCreateManyInput = {
   id?: string
   tourId: string
   dayOfWeek: number
-  startTime: string
-  endTime: string
+  startTimeMinutes: number
+  endTimeMinutes: number
   maxBookings?: number
   isActive?: boolean
   createdAt?: Date | string
@@ -379,8 +388,8 @@ export type TourAvailabilityCreateManyInput = {
 export type TourAvailabilityUpdateManyMutationInput = {
   id?: Prisma.StringFieldUpdateOperationsInput | string
   dayOfWeek?: Prisma.IntFieldUpdateOperationsInput | number
-  startTime?: Prisma.StringFieldUpdateOperationsInput | string
-  endTime?: Prisma.StringFieldUpdateOperationsInput | string
+  startTimeMinutes?: Prisma.IntFieldUpdateOperationsInput | number
+  endTimeMinutes?: Prisma.IntFieldUpdateOperationsInput | number
   maxBookings?: Prisma.IntFieldUpdateOperationsInput | number
   isActive?: Prisma.BoolFieldUpdateOperationsInput | boolean
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
@@ -391,8 +400,8 @@ export type TourAvailabilityUncheckedUpdateManyInput = {
   id?: Prisma.StringFieldUpdateOperationsInput | string
   tourId?: Prisma.StringFieldUpdateOperationsInput | string
   dayOfWeek?: Prisma.IntFieldUpdateOperationsInput | number
-  startTime?: Prisma.StringFieldUpdateOperationsInput | string
-  endTime?: Prisma.StringFieldUpdateOperationsInput | string
+  startTimeMinutes?: Prisma.IntFieldUpdateOperationsInput | number
+  endTimeMinutes?: Prisma.IntFieldUpdateOperationsInput | number
   maxBookings?: Prisma.IntFieldUpdateOperationsInput | number
   isActive?: Prisma.BoolFieldUpdateOperationsInput | boolean
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
@@ -409,12 +418,19 @@ export type TourAvailabilityOrderByRelationAggregateInput = {
   _count?: Prisma.SortOrder
 }
 
+export type TourAvailabilityTourIdDayOfWeekStartTimeMinutesEndTimeMinutesCompoundUniqueInput = {
+  tourId: string
+  dayOfWeek: number
+  startTimeMinutes: number
+  endTimeMinutes: number
+}
+
 export type TourAvailabilityCountOrderByAggregateInput = {
   id?: Prisma.SortOrder
   tourId?: Prisma.SortOrder
   dayOfWeek?: Prisma.SortOrder
-  startTime?: Prisma.SortOrder
-  endTime?: Prisma.SortOrder
+  startTimeMinutes?: Prisma.SortOrder
+  endTimeMinutes?: Prisma.SortOrder
   maxBookings?: Prisma.SortOrder
   isActive?: Prisma.SortOrder
   createdAt?: Prisma.SortOrder
@@ -423,6 +439,8 @@ export type TourAvailabilityCountOrderByAggregateInput = {
 
 export type TourAvailabilityAvgOrderByAggregateInput = {
   dayOfWeek?: Prisma.SortOrder
+  startTimeMinutes?: Prisma.SortOrder
+  endTimeMinutes?: Prisma.SortOrder
   maxBookings?: Prisma.SortOrder
 }
 
@@ -430,8 +448,8 @@ export type TourAvailabilityMaxOrderByAggregateInput = {
   id?: Prisma.SortOrder
   tourId?: Prisma.SortOrder
   dayOfWeek?: Prisma.SortOrder
-  startTime?: Prisma.SortOrder
-  endTime?: Prisma.SortOrder
+  startTimeMinutes?: Prisma.SortOrder
+  endTimeMinutes?: Prisma.SortOrder
   maxBookings?: Prisma.SortOrder
   isActive?: Prisma.SortOrder
   createdAt?: Prisma.SortOrder
@@ -442,8 +460,8 @@ export type TourAvailabilityMinOrderByAggregateInput = {
   id?: Prisma.SortOrder
   tourId?: Prisma.SortOrder
   dayOfWeek?: Prisma.SortOrder
-  startTime?: Prisma.SortOrder
-  endTime?: Prisma.SortOrder
+  startTimeMinutes?: Prisma.SortOrder
+  endTimeMinutes?: Prisma.SortOrder
   maxBookings?: Prisma.SortOrder
   isActive?: Prisma.SortOrder
   createdAt?: Prisma.SortOrder
@@ -452,6 +470,8 @@ export type TourAvailabilityMinOrderByAggregateInput = {
 
 export type TourAvailabilitySumOrderByAggregateInput = {
   dayOfWeek?: Prisma.SortOrder
+  startTimeMinutes?: Prisma.SortOrder
+  endTimeMinutes?: Prisma.SortOrder
   maxBookings?: Prisma.SortOrder
 }
 
@@ -497,15 +517,11 @@ export type TourAvailabilityUncheckedUpdateManyWithoutTourNestedInput = {
   deleteMany?: Prisma.TourAvailabilityScalarWhereInput | Prisma.TourAvailabilityScalarWhereInput[]
 }
 
-export type BoolFieldUpdateOperationsInput = {
-  set?: boolean
-}
-
 export type TourAvailabilityCreateWithoutTourInput = {
   id?: string
   dayOfWeek: number
-  startTime: string
-  endTime: string
+  startTimeMinutes: number
+  endTimeMinutes: number
   maxBookings?: number
   isActive?: boolean
   createdAt?: Date | string
@@ -515,8 +531,8 @@ export type TourAvailabilityCreateWithoutTourInput = {
 export type TourAvailabilityUncheckedCreateWithoutTourInput = {
   id?: string
   dayOfWeek: number
-  startTime: string
-  endTime: string
+  startTimeMinutes: number
+  endTimeMinutes: number
   maxBookings?: number
   isActive?: boolean
   createdAt?: Date | string
@@ -556,8 +572,8 @@ export type TourAvailabilityScalarWhereInput = {
   id?: Prisma.StringFilter<"TourAvailability"> | string
   tourId?: Prisma.StringFilter<"TourAvailability"> | string
   dayOfWeek?: Prisma.IntFilter<"TourAvailability"> | number
-  startTime?: Prisma.StringFilter<"TourAvailability"> | string
-  endTime?: Prisma.StringFilter<"TourAvailability"> | string
+  startTimeMinutes?: Prisma.IntFilter<"TourAvailability"> | number
+  endTimeMinutes?: Prisma.IntFilter<"TourAvailability"> | number
   maxBookings?: Prisma.IntFilter<"TourAvailability"> | number
   isActive?: Prisma.BoolFilter<"TourAvailability"> | boolean
   createdAt?: Prisma.DateTimeFilter<"TourAvailability"> | Date | string
@@ -567,8 +583,8 @@ export type TourAvailabilityScalarWhereInput = {
 export type TourAvailabilityCreateManyTourInput = {
   id?: string
   dayOfWeek: number
-  startTime: string
-  endTime: string
+  startTimeMinutes: number
+  endTimeMinutes: number
   maxBookings?: number
   isActive?: boolean
   createdAt?: Date | string
@@ -578,8 +594,8 @@ export type TourAvailabilityCreateManyTourInput = {
 export type TourAvailabilityUpdateWithoutTourInput = {
   id?: Prisma.StringFieldUpdateOperationsInput | string
   dayOfWeek?: Prisma.IntFieldUpdateOperationsInput | number
-  startTime?: Prisma.StringFieldUpdateOperationsInput | string
-  endTime?: Prisma.StringFieldUpdateOperationsInput | string
+  startTimeMinutes?: Prisma.IntFieldUpdateOperationsInput | number
+  endTimeMinutes?: Prisma.IntFieldUpdateOperationsInput | number
   maxBookings?: Prisma.IntFieldUpdateOperationsInput | number
   isActive?: Prisma.BoolFieldUpdateOperationsInput | boolean
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
@@ -589,8 +605,8 @@ export type TourAvailabilityUpdateWithoutTourInput = {
 export type TourAvailabilityUncheckedUpdateWithoutTourInput = {
   id?: Prisma.StringFieldUpdateOperationsInput | string
   dayOfWeek?: Prisma.IntFieldUpdateOperationsInput | number
-  startTime?: Prisma.StringFieldUpdateOperationsInput | string
-  endTime?: Prisma.StringFieldUpdateOperationsInput | string
+  startTimeMinutes?: Prisma.IntFieldUpdateOperationsInput | number
+  endTimeMinutes?: Prisma.IntFieldUpdateOperationsInput | number
   maxBookings?: Prisma.IntFieldUpdateOperationsInput | number
   isActive?: Prisma.BoolFieldUpdateOperationsInput | boolean
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
@@ -600,8 +616,8 @@ export type TourAvailabilityUncheckedUpdateWithoutTourInput = {
 export type TourAvailabilityUncheckedUpdateManyWithoutTourInput = {
   id?: Prisma.StringFieldUpdateOperationsInput | string
   dayOfWeek?: Prisma.IntFieldUpdateOperationsInput | number
-  startTime?: Prisma.StringFieldUpdateOperationsInput | string
-  endTime?: Prisma.StringFieldUpdateOperationsInput | string
+  startTimeMinutes?: Prisma.IntFieldUpdateOperationsInput | number
+  endTimeMinutes?: Prisma.IntFieldUpdateOperationsInput | number
   maxBookings?: Prisma.IntFieldUpdateOperationsInput | number
   isActive?: Prisma.BoolFieldUpdateOperationsInput | boolean
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
@@ -614,8 +630,8 @@ export type TourAvailabilitySelect<ExtArgs extends runtime.Types.Extensions.Inte
   id?: boolean
   tourId?: boolean
   dayOfWeek?: boolean
-  startTime?: boolean
-  endTime?: boolean
+  startTimeMinutes?: boolean
+  endTimeMinutes?: boolean
   maxBookings?: boolean
   isActive?: boolean
   createdAt?: boolean
@@ -627,8 +643,8 @@ export type TourAvailabilitySelectCreateManyAndReturn<ExtArgs extends runtime.Ty
   id?: boolean
   tourId?: boolean
   dayOfWeek?: boolean
-  startTime?: boolean
-  endTime?: boolean
+  startTimeMinutes?: boolean
+  endTimeMinutes?: boolean
   maxBookings?: boolean
   isActive?: boolean
   createdAt?: boolean
@@ -640,8 +656,8 @@ export type TourAvailabilitySelectUpdateManyAndReturn<ExtArgs extends runtime.Ty
   id?: boolean
   tourId?: boolean
   dayOfWeek?: boolean
-  startTime?: boolean
-  endTime?: boolean
+  startTimeMinutes?: boolean
+  endTimeMinutes?: boolean
   maxBookings?: boolean
   isActive?: boolean
   createdAt?: boolean
@@ -653,15 +669,15 @@ export type TourAvailabilitySelectScalar = {
   id?: boolean
   tourId?: boolean
   dayOfWeek?: boolean
-  startTime?: boolean
-  endTime?: boolean
+  startTimeMinutes?: boolean
+  endTimeMinutes?: boolean
   maxBookings?: boolean
   isActive?: boolean
   createdAt?: boolean
   updatedAt?: boolean
 }
 
-export type TourAvailabilityOmit<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = runtime.Types.Extensions.GetOmit<"id" | "tourId" | "dayOfWeek" | "startTime" | "endTime" | "maxBookings" | "isActive" | "createdAt" | "updatedAt", ExtArgs["result"]["tourAvailability"]>
+export type TourAvailabilityOmit<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = runtime.Types.Extensions.GetOmit<"id" | "tourId" | "dayOfWeek" | "startTimeMinutes" | "endTimeMinutes" | "maxBookings" | "isActive" | "createdAt" | "updatedAt", ExtArgs["result"]["tourAvailability"]>
 export type TourAvailabilityInclude<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
   tour?: boolean | Prisma.TourDefaultArgs<ExtArgs>
 }
@@ -681,8 +697,8 @@ export type $TourAvailabilityPayload<ExtArgs extends runtime.Types.Extensions.In
     id: string
     tourId: string
     dayOfWeek: number
-    startTime: string
-    endTime: string
+    startTimeMinutes: number
+    endTimeMinutes: number
     maxBookings: number
     isActive: boolean
     createdAt: Date
@@ -1114,8 +1130,8 @@ export interface TourAvailabilityFieldRefs {
   readonly id: Prisma.FieldRef<"TourAvailability", 'String'>
   readonly tourId: Prisma.FieldRef<"TourAvailability", 'String'>
   readonly dayOfWeek: Prisma.FieldRef<"TourAvailability", 'Int'>
-  readonly startTime: Prisma.FieldRef<"TourAvailability", 'String'>
-  readonly endTime: Prisma.FieldRef<"TourAvailability", 'String'>
+  readonly startTimeMinutes: Prisma.FieldRef<"TourAvailability", 'Int'>
+  readonly endTimeMinutes: Prisma.FieldRef<"TourAvailability", 'Int'>
   readonly maxBookings: Prisma.FieldRef<"TourAvailability", 'Int'>
   readonly isActive: Prisma.FieldRef<"TourAvailability", 'Boolean'>
   readonly createdAt: Prisma.FieldRef<"TourAvailability", 'DateTime'>

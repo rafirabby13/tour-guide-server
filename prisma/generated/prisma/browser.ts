@@ -33,15 +33,15 @@ export type Payment = Prisma.PaymentModel
  */
 export type Review = Prisma.ReviewModel
 /**
- * Model TourPricing
- * 
- */
-export type TourPricing = Prisma.TourPricingModel
-/**
  * Model Tour
  * 
  */
 export type Tour = Prisma.TourModel
+/**
+ * Model TourPricing
+ * 
+ */
+export type TourPricing = Prisma.TourPricingModel
 /**
  * Model TourAvailability
  * 

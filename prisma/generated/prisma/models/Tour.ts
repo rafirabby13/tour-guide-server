@@ -29,7 +29,9 @@ export type TourMinAggregateOutputType = {
   title: string | null
   description: string | null
   location: string | null
+  status: $Enums.TourStatus | null
   guideId: string | null
+  isDeleted: boolean | null
   createdAt: Date | null
   updatedAt: Date | null
 }
@@ -39,7 +41,9 @@ export type TourMaxAggregateOutputType = {
   title: string | null
   description: string | null
   location: string | null
+  status: $Enums.TourStatus | null
   guideId: string | null
+  isDeleted: boolean | null
   createdAt: Date | null
   updatedAt: Date | null
 }
@@ -49,9 +53,10 @@ export type TourCountAggregateOutputType = {
   title: number
   description: number
   location: number
-  availableDates: number
   images: number
+  status: number
   guideId: number
+  isDeleted: number
   createdAt: number
   updatedAt: number
   _all: number
@@ -63,7 +68,9 @@ export type TourMinAggregateInputType = {
   title?: true
   description?: true
   location?: true
+  status?: true
   guideId?: true
+  isDeleted?: true
   createdAt?: true
   updatedAt?: true
 }
@@ -73,7 +80,9 @@ export type TourMaxAggregateInputType = {
   title?: true
   description?: true
   location?: true
+  status?: true
   guideId?: true
+  isDeleted?: true
   createdAt?: true
   updatedAt?: true
 }
@@ -83,9 +92,10 @@ export type TourCountAggregateInputType = {
   title?: true
   description?: true
   location?: true
-  availableDates?: true
   images?: true
+  status?: true
   guideId?: true
+  isDeleted?: true
   createdAt?: true
   updatedAt?: true
   _all?: true
@@ -168,9 +178,10 @@ export type TourGroupByOutputType = {
   title: string
   description: string
   location: string
-  availableDates: Date[]
   images: string[]
+  status: $Enums.TourStatus
   guideId: string
+  isDeleted: boolean
   createdAt: Date
   updatedAt: Date
   _count: TourCountAggregateOutputType | null
@@ -201,9 +212,10 @@ export type TourWhereInput = {
   title?: Prisma.StringFilter<"Tour"> | string
   description?: Prisma.StringFilter<"Tour"> | string
   location?: Prisma.StringFilter<"Tour"> | string
-  availableDates?: Prisma.DateTimeNullableListFilter<"Tour">
   images?: Prisma.StringNullableListFilter<"Tour">
+  status?: Prisma.EnumTourStatusFilter<"Tour"> | $Enums.TourStatus
   guideId?: Prisma.StringFilter<"Tour"> | string
+  isDeleted?: Prisma.BoolFilter<"Tour"> | boolean
   createdAt?: Prisma.DateTimeFilter<"Tour"> | Date | string
   updatedAt?: Prisma.DateTimeFilter<"Tour"> | Date | string
   guide?: Prisma.XOR<Prisma.GuideScalarRelationFilter, Prisma.GuideWhereInput>
@@ -219,9 +231,10 @@ export type TourOrderByWithRelationInput = {
   title?: Prisma.SortOrder
   description?: Prisma.SortOrder
   location?: Prisma.SortOrder
-  availableDates?: Prisma.SortOrder
   images?: Prisma.SortOrder
+  status?: Prisma.SortOrder
   guideId?: Prisma.SortOrder
+  isDeleted?: Prisma.SortOrder
   createdAt?: Prisma.SortOrder
   updatedAt?: Prisma.SortOrder
   guide?: Prisma.GuideOrderByWithRelationInput
@@ -240,9 +253,10 @@ export type TourWhereUniqueInput = Prisma.AtLeast<{
   title?: Prisma.StringFilter<"Tour"> | string
   description?: Prisma.StringFilter<"Tour"> | string
   location?: Prisma.StringFilter<"Tour"> | string
-  availableDates?: Prisma.DateTimeNullableListFilter<"Tour">
   images?: Prisma.StringNullableListFilter<"Tour">
+  status?: Prisma.EnumTourStatusFilter<"Tour"> | $Enums.TourStatus
   guideId?: Prisma.StringFilter<"Tour"> | string
+  isDeleted?: Prisma.BoolFilter<"Tour"> | boolean
   createdAt?: Prisma.DateTimeFilter<"Tour"> | Date | string
   updatedAt?: Prisma.DateTimeFilter<"Tour"> | Date | string
   guide?: Prisma.XOR<Prisma.GuideScalarRelationFilter, Prisma.GuideWhereInput>
@@ -258,9 +272,10 @@ export type TourOrderByWithAggregationInput = {
   title?: Prisma.SortOrder
   description?: Prisma.SortOrder
   location?: Prisma.SortOrder
-  availableDates?: Prisma.SortOrder
   images?: Prisma.SortOrder
+  status?: Prisma.SortOrder
   guideId?: Prisma.SortOrder
+  isDeleted?: Prisma.SortOrder
   createdAt?: Prisma.SortOrder
   updatedAt?: Prisma.SortOrder
   _count?: Prisma.TourCountOrderByAggregateInput
@@ -276,9 +291,10 @@ export type TourScalarWhereWithAggregatesInput = {
   title?: Prisma.StringWithAggregatesFilter<"Tour"> | string
   description?: Prisma.StringWithAggregatesFilter<"Tour"> | string
   location?: Prisma.StringWithAggregatesFilter<"Tour"> | string
-  availableDates?: Prisma.DateTimeNullableListFilter<"Tour">
   images?: Prisma.StringNullableListFilter<"Tour">
+  status?: Prisma.EnumTourStatusWithAggregatesFilter<"Tour"> | $Enums.TourStatus
   guideId?: Prisma.StringWithAggregatesFilter<"Tour"> | string
+  isDeleted?: Prisma.BoolWithAggregatesFilter<"Tour"> | boolean
   createdAt?: Prisma.DateTimeWithAggregatesFilter<"Tour"> | Date | string
   updatedAt?: Prisma.DateTimeWithAggregatesFilter<"Tour"> | Date | string
 }
@@ -288,8 +304,9 @@ export type TourCreateInput = {
   title: string
   description: string
   location: string
-  availableDates?: Prisma.TourCreateavailableDatesInput | Date[] | string[]
   images?: Prisma.TourCreateimagesInput | string[]
+  status?: $Enums.TourStatus
+  isDeleted?: boolean
   createdAt?: Date | string
   updatedAt?: Date | string
   guide: Prisma.GuideCreateNestedOneWithoutTourInput
@@ -305,9 +322,10 @@ export type TourUncheckedCreateInput = {
   title: string
   description: string
   location: string
-  availableDates?: Prisma.TourCreateavailableDatesInput | Date[] | string[]
   images?: Prisma.TourCreateimagesInput | string[]
+  status?: $Enums.TourStatus
   guideId: string
+  isDeleted?: boolean
   createdAt?: Date | string
   updatedAt?: Date | string
   bookings?: Prisma.BookingUncheckedCreateNestedManyWithoutTourInput
@@ -322,8 +340,9 @@ export type TourUpdateInput = {
   title?: Prisma.StringFieldUpdateOperationsInput | string
   description?: Prisma.StringFieldUpdateOperationsInput | string
   location?: Prisma.StringFieldUpdateOperationsInput | string
-  availableDates?: Prisma.TourUpdateavailableDatesInput | Date[] | string[]
   images?: Prisma.TourUpdateimagesInput | string[]
+  status?: Prisma.EnumTourStatusFieldUpdateOperationsInput | $Enums.TourStatus
+  isDeleted?: Prisma.BoolFieldUpdateOperationsInput | boolean
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   guide?: Prisma.GuideUpdateOneRequiredWithoutTourNestedInput
@@ -339,9 +358,10 @@ export type TourUncheckedUpdateInput = {
   title?: Prisma.StringFieldUpdateOperationsInput | string
   description?: Prisma.StringFieldUpdateOperationsInput | string
   location?: Prisma.StringFieldUpdateOperationsInput | string
-  availableDates?: Prisma.TourUpdateavailableDatesInput | Date[] | string[]
   images?: Prisma.TourUpdateimagesInput | string[]
+  status?: Prisma.EnumTourStatusFieldUpdateOperationsInput | $Enums.TourStatus
   guideId?: Prisma.StringFieldUpdateOperationsInput | string
+  isDeleted?: Prisma.BoolFieldUpdateOperationsInput | boolean
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   bookings?: Prisma.BookingUncheckedUpdateManyWithoutTourNestedInput
@@ -356,9 +376,10 @@ export type TourCreateManyInput = {
   title: string
   description: string
   location: string
-  availableDates?: Prisma.TourCreateavailableDatesInput | Date[] | string[]
   images?: Prisma.TourCreateimagesInput | string[]
+  status?: $Enums.TourStatus
   guideId: string
+  isDeleted?: boolean
   createdAt?: Date | string
   updatedAt?: Date | string
 }
@@ -368,8 +389,9 @@ export type TourUpdateManyMutationInput = {
   title?: Prisma.StringFieldUpdateOperationsInput | string
   description?: Prisma.StringFieldUpdateOperationsInput | string
   location?: Prisma.StringFieldUpdateOperationsInput | string
-  availableDates?: Prisma.TourUpdateavailableDatesInput | Date[] | string[]
   images?: Prisma.TourUpdateimagesInput | string[]
+  status?: Prisma.EnumTourStatusFieldUpdateOperationsInput | $Enums.TourStatus
+  isDeleted?: Prisma.BoolFieldUpdateOperationsInput | boolean
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
 }
@@ -379,9 +401,10 @@ export type TourUncheckedUpdateManyInput = {
   title?: Prisma.StringFieldUpdateOperationsInput | string
   description?: Prisma.StringFieldUpdateOperationsInput | string
   location?: Prisma.StringFieldUpdateOperationsInput | string
-  availableDates?: Prisma.TourUpdateavailableDatesInput | Date[] | string[]
   images?: Prisma.TourUpdateimagesInput | string[]
+  status?: Prisma.EnumTourStatusFieldUpdateOperationsInput | $Enums.TourStatus
   guideId?: Prisma.StringFieldUpdateOperationsInput | string
+  isDeleted?: Prisma.BoolFieldUpdateOperationsInput | boolean
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
 }
@@ -389,14 +412,6 @@ export type TourUncheckedUpdateManyInput = {
 export type TourScalarRelationFilter = {
   is?: Prisma.TourWhereInput
   isNot?: Prisma.TourWhereInput
-}
-
-export type DateTimeNullableListFilter<$PrismaModel = never> = {
-  equals?: Date[] | string[] | Prisma.ListDateTimeFieldRefInput<$PrismaModel> | null
-  has?: Date | string | Prisma.DateTimeFieldRefInput<$PrismaModel> | null
-  hasEvery?: Date[] | string[] | Prisma.ListDateTimeFieldRefInput<$PrismaModel>
-  hasSome?: Date[] | string[] | Prisma.ListDateTimeFieldRefInput<$PrismaModel>
-  isEmpty?: boolean
 }
 
 export type StringNullableListFilter<$PrismaModel = never> = {
@@ -412,9 +427,10 @@ export type TourCountOrderByAggregateInput = {
   title?: Prisma.SortOrder
   description?: Prisma.SortOrder
   location?: Prisma.SortOrder
-  availableDates?: Prisma.SortOrder
   images?: Prisma.SortOrder
+  status?: Prisma.SortOrder
   guideId?: Prisma.SortOrder
+  isDeleted?: Prisma.SortOrder
   createdAt?: Prisma.SortOrder
   updatedAt?: Prisma.SortOrder
 }
@@ -424,7 +440,9 @@ export type TourMaxOrderByAggregateInput = {
   title?: Prisma.SortOrder
   description?: Prisma.SortOrder
   location?: Prisma.SortOrder
+  status?: Prisma.SortOrder
   guideId?: Prisma.SortOrder
+  isDeleted?: Prisma.SortOrder
   createdAt?: Prisma.SortOrder
   updatedAt?: Prisma.SortOrder
 }
@@ -434,7 +452,9 @@ export type TourMinOrderByAggregateInput = {
   title?: Prisma.SortOrder
   description?: Prisma.SortOrder
   location?: Prisma.SortOrder
+  status?: Prisma.SortOrder
   guideId?: Prisma.SortOrder
+  isDeleted?: Prisma.SortOrder
   createdAt?: Prisma.SortOrder
   updatedAt?: Prisma.SortOrder
 }
@@ -482,6 +502,23 @@ export type TourUpdateOneRequiredWithoutReviewsNestedInput = {
   update?: Prisma.XOR<Prisma.XOR<Prisma.TourUpdateToOneWithWhereWithoutReviewsInput, Prisma.TourUpdateWithoutReviewsInput>, Prisma.TourUncheckedUpdateWithoutReviewsInput>
 }
 
+export type TourCreateimagesInput = {
+  set: string[]
+}
+
+export type TourUpdateimagesInput = {
+  set?: string[]
+  push?: string | string[]
+}
+
+export type EnumTourStatusFieldUpdateOperationsInput = {
+  set?: $Enums.TourStatus
+}
+
+export type BoolFieldUpdateOperationsInput = {
+  set?: boolean
+}
+
 export type TourCreateNestedOneWithoutTourPricingsInput = {
   create?: Prisma.XOR<Prisma.TourCreateWithoutTourPricingsInput, Prisma.TourUncheckedCreateWithoutTourPricingsInput>
   connectOrCreate?: Prisma.TourCreateOrConnectWithoutTourPricingsInput
@@ -494,24 +531,6 @@ export type TourUpdateOneRequiredWithoutTourPricingsNestedInput = {
   upsert?: Prisma.TourUpsertWithoutTourPricingsInput
   connect?: Prisma.TourWhereUniqueInput
   update?: Prisma.XOR<Prisma.XOR<Prisma.TourUpdateToOneWithWhereWithoutTourPricingsInput, Prisma.TourUpdateWithoutTourPricingsInput>, Prisma.TourUncheckedUpdateWithoutTourPricingsInput>
-}
-
-export type TourCreateavailableDatesInput = {
-  set: Date[] | string[]
-}
-
-export type TourCreateimagesInput = {
-  set: string[]
-}
-
-export type TourUpdateavailableDatesInput = {
-  set?: Date[] | string[]
-  push?: Date | string | Date[] | string[]
-}
-
-export type TourUpdateimagesInput = {
-  set?: string[]
-  push?: string | string[]
 }
 
 export type TourCreateNestedOneWithoutTourAvailabilitiesInput = {
@@ -591,8 +610,9 @@ export type TourCreateWithoutBookingsInput = {
   title: string
   description: string
   location: string
-  availableDates?: Prisma.TourCreateavailableDatesInput | Date[] | string[]
   images?: Prisma.TourCreateimagesInput | string[]
+  status?: $Enums.TourStatus
+  isDeleted?: boolean
   createdAt?: Date | string
   updatedAt?: Date | string
   guide: Prisma.GuideCreateNestedOneWithoutTourInput
@@ -607,9 +627,10 @@ export type TourUncheckedCreateWithoutBookingsInput = {
   title: string
   description: string
   location: string
-  availableDates?: Prisma.TourCreateavailableDatesInput | Date[] | string[]
   images?: Prisma.TourCreateimagesInput | string[]
+  status?: $Enums.TourStatus
   guideId: string
+  isDeleted?: boolean
   createdAt?: Date | string
   updatedAt?: Date | string
   reviews?: Prisma.ReviewUncheckedCreateNestedManyWithoutTourInput
@@ -639,8 +660,9 @@ export type TourUpdateWithoutBookingsInput = {
   title?: Prisma.StringFieldUpdateOperationsInput | string
   description?: Prisma.StringFieldUpdateOperationsInput | string
   location?: Prisma.StringFieldUpdateOperationsInput | string
-  availableDates?: Prisma.TourUpdateavailableDatesInput | Date[] | string[]
   images?: Prisma.TourUpdateimagesInput | string[]
+  status?: Prisma.EnumTourStatusFieldUpdateOperationsInput | $Enums.TourStatus
+  isDeleted?: Prisma.BoolFieldUpdateOperationsInput | boolean
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   guide?: Prisma.GuideUpdateOneRequiredWithoutTourNestedInput
@@ -655,9 +677,10 @@ export type TourUncheckedUpdateWithoutBookingsInput = {
   title?: Prisma.StringFieldUpdateOperationsInput | string
   description?: Prisma.StringFieldUpdateOperationsInput | string
   location?: Prisma.StringFieldUpdateOperationsInput | string
-  availableDates?: Prisma.TourUpdateavailableDatesInput | Date[] | string[]
   images?: Prisma.TourUpdateimagesInput | string[]
+  status?: Prisma.EnumTourStatusFieldUpdateOperationsInput | $Enums.TourStatus
   guideId?: Prisma.StringFieldUpdateOperationsInput | string
+  isDeleted?: Prisma.BoolFieldUpdateOperationsInput | boolean
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   reviews?: Prisma.ReviewUncheckedUpdateManyWithoutTourNestedInput
@@ -671,8 +694,9 @@ export type TourCreateWithoutReviewsInput = {
   title: string
   description: string
   location: string
-  availableDates?: Prisma.TourCreateavailableDatesInput | Date[] | string[]
   images?: Prisma.TourCreateimagesInput | string[]
+  status?: $Enums.TourStatus
+  isDeleted?: boolean
   createdAt?: Date | string
   updatedAt?: Date | string
   guide: Prisma.GuideCreateNestedOneWithoutTourInput
@@ -687,9 +711,10 @@ export type TourUncheckedCreateWithoutReviewsInput = {
   title: string
   description: string
   location: string
-  availableDates?: Prisma.TourCreateavailableDatesInput | Date[] | string[]
   images?: Prisma.TourCreateimagesInput | string[]
+  status?: $Enums.TourStatus
   guideId: string
+  isDeleted?: boolean
   createdAt?: Date | string
   updatedAt?: Date | string
   bookings?: Prisma.BookingUncheckedCreateNestedManyWithoutTourInput
@@ -719,8 +744,9 @@ export type TourUpdateWithoutReviewsInput = {
   title?: Prisma.StringFieldUpdateOperationsInput | string
   description?: Prisma.StringFieldUpdateOperationsInput | string
   location?: Prisma.StringFieldUpdateOperationsInput | string
-  availableDates?: Prisma.TourUpdateavailableDatesInput | Date[] | string[]
   images?: Prisma.TourUpdateimagesInput | string[]
+  status?: Prisma.EnumTourStatusFieldUpdateOperationsInput | $Enums.TourStatus
+  isDeleted?: Prisma.BoolFieldUpdateOperationsInput | boolean
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   guide?: Prisma.GuideUpdateOneRequiredWithoutTourNestedInput
@@ -735,9 +761,10 @@ export type TourUncheckedUpdateWithoutReviewsInput = {
   title?: Prisma.StringFieldUpdateOperationsInput | string
   description?: Prisma.StringFieldUpdateOperationsInput | string
   location?: Prisma.StringFieldUpdateOperationsInput | string
-  availableDates?: Prisma.TourUpdateavailableDatesInput | Date[] | string[]
   images?: Prisma.TourUpdateimagesInput | string[]
+  status?: Prisma.EnumTourStatusFieldUpdateOperationsInput | $Enums.TourStatus
   guideId?: Prisma.StringFieldUpdateOperationsInput | string
+  isDeleted?: Prisma.BoolFieldUpdateOperationsInput | boolean
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   bookings?: Prisma.BookingUncheckedUpdateManyWithoutTourNestedInput
@@ -751,8 +778,9 @@ export type TourCreateWithoutTourPricingsInput = {
   title: string
   description: string
   location: string
-  availableDates?: Prisma.TourCreateavailableDatesInput | Date[] | string[]
   images?: Prisma.TourCreateimagesInput | string[]
+  status?: $Enums.TourStatus
+  isDeleted?: boolean
   createdAt?: Date | string
   updatedAt?: Date | string
   guide: Prisma.GuideCreateNestedOneWithoutTourInput
@@ -767,9 +795,10 @@ export type TourUncheckedCreateWithoutTourPricingsInput = {
   title: string
   description: string
   location: string
-  availableDates?: Prisma.TourCreateavailableDatesInput | Date[] | string[]
   images?: Prisma.TourCreateimagesInput | string[]
+  status?: $Enums.TourStatus
   guideId: string
+  isDeleted?: boolean
   createdAt?: Date | string
   updatedAt?: Date | string
   bookings?: Prisma.BookingUncheckedCreateNestedManyWithoutTourInput
@@ -799,8 +828,9 @@ export type TourUpdateWithoutTourPricingsInput = {
   title?: Prisma.StringFieldUpdateOperationsInput | string
   description?: Prisma.StringFieldUpdateOperationsInput | string
   location?: Prisma.StringFieldUpdateOperationsInput | string
-  availableDates?: Prisma.TourUpdateavailableDatesInput | Date[] | string[]
   images?: Prisma.TourUpdateimagesInput | string[]
+  status?: Prisma.EnumTourStatusFieldUpdateOperationsInput | $Enums.TourStatus
+  isDeleted?: Prisma.BoolFieldUpdateOperationsInput | boolean
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   guide?: Prisma.GuideUpdateOneRequiredWithoutTourNestedInput
@@ -815,9 +845,10 @@ export type TourUncheckedUpdateWithoutTourPricingsInput = {
   title?: Prisma.StringFieldUpdateOperationsInput | string
   description?: Prisma.StringFieldUpdateOperationsInput | string
   location?: Prisma.StringFieldUpdateOperationsInput | string
-  availableDates?: Prisma.TourUpdateavailableDatesInput | Date[] | string[]
   images?: Prisma.TourUpdateimagesInput | string[]
+  status?: Prisma.EnumTourStatusFieldUpdateOperationsInput | $Enums.TourStatus
   guideId?: Prisma.StringFieldUpdateOperationsInput | string
+  isDeleted?: Prisma.BoolFieldUpdateOperationsInput | boolean
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   bookings?: Prisma.BookingUncheckedUpdateManyWithoutTourNestedInput
@@ -831,8 +862,9 @@ export type TourCreateWithoutTourAvailabilitiesInput = {
   title: string
   description: string
   location: string
-  availableDates?: Prisma.TourCreateavailableDatesInput | Date[] | string[]
   images?: Prisma.TourCreateimagesInput | string[]
+  status?: $Enums.TourStatus
+  isDeleted?: boolean
   createdAt?: Date | string
   updatedAt?: Date | string
   guide: Prisma.GuideCreateNestedOneWithoutTourInput
@@ -847,9 +879,10 @@ export type TourUncheckedCreateWithoutTourAvailabilitiesInput = {
   title: string
   description: string
   location: string
-  availableDates?: Prisma.TourCreateavailableDatesInput | Date[] | string[]
   images?: Prisma.TourCreateimagesInput | string[]
+  status?: $Enums.TourStatus
   guideId: string
+  isDeleted?: boolean
   createdAt?: Date | string
   updatedAt?: Date | string
   bookings?: Prisma.BookingUncheckedCreateNestedManyWithoutTourInput
@@ -879,8 +912,9 @@ export type TourUpdateWithoutTourAvailabilitiesInput = {
   title?: Prisma.StringFieldUpdateOperationsInput | string
   description?: Prisma.StringFieldUpdateOperationsInput | string
   location?: Prisma.StringFieldUpdateOperationsInput | string
-  availableDates?: Prisma.TourUpdateavailableDatesInput | Date[] | string[]
   images?: Prisma.TourUpdateimagesInput | string[]
+  status?: Prisma.EnumTourStatusFieldUpdateOperationsInput | $Enums.TourStatus
+  isDeleted?: Prisma.BoolFieldUpdateOperationsInput | boolean
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   guide?: Prisma.GuideUpdateOneRequiredWithoutTourNestedInput
@@ -895,9 +929,10 @@ export type TourUncheckedUpdateWithoutTourAvailabilitiesInput = {
   title?: Prisma.StringFieldUpdateOperationsInput | string
   description?: Prisma.StringFieldUpdateOperationsInput | string
   location?: Prisma.StringFieldUpdateOperationsInput | string
-  availableDates?: Prisma.TourUpdateavailableDatesInput | Date[] | string[]
   images?: Prisma.TourUpdateimagesInput | string[]
+  status?: Prisma.EnumTourStatusFieldUpdateOperationsInput | $Enums.TourStatus
   guideId?: Prisma.StringFieldUpdateOperationsInput | string
+  isDeleted?: Prisma.BoolFieldUpdateOperationsInput | boolean
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   bookings?: Prisma.BookingUncheckedUpdateManyWithoutTourNestedInput
@@ -911,8 +946,9 @@ export type TourCreateWithoutBlockedDatesInput = {
   title: string
   description: string
   location: string
-  availableDates?: Prisma.TourCreateavailableDatesInput | Date[] | string[]
   images?: Prisma.TourCreateimagesInput | string[]
+  status?: $Enums.TourStatus
+  isDeleted?: boolean
   createdAt?: Date | string
   updatedAt?: Date | string
   guide: Prisma.GuideCreateNestedOneWithoutTourInput
@@ -927,9 +963,10 @@ export type TourUncheckedCreateWithoutBlockedDatesInput = {
   title: string
   description: string
   location: string
-  availableDates?: Prisma.TourCreateavailableDatesInput | Date[] | string[]
   images?: Prisma.TourCreateimagesInput | string[]
+  status?: $Enums.TourStatus
   guideId: string
+  isDeleted?: boolean
   createdAt?: Date | string
   updatedAt?: Date | string
   bookings?: Prisma.BookingUncheckedCreateNestedManyWithoutTourInput
@@ -959,8 +996,9 @@ export type TourUpdateWithoutBlockedDatesInput = {
   title?: Prisma.StringFieldUpdateOperationsInput | string
   description?: Prisma.StringFieldUpdateOperationsInput | string
   location?: Prisma.StringFieldUpdateOperationsInput | string
-  availableDates?: Prisma.TourUpdateavailableDatesInput | Date[] | string[]
   images?: Prisma.TourUpdateimagesInput | string[]
+  status?: Prisma.EnumTourStatusFieldUpdateOperationsInput | $Enums.TourStatus
+  isDeleted?: Prisma.BoolFieldUpdateOperationsInput | boolean
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   guide?: Prisma.GuideUpdateOneRequiredWithoutTourNestedInput
@@ -975,9 +1013,10 @@ export type TourUncheckedUpdateWithoutBlockedDatesInput = {
   title?: Prisma.StringFieldUpdateOperationsInput | string
   description?: Prisma.StringFieldUpdateOperationsInput | string
   location?: Prisma.StringFieldUpdateOperationsInput | string
-  availableDates?: Prisma.TourUpdateavailableDatesInput | Date[] | string[]
   images?: Prisma.TourUpdateimagesInput | string[]
+  status?: Prisma.EnumTourStatusFieldUpdateOperationsInput | $Enums.TourStatus
   guideId?: Prisma.StringFieldUpdateOperationsInput | string
+  isDeleted?: Prisma.BoolFieldUpdateOperationsInput | boolean
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   bookings?: Prisma.BookingUncheckedUpdateManyWithoutTourNestedInput
@@ -991,8 +1030,9 @@ export type TourCreateWithoutGuideInput = {
   title: string
   description: string
   location: string
-  availableDates?: Prisma.TourCreateavailableDatesInput | Date[] | string[]
   images?: Prisma.TourCreateimagesInput | string[]
+  status?: $Enums.TourStatus
+  isDeleted?: boolean
   createdAt?: Date | string
   updatedAt?: Date | string
   bookings?: Prisma.BookingCreateNestedManyWithoutTourInput
@@ -1007,8 +1047,9 @@ export type TourUncheckedCreateWithoutGuideInput = {
   title: string
   description: string
   location: string
-  availableDates?: Prisma.TourCreateavailableDatesInput | Date[] | string[]
   images?: Prisma.TourCreateimagesInput | string[]
+  status?: $Enums.TourStatus
+  isDeleted?: boolean
   createdAt?: Date | string
   updatedAt?: Date | string
   bookings?: Prisma.BookingUncheckedCreateNestedManyWithoutTourInput
@@ -1052,9 +1093,10 @@ export type TourScalarWhereInput = {
   title?: Prisma.StringFilter<"Tour"> | string
   description?: Prisma.StringFilter<"Tour"> | string
   location?: Prisma.StringFilter<"Tour"> | string
-  availableDates?: Prisma.DateTimeNullableListFilter<"Tour">
   images?: Prisma.StringNullableListFilter<"Tour">
+  status?: Prisma.EnumTourStatusFilter<"Tour"> | $Enums.TourStatus
   guideId?: Prisma.StringFilter<"Tour"> | string
+  isDeleted?: Prisma.BoolFilter<"Tour"> | boolean
   createdAt?: Prisma.DateTimeFilter<"Tour"> | Date | string
   updatedAt?: Prisma.DateTimeFilter<"Tour"> | Date | string
 }
@@ -1064,8 +1106,9 @@ export type TourCreateManyGuideInput = {
   title: string
   description: string
   location: string
-  availableDates?: Prisma.TourCreateavailableDatesInput | Date[] | string[]
   images?: Prisma.TourCreateimagesInput | string[]
+  status?: $Enums.TourStatus
+  isDeleted?: boolean
   createdAt?: Date | string
   updatedAt?: Date | string
 }
@@ -1075,8 +1118,9 @@ export type TourUpdateWithoutGuideInput = {
   title?: Prisma.StringFieldUpdateOperationsInput | string
   description?: Prisma.StringFieldUpdateOperationsInput | string
   location?: Prisma.StringFieldUpdateOperationsInput | string
-  availableDates?: Prisma.TourUpdateavailableDatesInput | Date[] | string[]
   images?: Prisma.TourUpdateimagesInput | string[]
+  status?: Prisma.EnumTourStatusFieldUpdateOperationsInput | $Enums.TourStatus
+  isDeleted?: Prisma.BoolFieldUpdateOperationsInput | boolean
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   bookings?: Prisma.BookingUpdateManyWithoutTourNestedInput
@@ -1091,8 +1135,9 @@ export type TourUncheckedUpdateWithoutGuideInput = {
   title?: Prisma.StringFieldUpdateOperationsInput | string
   description?: Prisma.StringFieldUpdateOperationsInput | string
   location?: Prisma.StringFieldUpdateOperationsInput | string
-  availableDates?: Prisma.TourUpdateavailableDatesInput | Date[] | string[]
   images?: Prisma.TourUpdateimagesInput | string[]
+  status?: Prisma.EnumTourStatusFieldUpdateOperationsInput | $Enums.TourStatus
+  isDeleted?: Prisma.BoolFieldUpdateOperationsInput | boolean
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   bookings?: Prisma.BookingUncheckedUpdateManyWithoutTourNestedInput
@@ -1107,8 +1152,9 @@ export type TourUncheckedUpdateManyWithoutGuideInput = {
   title?: Prisma.StringFieldUpdateOperationsInput | string
   description?: Prisma.StringFieldUpdateOperationsInput | string
   location?: Prisma.StringFieldUpdateOperationsInput | string
-  availableDates?: Prisma.TourUpdateavailableDatesInput | Date[] | string[]
   images?: Prisma.TourUpdateimagesInput | string[]
+  status?: Prisma.EnumTourStatusFieldUpdateOperationsInput | $Enums.TourStatus
+  isDeleted?: Prisma.BoolFieldUpdateOperationsInput | boolean
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
 }
@@ -1185,9 +1231,10 @@ export type TourSelect<ExtArgs extends runtime.Types.Extensions.InternalArgs = r
   title?: boolean
   description?: boolean
   location?: boolean
-  availableDates?: boolean
   images?: boolean
+  status?: boolean
   guideId?: boolean
+  isDeleted?: boolean
   createdAt?: boolean
   updatedAt?: boolean
   guide?: boolean | Prisma.GuideDefaultArgs<ExtArgs>
@@ -1204,9 +1251,10 @@ export type TourSelectCreateManyAndReturn<ExtArgs extends runtime.Types.Extensio
   title?: boolean
   description?: boolean
   location?: boolean
-  availableDates?: boolean
   images?: boolean
+  status?: boolean
   guideId?: boolean
+  isDeleted?: boolean
   createdAt?: boolean
   updatedAt?: boolean
   guide?: boolean | Prisma.GuideDefaultArgs<ExtArgs>
@@ -1217,9 +1265,10 @@ export type TourSelectUpdateManyAndReturn<ExtArgs extends runtime.Types.Extensio
   title?: boolean
   description?: boolean
   location?: boolean
-  availableDates?: boolean
   images?: boolean
+  status?: boolean
   guideId?: boolean
+  isDeleted?: boolean
   createdAt?: boolean
   updatedAt?: boolean
   guide?: boolean | Prisma.GuideDefaultArgs<ExtArgs>
@@ -1230,14 +1279,15 @@ export type TourSelectScalar = {
   title?: boolean
   description?: boolean
   location?: boolean
-  availableDates?: boolean
   images?: boolean
+  status?: boolean
   guideId?: boolean
+  isDeleted?: boolean
   createdAt?: boolean
   updatedAt?: boolean
 }
 
-export type TourOmit<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = runtime.Types.Extensions.GetOmit<"id" | "title" | "description" | "location" | "availableDates" | "images" | "guideId" | "createdAt" | "updatedAt", ExtArgs["result"]["tour"]>
+export type TourOmit<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = runtime.Types.Extensions.GetOmit<"id" | "title" | "description" | "location" | "images" | "status" | "guideId" | "isDeleted" | "createdAt" | "updatedAt", ExtArgs["result"]["tour"]>
 export type TourInclude<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
   guide?: boolean | Prisma.GuideDefaultArgs<ExtArgs>
   bookings?: boolean | Prisma.Tour$bookingsArgs<ExtArgs>
@@ -1269,9 +1319,10 @@ export type $TourPayload<ExtArgs extends runtime.Types.Extensions.InternalArgs =
     title: string
     description: string
     location: string
-    availableDates: Date[]
     images: string[]
+    status: $Enums.TourStatus
     guideId: string
+    isDeleted: boolean
     createdAt: Date
     updatedAt: Date
   }, ExtArgs["result"]["tour"]>
@@ -1707,9 +1758,10 @@ export interface TourFieldRefs {
   readonly title: Prisma.FieldRef<"Tour", 'String'>
   readonly description: Prisma.FieldRef<"Tour", 'String'>
   readonly location: Prisma.FieldRef<"Tour", 'String'>
-  readonly availableDates: Prisma.FieldRef<"Tour", 'DateTime[]'>
   readonly images: Prisma.FieldRef<"Tour", 'String[]'>
+  readonly status: Prisma.FieldRef<"Tour", 'TourStatus'>
   readonly guideId: Prisma.FieldRef<"Tour", 'String'>
+  readonly isDeleted: Prisma.FieldRef<"Tour", 'Boolean'>
   readonly createdAt: Prisma.FieldRef<"Tour", 'DateTime'>
   readonly updatedAt: Prisma.FieldRef<"Tour", 'DateTime'>
 }

@@ -1,113 +1,92 @@
 import { z } from "zod";
 
-const timeRegex = /^([01]\d|2[0-3]):([0-5]\d)$/;
+// --- Helpers ---
 
-// Sub-schemas
+// Regex for HH:MM time format
+const timeRegex = /^([0-1]?[0-9]|2[0-3]):[0-5][0-9]$/;
+
+// Helper to convert "09:30" -> 570 (minutes)
+const timeToMinutes = (time: string) => {
+  const [hours, minutes] = time.split(":").map(Number);
+  return hours * 60 + minutes;
+};
+
+// Helper to check if end time is after start time
+const isValidTimeRange = (data: { startTime: string; endTime: string }) => {
+  return timeToMinutes(data.endTime) > timeToMinutes(data.startTime);
+};
+
+// --- Sub-Schemas ---
+
 const tourPricingSchema = z.object({
-  minGuests: z.number().int().positive("Min guests must be positive"),
-  maxGuests: z.number().int().positive("Max guests must be positive"),
-  pricePerHour: z.number().positive("Price must be positive"),
-}).refine(
-  (data) => data.maxGuests >= data.minGuests,
-  { message: "Max guests must be >= min guests" }
-);
+  minGuests: z.number().int().min(1, "Min guests must be at least 1"),
+  maxGuests: z.number().int().min(1, "Max guests must be at least 1"),
+  pricePerHour: z.number().positive("Price must be a positive number"),
+}).refine((data) => data.maxGuests >= data.minGuests, {
+  message: "Max guests must be greater than or equal to min guests",
+  path: ["maxGuests"],
+});
 
 const tourAvailabilitySchema = z.object({
-  dayOfWeek: z.number().int().min(0).max(6, "Day must be 0-6"),
-  startTime: z.string().regex(timeRegex, "Time must be HH:MM format"),
-  endTime: z.string().regex(timeRegex, "Time must be HH:MM format"),
-  maxBookings: z.number().int().min(1, "Max bookings must be at least 1").default(1),
-}).refine(
-  (data) => data.startTime < data.endTime,
-  { message: "End time must be after start time" }
-);
+  dayOfWeek: z.number().int().min(0).max(6, "Day must be 0 (Sunday) to 6 (Saturday)"),
+  
+  // We accept string "HH:MM" from frontend and transform to minutes for backend
+  startTime: z.string().regex(timeRegex, "Invalid time format (HH:MM)"),
+  endTime: z.string().regex(timeRegex, "Invalid time format (HH:MM)"),
+  
+  maxBookings: z.number().int().min(1).default(1),
+  isActive: z.boolean().default(true),
+}).refine(isValidTimeRange, {
+  message: "End time must be after start time",
+  path: ["endTime"],
+});
 
 const blockedDateSchema = z.object({
-  blockedDate: z.string().datetime("Must be valid ISO date"),
-  startTime: z.string().regex(timeRegex, "Time must be HH:MM").optional(),
-  endTime: z.string().regex(timeRegex, "Time must be HH:MM").optional(),
-  isAllDay: z.boolean().default(true),
-  reason: z.string().max(255, "Reason too long").optional(),
+  blockedDate: z.string().datetime("Must be a valid ISO date string"),
+  // Uncomment and add validation if you re-enable these fields in Prisma
+  // reason: z.string().optional(),
+  // isAllDay: z.boolean().default(true),
 });
 
-// Create Tour
-export const createTourSchema = z.object({
+// --- Main Schemas ---
+
+export const createTourZodSchema = z.object({
   body: z.object({
-    title: z.string().min(3, "Title must be at least 3 characters"),
-    description: z.string().min(10, "Description must be at least 10 characters"),
-    location: z.string().min(2, "Location required"),
+    title: z.string().min(3, "Title is too short").max(255),
+    description: z.string().min(10, "Description is too short"),
+    location: z.string().min(2, "Location is required"),
+    images: z.array(z.string().url()).default([]),
     
-    guideId: z.string().uuid("Invalid guide ID"),
+    // Status is optional on create, defaults to DRAFT in Prisma
+    status: z.enum(["BLOCKED", "DRAFT", "PUBLISHED"]).optional(),
+
+    guideId: z.string().uuid("Invalid Guide ID"),
+
+    tourPricings: z.array(tourPricingSchema).nonempty("At least one pricing tier is required"),
     
-    availableDates: z
-      .array(z.string().datetime("Must be ISO date"))
-      .optional(),
-    
-    images: z.array(z.string()).default([]),
-    
-    tourPricings: z
-      .array(tourPricingSchema)
-      .nonempty("At least one pricing tier required"),
-    
-    tourAvailabilities: z
-      .array(tourAvailabilitySchema)
-      .nonempty("At least one availability slot required"),
+    tourAvailabilities: z.array(tourAvailabilitySchema).nonempty("At least one availability slot is required"),
     
     blockedDates: z.array(blockedDateSchema).optional(),
-  })
+  }),
 });
 
-// Update Tour
-export const updateTourSchema = z.object({
+export const updateTourZodSchema = z.object({
   body: z.object({
-    title: z.string().min(3).optional(),
+    title: z.string().min(3).max(255).optional(),
     description: z.string().min(10).optional(),
     location: z.string().min(2).optional(),
+    images: z.array(z.string().url()).optional(),
+    status: z.enum(["BLOCKED", "DRAFT", "PUBLISHED"]).optional(),
     
-    availableDates: z.array(z.string().datetime()).optional(),
-    images: z.array(z.string()).optional(),
-    
+    // For updates, we usually replace the entire arrays or handle them via specific endpoints.
+    // Assuming full replacement logic here:
     tourPricings: z.array(tourPricingSchema).optional(),
     tourAvailabilities: z.array(tourAvailabilitySchema).optional(),
     blockedDates: z.array(blockedDateSchema).optional(),
-  })
+  }),
 });
 
-// Get Tours Query
-export const getTourQuerySchema = z.object({
-  query: z.object({
-    searchTerm: z.string().optional(),
-    location: z.string().optional(),
-    guideId: z.string().uuid().optional(),
-    minPrice: z.string().transform(Number).pipe(z.number().positive()).optional(),
-    maxPrice: z.string().transform(Number).pipe(z.number().positive()).optional(),
-    minRating: z.string().transform(Number).pipe(z.number().min(0).max(5)).optional(),
-    available: z.string().transform(val => val === 'true').optional(),
-    page: z.string().transform(Number).pipe(z.number().positive()).optional(),
-    limit: z.string().transform(Number).pipe(z.number().positive()).optional(),
-    sortBy: z.string().optional(),
-    sortOrder: z.enum(['asc', 'desc']).optional(),
-  })
-});
-
-// UUID Param
-export const uuidParamSchema = z.object({
-  
-    id: z.string()
-  
-});
-
-// Check Availability
-export const checkAvailabilitySchema = z.object({
-  body: z.object({
-    date: z.string().datetime("Must be valid ISO date"),
-    guestCount: z.number().int().positive("Guest count must be positive"),
-    startTime: z.string().regex(timeRegex).optional(),
-    endTime: z.string().regex(timeRegex).optional(),
-  })
-});
-
-export type CreateTourInput = z.infer<typeof createTourSchema>['body'];
-export type UpdateTourInput = z.infer<typeof updateTourSchema>['body'];
-export type GetTourQuery = z.infer<typeof getTourQuerySchema>['query'];
-export type CheckAvailabilityInput = z.infer<typeof checkAvailabilitySchema>['body'];
+// --- Types for your Code ---
+// Export these to use in your Frontend Forms or Backend Controllers
+export type CreateTourInput = z.infer<typeof createTourZodSchema>['body'];
+export type UpdateTourInput = z.infer<typeof updateTourZodSchema>['body'];

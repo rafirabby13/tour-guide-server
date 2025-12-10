@@ -7,14 +7,14 @@ import pick from "../../helpers/pick";
 import httpStatus from "http-status";
 
 const createTourist = catchAsync(async (req: Request, res: Response, next: NextFunction) => {
-    // console.log("object", req.file.)
+    // console.log({req})
 
     const result = await UserServices.createTourist(req)
 
     sendResponse(res, {
         statusCode: 201,
         success: true,
-        message: "Tourist created",
+        message: "Tourist is created successsfully....",
         // data: {}
         data: result
     })
@@ -33,12 +33,14 @@ const createAdmin = catchAsync(async (req: Request, res: Response) => {
 });
 
 const createGuide = catchAsync(async (req: Request, res: Response) => {
+    // console.log(req.body)
 
-    const result = await UserServices.createGuide(req);
+    const result = await UserServices.createGuide(req.body);
     sendResponse(res, {
         statusCode: 201,
         success: true,
         message: "Guide Created successfuly!",
+        // data: {}
         data: result
     })
 });
@@ -85,29 +87,32 @@ const getMyProfile = catchAsync(async (req: Request, res: Response) => {
 });
 
 // ✅ Update User Profile
-const updateUserProfile = catchAsync(async (req: Request, res: Response) => {
-    const { userId } = req.params;
+// const updateUserProfile = catchAsync(async (req: Request, res: Response) => {
+//     const { userId } = req.params;
     
-    const result = await UserServices.updateUserProfile(userId, req);
+//     const result = await UserServices.updateUserProfile(userId, req);
     
-    sendResponse(res, {
-        statusCode: httpStatus.OK,
-        success: true,
-        message: "Profile updated successfully",
-        data: result
-    });
-});
+//     sendResponse(res, {
+//         statusCode: httpStatus.OK,
+//         success: true,
+//         message: "Profile updated successfully",
+//         data: result
+//     });
+// });
 
 // ✅ Update My Profile
 const updateMyProfile = catchAsync(async (req: Request, res: Response) => {
     const userId = (req as any).user.id; // From JWT token
+// console.log({userId})
+    console.log(req.file)
     
-    const result = await UserServices.updateUserProfile(userId, req);
+    const result = await UserServices.updateMyProfile(userId, req);
     
     sendResponse(res, {
         statusCode: httpStatus.OK,
         success: true,
         message: "Profile updated successfully",
+        // data: {}
         data: result
     });
 });
@@ -128,8 +133,9 @@ const deleteUser = catchAsync(async (req: Request, res: Response) => {
 
 // ✅ Change Password
 const changePassword = catchAsync(async (req: Request, res: Response) => {
-    const userId = (req as any).user.id; // From JWT token
+    const userId = (req as any).user.id; 
     const { oldPassword, newPassword } = req.body;
+    // console.log(req.body)
     
     const result = await UserServices.changePassword(userId, oldPassword, newPassword);
     
@@ -157,16 +163,21 @@ const updateUserRole = catchAsync(async (req: Request, res: Response) => {
 });
 
 // ✅ Toggle User Status (Admin only)
-const toggleUserStatus = catchAsync(async (req: Request, res: Response) => {
+const UpdateUserStatus = catchAsync(async (req: Request, res: Response) => {
     const { userId } = req.params;
+    const {status} = req.body 
+
+    console.log("...............",userId, status)
     
-    const result = await UserServices.toggleUserStatus(userId);
+    const result = await UserServices.UpdateUserStatus(userId,status);
     
     sendResponse(res, {
         statusCode: httpStatus.OK,
         success: true,
+        // message: "User activated successfully",
         message: result.isDeleted ? "User suspended successfully" : "User activated successfully",
         data: result
+        // data: {}
     });
 });
 export const UserController = {
@@ -176,10 +187,10 @@ export const UserController = {
     getAllFromDB,
       getUserProfile,
     getMyProfile,
-    updateUserProfile,
+    // updateUserProfile,
     updateMyProfile,
     deleteUser,
     changePassword,
     updateUserRole,
-    toggleUserStatus
+    UpdateUserStatus
 }

@@ -1,0 +1,4 @@
+-- AlterTable
+ALTER TABLE "guides" ALTER COLUMN "name" DROP NOT NULL,
+ALTER COLUMN "contactNumber" DROP NOT NULL,
+ALTER COLUMN "gender" DROP NOT NULL;

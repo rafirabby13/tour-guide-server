@@ -21,7 +21,7 @@ router.post("/create-tourist",
     }
 )
 router.post("/create-admin",
-    auth(UserRole.ADMIN),
+    // auth(UserRole.ADMIN),
     fileUploader.upload.single('file'),
     (req: Request, res: Response, next: NextFunction) => {
         req.body = CreateAdminSchema.parse(JSON.parse(req.body.data))
@@ -44,9 +44,9 @@ router.patch(
 );
 
 router.patch(
-    "/:userId/toggle-status",
+    "/:userId/update-status",
     auth(UserRole.ADMIN),
-    UserController.toggleUserStatus
+    UserController.UpdateUserStatus
 );
 
 router.delete(
@@ -63,7 +63,7 @@ router.get(
 );
 
 router.patch(
-    "/me",
+    "/update-profile",
     auth(UserRole.TOURIST, UserRole.GUIDE, UserRole.ADMIN),
     fileUploader.upload.single('file'),
     (req: Request, res: Response, next: NextFunction) => {
@@ -76,7 +76,7 @@ router.patch(
 
 router.post(
     "/change-password",
-    auth(UserRole.TOURIST, UserRole.GUIDE, UserRole.ADMIN),
+    auth( UserRole.GUIDE),
     validateRequest(UserValidation.changePasswordSchema),
     UserController.changePassword
 );
@@ -88,15 +88,15 @@ router.get(
 );
 
 // Admin can update any user
-router.patch(
-    "/:userId",
-    auth(UserRole.ADMIN),
-    fileUploader.upload.single('file'),
-    (req: Request, res: Response, next: NextFunction) => {
-        if (req.body.data) {
-            req.body = UserValidation.updateProfileSchema.parse(JSON.parse(req.body.data));
-        }
-        return UserController.updateUserProfile(req, res, next);
-    }
-);
+// router.patch(
+//     "/:userId",
+//     auth(UserRole.ADMIN),
+//     fileUploader.upload.single('file'),
+//     (req: Request, res: Response, next: NextFunction) => {
+//         if (req.body.data) {
+//             req.body = UserValidation.updateProfileSchema.parse(JSON.parse(req.body.data));
+//         }
+//         return UserController.updateUserProfile(req, res, next);
+//     }
+// );
 export const UserRoutes = router

@@ -9,7 +9,7 @@ const router = express.Router();
 
 // Tourist Routes
 router.post(
-    "/",
+    "/create",
     auth(UserRole.TOURIST),
     validateRequest(ReviewValidation.createReviewSchema),
     ReviewControllers.createReview

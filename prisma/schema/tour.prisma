@@ -1,42 +1,49 @@
+enum TourStatus {
+  BLOCKED
+  DRAFT
+  PUBLISHED
+}
+
+model Tour {
+  id          String     @id @default(uuid())
+  title       String     @db.VarChar(255)
+  description String     @db.Text
+  location    String     @db.VarChar(255)
+  images      String[]
+  status      TourStatus @default(DRAFT)
+
+  guideId String
+  guide   Guide  @relation("GuideTours", fields: [guideId], references: [id], onDelete: Cascade)
+
+  bookings           Booking[]
+  reviews            Review[]
+  blockedDates       BlockedDate[]
+  tourAvailabilities TourAvailability[]
+  tourPricings       TourPricing[]
+
+  isDeleted Boolean  @default(false)
+  createdAt DateTime  @default(now())
+  updatedAt DateTime  @updatedAt
+
+  @@index([guideId])
+  @@index([status])
+  @@index([isDeleted])
+}
+
 model TourPricing {
   id     String @id @default(uuid())
   tourId String
   tour   Tour   @relation(fields: [tourId], references: [id], onDelete: Cascade)
 
-  minGuests    Int // e.g., 1
-  maxGuests    Int // e.g., 2
-  pricePerHour Float // e.g., 10 USD per person per hour
+  minGuests    Int     @default(1)
+  maxGuests    Int     @default(10)
+  pricePerHour Decimal @db.Decimal(10, 2)
 
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
 
-  @@unique([tourId, minGuests, maxGuests])
+  @@unique([tourId, minGuests, maxGuests]) // Prevent duplicate tiers
   @@index([tourId])
-}
-
-model Tour {
-  id             String     @id @default(uuid())
-  title          String
-  description    String
-  location       String
-  availableDates DateTime[]
-  images         String[]
-
-  guideId String
-  guide   Guide  @relation("GuideTours", fields: [guideId], references: [id])
-
-  bookings     Booking[]
-  reviews      Review[]
-  createdAt    DateTime      @default(now())
-  updatedAt    DateTime      @updatedAt
-
-  blockedDates BlockedDate[]
-
-  tourAvailabilities TourAvailability[]
-
-  tourPricings TourPricing[]
-
- 
 }
 
 model TourAvailability {
@@ -44,51 +51,37 @@ model TourAvailability {
   tourId String
   tour   Tour   @relation(fields: [tourId], references: [id], onDelete: Cascade)
 
-  // Day of week (0 = Sunday, 6 = Saturday)
-  dayOfWeek Int // 0-6
-
-  // Time slots
-  startTime String // "09:00"
-  endTime   String // "17:00"
-
-  // Max bookings per slot
-  maxBookings Int @default(1)
-
-  isActive Boolean @default(true)
+  dayOfWeek        Int // 0-6
+  startTimeMinutes Int // 0-1439 (minutes since midnight)
+  endTimeMinutes   Int // 0-1439
+  maxBookings      Int     @default(1)
+  isActive         Boolean @default(true)
 
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
 
-  @@index([tourId])
-  @@index([dayOfWeek])
+  @@unique([tourId, dayOfWeek, startTimeMinutes, endTimeMinutes])
+  @@index([tourId, dayOfWeek, isActive])
 }
 
 model BlockedDate {
   id String @id @default(uuid())
 
-  // Can be tour-specific or guide-wide
-  tourId String?
-  tour   Tour?   @relation(fields: [tourId], references: [id], onDelete: Cascade)
-
+  tourId  String?
+  tour    Tour?   @relation(fields: [tourId], references: [id], onDelete: Cascade)
   guideId String
-  guide   Guide  @relation(fields: [guideId], references: [id], onDelete: Cascade)
+  guide   Guide   @relation(fields: [guideId], references: [id], onDelete: Cascade)
 
-  // Date blocking
-  blockedDate DateTime // Specific date blocked
-  startTime   String? // Optional: block specific time slot "09:00"
-  endTime     String? // Optional: "17:00"
-
-  // If null = whole day blocked
-  // If set = only this time range blocked
-
-  reason   String? // "Vacation", "Personal", "Maintenance"
-  isAllDay Boolean @default(true)
+  blockedDate DateTime
+  // startTimeMinutes Int?   
+  // endTimeMinutes   Int?
+  // reason           String?  @db.VarChar(255)
+  // isAllDay         Boolean  @default(true)
 
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
 
-  @@unique([tourId, blockedDate, startTime]) // Prevent duplicate blocks
-  @@index([guideId])
-  @@index([tourId])
-  @@index([blockedDate])
+  @@unique([tourId, guideId, blockedDate])
+  @@index([guideId, blockedDate])
+  @@index([tourId, blockedDate])
 }

@@ -1,6 +1,6 @@
 import { prisma } from "../../shared/prisma";
 import { AppError } from "../../errors/AppError";
-import { BookingQueryParams, CreateBookingPayload, RefundCalculation} from "./booking.interface";
+import { BookingQueryParams, CreateBookingPayload, RefundCalculation } from "./booking.interface";
 import { BookingStatus, PaymentStatus } from "../../../../prisma/generated/prisma/enums";
 import { generateTransactionId } from "../../helpers/transactionId";
 import { CANCELLATION_POLICY, DEFAULT_BOOKING_INCLUDES } from "./booking.constant";
@@ -8,12 +8,25 @@ import { IOptions, paginationHelper } from "../../helpers/paginationHelper";
 import { Prisma } from "../../../../prisma/generated/prisma/client";
 import { PaymentService } from "../payment/payment.service";
 
+
+const updatePastBookings = async () => {
+  const now = new Date();
+  await prisma.booking.updateMany({
+    where: {
+      status: BookingStatus.CONFIRMED,
+      endTime: { lt: now }, // Time has passed
+    },
+    data: {
+      status: BookingStatus.COMPLETED,
+    },
+  });
+};
 const createBooking = async (payload: CreateBookingPayload, touristId: string) => {
-  const { tourId, date, duration, numGuests ,startTime, endTime} = payload;
+  const { tourId, date, duration, numGuests, startTime, endTime } = payload;
   const bookingDate = new Date(date);
 
-  const startDateTime = new Date(`${date}T${startTime}:00`); 
-  console.log({startDateTime})
+  const startDateTime = new Date(`${date}T${startTime}:00`);
+  console.log({ startDateTime })
   // Calculate End Time
   const durationInMs = duration * 60 * 60 * 1000;
   const endDateTime = new Date(startDateTime.getTime() + durationInMs);
@@ -57,7 +70,7 @@ const createBooking = async (payload: CreateBookingPayload, touristId: string) =
 
 
   const bookingTimeStr = payload.startTime
-  
+
   if (bookingTimeStr < dayAvailability.startTime || bookingTimeStr >= dayAvailability.endTime) {
     throw new AppError(400, `Tour only available between ${dayAvailability.startTime} - ${dayAvailability.endTime}`);
   }
@@ -75,7 +88,7 @@ const createBooking = async (payload: CreateBookingPayload, touristId: string) =
   if (existingBookings >= dayAvailability.maxBookings) {
     throw new AppError(400, "Tour fully booked for this date and time");
   }
-// console.log({tour})
+  // console.log({tour})
   const pricing = tour.tourPricings.find(
     p => numGuests >= p.minGuests && numGuests <= p.maxGuests
   );
@@ -96,7 +109,7 @@ const createBooking = async (payload: CreateBookingPayload, touristId: string) =
   if (!tourist) {
     throw new AppError(404, "Tourist not found");
   }
-console.log({bookingDate})
+  console.log({ bookingDate })
   const result = await prisma.$transaction(async (tx) => {
     // Create booking
     const booking = await tx.booking.create({
@@ -108,7 +121,8 @@ console.log({bookingDate})
         totalPrice,
         endTime: endDateTime,
         tourId,
-        touristId: tourist.id
+        touristId: tourist.id,
+        guideId: tour.guideId
 
 
       },
@@ -127,14 +141,14 @@ console.log({bookingDate})
     // Create payment record
     await tx.payment.create({
       data: {
-        amount:totalPrice,
+        amount: totalPrice,
         transactionId,
         bookingId: booking.id,
 
       }
     });
 
-    
+
 
     // Return booking with payment URL
     return {
@@ -158,7 +172,7 @@ console.log({bookingDate})
 const getAllBookings = async (params: BookingQueryParams, options: IOptions) => {
   const { page, limit, skip, sortBy, sortOrder } = paginationHelper.calculatePagination(options);
   const { status, tourId, touristId, startDate, endDate } = params;
-
+  await updatePastBookings()
   const andConditions: Prisma.BookingWhereInput[] = [];
 
   if (status) {
@@ -182,8 +196,8 @@ const getAllBookings = async (params: BookingQueryParams, options: IOptions) => 
     });
   }
 
-  const whereConditions: Prisma.BookingWhereInput = andConditions.length > 0 
-    ? { AND: andConditions } 
+  const whereConditions: Prisma.BookingWhereInput = andConditions.length > 0
+    ? { AND: andConditions }
     : {};
 
   const result = await prisma.booking.findMany({
@@ -221,9 +235,20 @@ const getSingleBooking = async (id: string) => {
 
 const getMyBookings = async (touristId: string, options: IOptions) => {
   const { page, limit, skip, sortBy, sortOrder } = paginationHelper.calculatePagination(options);
+  console.log({ touristId })
+  await updatePastBookings()
+  const tourist = await prisma.tourist.findUnique({
+    where: { userId: touristId },
+  });
+  if (!tourist) {
+    throw new AppError(404, "Tourist not found");
+  }
+
+  console.log({ tourist })
+
 
   const result = await prisma.booking.findMany({
-    where: { touristId },
+    where: { touristId: tourist.id },
     skip,
     take: limit,
     include: DEFAULT_BOOKING_INCLUDES,
@@ -244,11 +269,18 @@ const getMyBookings = async (touristId: string, options: IOptions) => {
 
 const getGuideBookings = async (guideId: string, options: IOptions) => {
   const { page, limit, skip, sortBy, sortOrder } = paginationHelper.calculatePagination(options);
-
+  await updatePastBookings()
+  const guide = await prisma.guide.findUnique({
+    where: { userId: guideId }
+  });
+  if (!guide) {
+    throw new AppError(404, "Guide not found");
+  }
+  console.log({ guide })
   const result = await prisma.booking.findMany({
     where: {
       tour: {
-        guideId
+        guideId: guide.id
       }
     },
     skip,
@@ -303,9 +335,9 @@ const calculateRefund = (booking: any): RefundCalculation => {
   };
 };
 
-const cancelBooking = async (id: string, userId: string, userRole: string, reason?: string) => {
+const cancelBooking = async (bookingId: string, userId: string ) => {
   const booking = await prisma.booking.findUnique({
-    where: { id },
+    where: { id:bookingId },
     include: {
       tourist: {
         include: {
@@ -330,24 +362,23 @@ const cancelBooking = async (id: string, userId: string, userRole: string, reaso
   }
 
   // Check if already cancelled or completed
-  if (booking.status === BookingStatus.CANCELED_BY_GUIDE || 
-      booking.status === BookingStatus.CANCELED_BY_TOURIST ||
-      booking.status === BookingStatus.COMPLETED) {
+  if (booking.status === BookingStatus.CANCELED_BY_GUIDE ||
+    booking.status === BookingStatus.CANCELED_BY_TOURIST ||
+    booking.status === BookingStatus.COMPLETED) {
     throw new AppError(400, "Cannot cancel this booking");
   }
 
   // Verify authorization
   const isTourist = booking.tourist.userId === userId;
   const isGuide = booking.tour.guide.userId === userId;
-  const isAdmin = userRole === 'ADMIN';
 
-  if (!isTourist && !isGuide && !isAdmin) {
+  if (!isTourist && !isGuide) {
     throw new AppError(403, "Not authorized to cancel this booking");
   }
 
   // Calculate refund
   const refundCalc = calculateRefund(booking);
-  
+
   // If guide cancels, full refund
   if (isGuide) {
     refundCalc.refundPercentage = 100;
@@ -359,7 +390,7 @@ const cancelBooking = async (id: string, userId: string, userRole: string, reaso
   const result = await prisma.$transaction(async (tx) => {
     // Update booking status
     const updatedBooking = await tx.booking.update({
-      where: { id },
+      where: { id : bookingId},
       data: {
         status: isGuide ? BookingStatus.CANCELED_BY_GUIDE : BookingStatus.CANCELED_BY_TOURIST
       },
@@ -463,13 +494,13 @@ const getBookingStats = async (guideId?: string) => {
     prisma.booking.count({ where: whereCondition }),
     prisma.booking.count({ where: { ...whereCondition, status: BookingStatus.PENDING } }),
     prisma.booking.count({ where: { ...whereCondition, status: BookingStatus.CONFIRMED } }),
-    prisma.booking.count({ 
-      where: { 
-        ...whereCondition, 
+    prisma.booking.count({
+      where: {
+        ...whereCondition,
         status: {
           in: [BookingStatus.CANCELED_BY_GUIDE, BookingStatus.CANCELED_BY_TOURIST]
         }
-      } 
+      }
     }),
     prisma.booking.count({ where: { ...whereCondition, status: BookingStatus.COMPLETED } }),
   ]);

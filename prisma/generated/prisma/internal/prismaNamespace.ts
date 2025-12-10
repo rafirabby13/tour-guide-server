@@ -387,8 +387,8 @@ export const ModelName = {
   Booking: 'Booking',
   Payment: 'Payment',
   Review: 'Review',
-  TourPricing: 'TourPricing',
   Tour: 'Tour',
+  TourPricing: 'TourPricing',
   TourAvailability: 'TourAvailability',
   BlockedDate: 'BlockedDate',
   User: 'User',
@@ -410,7 +410,7 @@ export type TypeMap<ExtArgs extends runtime.Types.Extensions.InternalArgs = runt
     omit: GlobalOmitOptions
   }
   meta: {
-    modelProps: "booking" | "payment" | "review" | "tourPricing" | "tour" | "tourAvailability" | "blockedDate" | "user" | "admin" | "guide" | "tourist"
+    modelProps: "booking" | "payment" | "review" | "tour" | "tourPricing" | "tourAvailability" | "blockedDate" | "user" | "admin" | "guide" | "tourist"
     txIsolationLevel: TransactionIsolationLevel
   }
   model: {
@@ -636,80 +636,6 @@ export type TypeMap<ExtArgs extends runtime.Types.Extensions.InternalArgs = runt
         }
       }
     }
-    TourPricing: {
-      payload: Prisma.$TourPricingPayload<ExtArgs>
-      fields: Prisma.TourPricingFieldRefs
-      operations: {
-        findUnique: {
-          args: Prisma.TourPricingFindUniqueArgs<ExtArgs>
-          result: runtime.Types.Utils.PayloadToResult<Prisma.$TourPricingPayload> | null
-        }
-        findUniqueOrThrow: {
-          args: Prisma.TourPricingFindUniqueOrThrowArgs<ExtArgs>
-          result: runtime.Types.Utils.PayloadToResult<Prisma.$TourPricingPayload>
-        }
-        findFirst: {
-          args: Prisma.TourPricingFindFirstArgs<ExtArgs>
-          result: runtime.Types.Utils.PayloadToResult<Prisma.$TourPricingPayload> | null
-        }
-        findFirstOrThrow: {
-          args: Prisma.TourPricingFindFirstOrThrowArgs<ExtArgs>
-          result: runtime.Types.Utils.PayloadToResult<Prisma.$TourPricingPayload>
-        }
-        findMany: {
-          args: Prisma.TourPricingFindManyArgs<ExtArgs>
-          result: runtime.Types.Utils.PayloadToResult<Prisma.$TourPricingPayload>[]
-        }
-        create: {
-          args: Prisma.TourPricingCreateArgs<ExtArgs>
-          result: runtime.Types.Utils.PayloadToResult<Prisma.$TourPricingPayload>
-        }
-        createMany: {
-          args: Prisma.TourPricingCreateManyArgs<ExtArgs>
-          result: BatchPayload
-        }
-        createManyAndReturn: {
-          args: Prisma.TourPricingCreateManyAndReturnArgs<ExtArgs>
-          result: runtime.Types.Utils.PayloadToResult<Prisma.$TourPricingPayload>[]
-        }
-        delete: {
-          args: Prisma.TourPricingDeleteArgs<ExtArgs>
-          result: runtime.Types.Utils.PayloadToResult<Prisma.$TourPricingPayload>
-        }
-        update: {
-          args: Prisma.TourPricingUpdateArgs<ExtArgs>
-          result: runtime.Types.Utils.PayloadToResult<Prisma.$TourPricingPayload>
-        }
-        deleteMany: {
-          args: Prisma.TourPricingDeleteManyArgs<ExtArgs>
-          result: BatchPayload
-        }
-        updateMany: {
-          args: Prisma.TourPricingUpdateManyArgs<ExtArgs>
-          result: BatchPayload
-        }
-        updateManyAndReturn: {
-          args: Prisma.TourPricingUpdateManyAndReturnArgs<ExtArgs>
-          result: runtime.Types.Utils.PayloadToResult<Prisma.$TourPricingPayload>[]
-        }
-        upsert: {
-          args: Prisma.TourPricingUpsertArgs<ExtArgs>
-          result: runtime.Types.Utils.PayloadToResult<Prisma.$TourPricingPayload>
-        }
-        aggregate: {
-          args: Prisma.TourPricingAggregateArgs<ExtArgs>
-          result: runtime.Types.Utils.Optional<Prisma.AggregateTourPricing>
-        }
-        groupBy: {
-          args: Prisma.TourPricingGroupByArgs<ExtArgs>
-          result: runtime.Types.Utils.Optional<Prisma.TourPricingGroupByOutputType>[]
-        }
-        count: {
-          args: Prisma.TourPricingCountArgs<ExtArgs>
-          result: runtime.Types.Utils.Optional<Prisma.TourPricingCountAggregateOutputType> | number
-        }
-      }
-    }
     Tour: {
       payload: Prisma.$TourPayload<ExtArgs>
       fields: Prisma.TourFieldRefs
@@ -781,6 +707,80 @@ export type TypeMap<ExtArgs extends runtime.Types.Extensions.InternalArgs = runt
         count: {
           args: Prisma.TourCountArgs<ExtArgs>
           result: runtime.Types.Utils.Optional<Prisma.TourCountAggregateOutputType> | number
+        }
+      }
+    }
+    TourPricing: {
+      payload: Prisma.$TourPricingPayload<ExtArgs>
+      fields: Prisma.TourPricingFieldRefs
+      operations: {
+        findUnique: {
+          args: Prisma.TourPricingFindUniqueArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$TourPricingPayload> | null
+        }
+        findUniqueOrThrow: {
+          args: Prisma.TourPricingFindUniqueOrThrowArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$TourPricingPayload>
+        }
+        findFirst: {
+          args: Prisma.TourPricingFindFirstArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$TourPricingPayload> | null
+        }
+        findFirstOrThrow: {
+          args: Prisma.TourPricingFindFirstOrThrowArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$TourPricingPayload>
+        }
+        findMany: {
+          args: Prisma.TourPricingFindManyArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$TourPricingPayload>[]
+        }
+        create: {
+          args: Prisma.TourPricingCreateArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$TourPricingPayload>
+        }
+        createMany: {
+          args: Prisma.TourPricingCreateManyArgs<ExtArgs>
+          result: BatchPayload
+        }
+        createManyAndReturn: {
+          args: Prisma.TourPricingCreateManyAndReturnArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$TourPricingPayload>[]
+        }
+        delete: {
+          args: Prisma.TourPricingDeleteArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$TourPricingPayload>
+        }
+        update: {
+          args: Prisma.TourPricingUpdateArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$TourPricingPayload>
+        }
+        deleteMany: {
+          args: Prisma.TourPricingDeleteManyArgs<ExtArgs>
+          result: BatchPayload
+        }
+        updateMany: {
+          args: Prisma.TourPricingUpdateManyArgs<ExtArgs>
+          result: BatchPayload
+        }
+        updateManyAndReturn: {
+          args: Prisma.TourPricingUpdateManyAndReturnArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$TourPricingPayload>[]
+        }
+        upsert: {
+          args: Prisma.TourPricingUpsertArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$TourPricingPayload>
+        }
+        aggregate: {
+          args: Prisma.TourPricingAggregateArgs<ExtArgs>
+          result: runtime.Types.Utils.Optional<Prisma.AggregateTourPricing>
+        }
+        groupBy: {
+          args: Prisma.TourPricingGroupByArgs<ExtArgs>
+          result: runtime.Types.Utils.Optional<Prisma.TourPricingGroupByOutputType>[]
+        }
+        count: {
+          args: Prisma.TourPricingCountArgs<ExtArgs>
+          result: runtime.Types.Utils.Optional<Prisma.TourPricingCountAggregateOutputType> | number
         }
       }
     }
@@ -1316,6 +1316,22 @@ export const ReviewScalarFieldEnum = {
 export type ReviewScalarFieldEnum = (typeof ReviewScalarFieldEnum)[keyof typeof ReviewScalarFieldEnum]
 
 
+export const TourScalarFieldEnum = {
+  id: 'id',
+  title: 'title',
+  description: 'description',
+  location: 'location',
+  images: 'images',
+  status: 'status',
+  guideId: 'guideId',
+  isDeleted: 'isDeleted',
+  createdAt: 'createdAt',
+  updatedAt: 'updatedAt'
+} as const
+
+export type TourScalarFieldEnum = (typeof TourScalarFieldEnum)[keyof typeof TourScalarFieldEnum]
+
+
 export const TourPricingScalarFieldEnum = {
   id: 'id',
   tourId: 'tourId',
@@ -1329,27 +1345,12 @@ export const TourPricingScalarFieldEnum = {
 export type TourPricingScalarFieldEnum = (typeof TourPricingScalarFieldEnum)[keyof typeof TourPricingScalarFieldEnum]
 
 
-export const TourScalarFieldEnum = {
-  id: 'id',
-  title: 'title',
-  description: 'description',
-  location: 'location',
-  availableDates: 'availableDates',
-  images: 'images',
-  guideId: 'guideId',
-  createdAt: 'createdAt',
-  updatedAt: 'updatedAt'
-} as const
-
-export type TourScalarFieldEnum = (typeof TourScalarFieldEnum)[keyof typeof TourScalarFieldEnum]
-
-
 export const TourAvailabilityScalarFieldEnum = {
   id: 'id',
   tourId: 'tourId',
   dayOfWeek: 'dayOfWeek',
-  startTime: 'startTime',
-  endTime: 'endTime',
+  startTimeMinutes: 'startTimeMinutes',
+  endTimeMinutes: 'endTimeMinutes',
   maxBookings: 'maxBookings',
   isActive: 'isActive',
   createdAt: 'createdAt',
@@ -1364,10 +1365,6 @@ export const BlockedDateScalarFieldEnum = {
   tourId: 'tourId',
   guideId: 'guideId',
   blockedDate: 'blockedDate',
-  startTime: 'startTime',
-  endTime: 'endTime',
-  reason: 'reason',
-  isAllDay: 'isAllDay',
   createdAt: 'createdAt',
   updatedAt: 'updatedAt'
 } as const
@@ -1593,9 +1590,37 @@ export type EnumQueryModeFieldRefInput<$PrismaModel> = FieldRefInputType<$Prisma
 
 
 /**
+ * Reference to a field of type 'TourStatus'
+ */
+export type EnumTourStatusFieldRefInput<$PrismaModel> = FieldRefInputType<$PrismaModel, 'TourStatus'>
+    
+
+
+/**
+ * Reference to a field of type 'TourStatus[]'
+ */
+export type ListEnumTourStatusFieldRefInput<$PrismaModel> = FieldRefInputType<$PrismaModel, 'TourStatus[]'>
+    
+
+
+/**
  * Reference to a field of type 'Boolean'
  */
 export type BooleanFieldRefInput<$PrismaModel> = FieldRefInputType<$PrismaModel, 'Boolean'>
+    
+
+
+/**
+ * Reference to a field of type 'Decimal'
+ */
+export type DecimalFieldRefInput<$PrismaModel> = FieldRefInputType<$PrismaModel, 'Decimal'>
+    
+
+
+/**
+ * Reference to a field of type 'Decimal[]'
+ */
+export type ListDecimalFieldRefInput<$PrismaModel> = FieldRefInputType<$PrismaModel, 'Decimal[]'>
     
 
 
@@ -1736,8 +1761,8 @@ export type GlobalOmitConfig = {
   booking?: Prisma.BookingOmit
   payment?: Prisma.PaymentOmit
   review?: Prisma.ReviewOmit
-  tourPricing?: Prisma.TourPricingOmit
   tour?: Prisma.TourOmit
+  tourPricing?: Prisma.TourPricingOmit
   tourAvailability?: Prisma.TourAvailabilityOmit
   blockedDate?: Prisma.BlockedDateOmit
   user?: Prisma.UserOmit

@@ -6,7 +6,8 @@ import pick from "../../helpers/pick";
 import { tourFilterableFields } from "./tour.constant";
 
 const createTour = catchAsync(async (req: Request, res: Response, next: NextFunction) => {
-    // console.log("object", req.file.)
+    console.log("object", req.files)
+    console.log("object", req.body)
 
     const result = await TourServices.createTour(req)
 
@@ -89,6 +90,7 @@ const checkAvailability = catchAsync(async (req: Request, res: Response) => {
 
 const getMyTours = catchAsync(async (req: Request, res: Response) => {
     const guideId = (req as any).user.id;
+    console.log("..................",{guideId})
     const options = pick(req.query, ['page', 'limit', 'sortBy', 'sortOrder']);
 
     const result = await TourServices.getMyTours(guideId, options);
@@ -101,6 +103,18 @@ const getMyTours = catchAsync(async (req: Request, res: Response) => {
         data: result.data,
     });
 });
+const updatetourStatus = catchAsync(async (req: Request, res: Response) => {
+    const {tourId, status} = req.body
+
+    const result = await TourServices.updatetourStatus(tourId, status);
+
+    sendResponse(res, {
+        statusCode: 200,
+        success: true,
+        message: "Tours status updated successfully",
+        data: result,
+    });
+});
 export const TourController = {
     createTour,
     getAllFromDB,
@@ -108,5 +122,6 @@ export const TourController = {
     updateTour,
     deleteTour,
     checkAvailability,
-    getMyTours
+    getMyTours,
+    updatetourStatus
 }

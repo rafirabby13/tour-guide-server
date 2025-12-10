@@ -30,6 +30,15 @@ export const PaymentStatus = {
 export type PaymentStatus = (typeof PaymentStatus)[keyof typeof PaymentStatus]
 
 
+export const TourStatus = {
+  BLOCKED: 'BLOCKED',
+  DRAFT: 'DRAFT',
+  PUBLISHED: 'PUBLISHED'
+} as const
+
+export type TourStatus = (typeof TourStatus)[keyof typeof TourStatus]
+
+
 export const UserRole = {
   TOURIST: 'TOURIST',
   GUIDE: 'GUIDE',

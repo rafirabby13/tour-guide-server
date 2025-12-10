@@ -13,7 +13,12 @@ const createReview = async (touristId: string, payload: ICreateReview) => {
         throw new AppError(httpStatus.BAD_REQUEST, "Rating must be between 1 and 5");
     }
 
-    // Check if booking exists and belongs to tourist
+    console.log(touristId, payload)
+    const tourist = await prisma.tourist.findUnique({
+        where: {
+            userId: touristId
+        }
+    });
     const booking = await prisma.booking.findUnique({
         where: {
             id: payload.bookingId
@@ -27,15 +32,18 @@ const createReview = async (touristId: string, payload: ICreateReview) => {
     if (!booking) {
         throw new AppError(httpStatus.NOT_FOUND, "Booking not found");
     }
+    if (!tourist) {
+        throw new AppError(httpStatus.NOT_FOUND, "Tourist not found");
+    }
 
     // Check if booking belongs to the tourist
-    if (booking.touristId !== touristId) {
+    if (booking.touristId !== tourist.id) {
         throw new AppError(httpStatus.FORBIDDEN, "You can only review your own bookings");
     }
 
     // Check if booking is completed
-    if (booking.status !== "COMPLETED") {
-        throw new AppError(httpStatus.BAD_REQUEST, "You can only review completed tours");
+    if (booking.status !== "CONFIRMED") {
+        throw new AppError(httpStatus.BAD_REQUEST, "You can only review confirme tours");
     }
 
     // Check if review already exists
@@ -43,55 +51,55 @@ const createReview = async (touristId: string, payload: ICreateReview) => {
         throw new AppError(httpStatus.CONFLICT, "Review already exists for this booking");
     }
 
-    // Create review in transaction
-    const result = await prisma.$transaction(async (tnx) => {
-        // Create review
-        const review = await tnx.review.create({
-            data: {
-                rating: payload.rating,
-                comment: payload.comment,
-                tourId: booking.tourId,
-                touristId: booking.touristId,
-                guideId: booking.guideId,
-                bookingId: payload.bookingId
-            },
-            include: {
-                tourist: {
-                    select: {
-                        id: true,
-                        name: true,
-                        profilePhoto: true
-                    }
-                },
-                guide: {
-                    select: {
-                        id: true,
-                        name: true,
-                        profilePhoto: true
-                    }
-                },
-                booking: {
-                    select: {
-                        id: true,
-                        date: true,
-                        tour: {
-                            select: {
-                                id: true,
-                                title: true
-                            }
-                        }
-                    }
-                }
-            }
-        });
+    
+    // const result = await prisma.$transaction(async (tnx) => {
+       
+    //     const review = await tnx.review.create({
+    //         data: {
+    //             rating: payload.rating,
+    //             comment: payload.comment,
+    //             tourId: booking.tourId,
+    //             touristId: booking.touristId,
+    //             guideId: booking.guideId,
+    //             bookingId: payload.bookingId
+    //         },
+    //         include: {
+    //             tourist: {
+    //                 select: {
+    //                     id: true,
+    //                     name: true,
+    //                     profilePhoto: true
+    //                 }
+    //             },
+    //             guide: {
+    //                 select: {
+    //                     id: true,
+    //                     name: true,
+    //                     profilePhoto: true
+    //                 }
+    //             },
+    //             booking: {
+    //                 select: {
+    //                     id: true,
+    //                     date: true,
+    //                     tour: {
+    //                         select: {
+    //                             id: true,
+    //                             title: true
+    //                         }
+    //                     }
+    //                 }
+    //             }
+    //         }
+    //     });
 
-        // Update guide's average rating and total reviews
-        await updateGuideRating(tnx, booking.guideId);
+      
+    //     await updateGuideRating(tnx, booking.guideId);
 
-        return review;
-    });
+    //     return review;
+    // });
 
-    return result;
+    // return result;
 };
 
 

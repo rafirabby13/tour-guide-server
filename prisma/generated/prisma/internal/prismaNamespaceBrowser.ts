@@ -54,8 +54,8 @@ export const ModelName = {
   Booking: 'Booking',
   Payment: 'Payment',
   Review: 'Review',
-  TourPricing: 'TourPricing',
   Tour: 'Tour',
+  TourPricing: 'TourPricing',
   TourAvailability: 'TourAvailability',
   BlockedDate: 'BlockedDate',
   User: 'User',
@@ -129,6 +129,22 @@ export const ReviewScalarFieldEnum = {
 export type ReviewScalarFieldEnum = (typeof ReviewScalarFieldEnum)[keyof typeof ReviewScalarFieldEnum]
 
 
+export const TourScalarFieldEnum = {
+  id: 'id',
+  title: 'title',
+  description: 'description',
+  location: 'location',
+  images: 'images',
+  status: 'status',
+  guideId: 'guideId',
+  isDeleted: 'isDeleted',
+  createdAt: 'createdAt',
+  updatedAt: 'updatedAt'
+} as const
+
+export type TourScalarFieldEnum = (typeof TourScalarFieldEnum)[keyof typeof TourScalarFieldEnum]
+
+
 export const TourPricingScalarFieldEnum = {
   id: 'id',
   tourId: 'tourId',
@@ -142,27 +158,12 @@ export const TourPricingScalarFieldEnum = {
 export type TourPricingScalarFieldEnum = (typeof TourPricingScalarFieldEnum)[keyof typeof TourPricingScalarFieldEnum]
 
 
-export const TourScalarFieldEnum = {
-  id: 'id',
-  title: 'title',
-  description: 'description',
-  location: 'location',
-  availableDates: 'availableDates',
-  images: 'images',
-  guideId: 'guideId',
-  createdAt: 'createdAt',
-  updatedAt: 'updatedAt'
-} as const
-
-export type TourScalarFieldEnum = (typeof TourScalarFieldEnum)[keyof typeof TourScalarFieldEnum]
-
-
 export const TourAvailabilityScalarFieldEnum = {
   id: 'id',
   tourId: 'tourId',
   dayOfWeek: 'dayOfWeek',
-  startTime: 'startTime',
-  endTime: 'endTime',
+  startTimeMinutes: 'startTimeMinutes',
+  endTimeMinutes: 'endTimeMinutes',
   maxBookings: 'maxBookings',
   isActive: 'isActive',
   createdAt: 'createdAt',
@@ -177,10 +178,6 @@ export const BlockedDateScalarFieldEnum = {
   tourId: 'tourId',
   guideId: 'guideId',
   blockedDate: 'blockedDate',
-  startTime: 'startTime',
-  endTime: 'endTime',
-  reason: 'reason',
-  isAllDay: 'isAllDay',
   createdAt: 'createdAt',
   updatedAt: 'updatedAt'
 } as const

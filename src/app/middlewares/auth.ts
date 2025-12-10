@@ -1,14 +1,17 @@
 import { NextFunction, Request, Response } from "express"
 import { jwtHelper } from "../helpers/jwtHelper";
+import  httpStatus  from "http-status";
+import { AppError } from "../errors/AppError";
 
 const auth = (...roles: string[]) => {
     return async (req: Request & { user?: any }, res: Response, next: NextFunction) => {
         try {
             // const token = req.cookies.get("accessToken");
-            const token = req.cookies.accessToken
+            const token = await req.cookies?.accessToken
+            // console.log({token})
 
             if (!token) {
-                throw new Error("You are not authorized!")
+                throw new AppError(httpStatus.BAD_REQUEST,"You are not authorized!")
             }
 
             const verifyUser = jwtHelper.verifyToken(token, "abcd");

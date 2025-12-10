@@ -50,7 +50,7 @@ router.get(
 );
 
 router.patch(
-  "/:id/cancel",
+  "/:bookingId/cancel",
   auth(UserRole.TOURIST, UserRole.GUIDE, UserRole.ADMIN),
   BookingControllers.cancelBooking
 );

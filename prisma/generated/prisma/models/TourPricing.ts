@@ -29,13 +29,13 @@ export type AggregateTourPricing = {
 export type TourPricingAvgAggregateOutputType = {
   minGuests: number | null
   maxGuests: number | null
-  pricePerHour: number | null
+  pricePerHour: runtime.Decimal | null
 }
 
 export type TourPricingSumAggregateOutputType = {
   minGuests: number | null
   maxGuests: number | null
-  pricePerHour: number | null
+  pricePerHour: runtime.Decimal | null
 }
 
 export type TourPricingMinAggregateOutputType = {
@@ -43,7 +43,7 @@ export type TourPricingMinAggregateOutputType = {
   tourId: string | null
   minGuests: number | null
   maxGuests: number | null
-  pricePerHour: number | null
+  pricePerHour: runtime.Decimal | null
   createdAt: Date | null
   updatedAt: Date | null
 }
@@ -53,7 +53,7 @@ export type TourPricingMaxAggregateOutputType = {
   tourId: string | null
   minGuests: number | null
   maxGuests: number | null
-  pricePerHour: number | null
+  pricePerHour: runtime.Decimal | null
   createdAt: Date | null
   updatedAt: Date | null
 }
@@ -204,7 +204,7 @@ export type TourPricingGroupByOutputType = {
   tourId: string
   minGuests: number
   maxGuests: number
-  pricePerHour: number
+  pricePerHour: runtime.Decimal
   createdAt: Date
   updatedAt: Date
   _count: TourPricingCountAggregateOutputType | null
@@ -237,7 +237,7 @@ export type TourPricingWhereInput = {
   tourId?: Prisma.StringFilter<"TourPricing"> | string
   minGuests?: Prisma.IntFilter<"TourPricing"> | number
   maxGuests?: Prisma.IntFilter<"TourPricing"> | number
-  pricePerHour?: Prisma.FloatFilter<"TourPricing"> | number
+  pricePerHour?: Prisma.DecimalFilter<"TourPricing"> | runtime.Decimal | runtime.DecimalJsLike | number | string
   createdAt?: Prisma.DateTimeFilter<"TourPricing"> | Date | string
   updatedAt?: Prisma.DateTimeFilter<"TourPricing"> | Date | string
   tour?: Prisma.XOR<Prisma.TourScalarRelationFilter, Prisma.TourWhereInput>
@@ -263,7 +263,7 @@ export type TourPricingWhereUniqueInput = Prisma.AtLeast<{
   tourId?: Prisma.StringFilter<"TourPricing"> | string
   minGuests?: Prisma.IntFilter<"TourPricing"> | number
   maxGuests?: Prisma.IntFilter<"TourPricing"> | number
-  pricePerHour?: Prisma.FloatFilter<"TourPricing"> | number
+  pricePerHour?: Prisma.DecimalFilter<"TourPricing"> | runtime.Decimal | runtime.DecimalJsLike | number | string
   createdAt?: Prisma.DateTimeFilter<"TourPricing"> | Date | string
   updatedAt?: Prisma.DateTimeFilter<"TourPricing"> | Date | string
   tour?: Prisma.XOR<Prisma.TourScalarRelationFilter, Prisma.TourWhereInput>
@@ -292,16 +292,16 @@ export type TourPricingScalarWhereWithAggregatesInput = {
   tourId?: Prisma.StringWithAggregatesFilter<"TourPricing"> | string
   minGuests?: Prisma.IntWithAggregatesFilter<"TourPricing"> | number
   maxGuests?: Prisma.IntWithAggregatesFilter<"TourPricing"> | number
-  pricePerHour?: Prisma.FloatWithAggregatesFilter<"TourPricing"> | number
+  pricePerHour?: Prisma.DecimalWithAggregatesFilter<"TourPricing"> | runtime.Decimal | runtime.DecimalJsLike | number | string
   createdAt?: Prisma.DateTimeWithAggregatesFilter<"TourPricing"> | Date | string
   updatedAt?: Prisma.DateTimeWithAggregatesFilter<"TourPricing"> | Date | string
 }
 
 export type TourPricingCreateInput = {
   id?: string
-  minGuests: number
-  maxGuests: number
-  pricePerHour: number
+  minGuests?: number
+  maxGuests?: number
+  pricePerHour: runtime.Decimal | runtime.DecimalJsLike | number | string
   createdAt?: Date | string
   updatedAt?: Date | string
   tour: Prisma.TourCreateNestedOneWithoutTourPricingsInput
@@ -310,9 +310,9 @@ export type TourPricingCreateInput = {
 export type TourPricingUncheckedCreateInput = {
   id?: string
   tourId: string
-  minGuests: number
-  maxGuests: number
-  pricePerHour: number
+  minGuests?: number
+  maxGuests?: number
+  pricePerHour: runtime.Decimal | runtime.DecimalJsLike | number | string
   createdAt?: Date | string
   updatedAt?: Date | string
 }
@@ -321,7 +321,7 @@ export type TourPricingUpdateInput = {
   id?: Prisma.StringFieldUpdateOperationsInput | string
   minGuests?: Prisma.IntFieldUpdateOperationsInput | number
   maxGuests?: Prisma.IntFieldUpdateOperationsInput | number
-  pricePerHour?: Prisma.FloatFieldUpdateOperationsInput | number
+  pricePerHour?: Prisma.DecimalFieldUpdateOperationsInput | runtime.Decimal | runtime.DecimalJsLike | number | string
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   tour?: Prisma.TourUpdateOneRequiredWithoutTourPricingsNestedInput
@@ -332,7 +332,7 @@ export type TourPricingUncheckedUpdateInput = {
   tourId?: Prisma.StringFieldUpdateOperationsInput | string
   minGuests?: Prisma.IntFieldUpdateOperationsInput | number
   maxGuests?: Prisma.IntFieldUpdateOperationsInput | number
-  pricePerHour?: Prisma.FloatFieldUpdateOperationsInput | number
+  pricePerHour?: Prisma.DecimalFieldUpdateOperationsInput | runtime.Decimal | runtime.DecimalJsLike | number | string
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
 }
@@ -340,9 +340,9 @@ export type TourPricingUncheckedUpdateInput = {
 export type TourPricingCreateManyInput = {
   id?: string
   tourId: string
-  minGuests: number
-  maxGuests: number
-  pricePerHour: number
+  minGuests?: number
+  maxGuests?: number
+  pricePerHour: runtime.Decimal | runtime.DecimalJsLike | number | string
   createdAt?: Date | string
   updatedAt?: Date | string
 }
@@ -351,7 +351,7 @@ export type TourPricingUpdateManyMutationInput = {
   id?: Prisma.StringFieldUpdateOperationsInput | string
   minGuests?: Prisma.IntFieldUpdateOperationsInput | number
   maxGuests?: Prisma.IntFieldUpdateOperationsInput | number
-  pricePerHour?: Prisma.FloatFieldUpdateOperationsInput | number
+  pricePerHour?: Prisma.DecimalFieldUpdateOperationsInput | runtime.Decimal | runtime.DecimalJsLike | number | string
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
 }
@@ -361,9 +361,19 @@ export type TourPricingUncheckedUpdateManyInput = {
   tourId?: Prisma.StringFieldUpdateOperationsInput | string
   minGuests?: Prisma.IntFieldUpdateOperationsInput | number
   maxGuests?: Prisma.IntFieldUpdateOperationsInput | number
-  pricePerHour?: Prisma.FloatFieldUpdateOperationsInput | number
+  pricePerHour?: Prisma.DecimalFieldUpdateOperationsInput | runtime.Decimal | runtime.DecimalJsLike | number | string
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+}
+
+export type TourPricingListRelationFilter = {
+  every?: Prisma.TourPricingWhereInput
+  some?: Prisma.TourPricingWhereInput
+  none?: Prisma.TourPricingWhereInput
+}
+
+export type TourPricingOrderByRelationAggregateInput = {
+  _count?: Prisma.SortOrder
 }
 
 export type TourPricingTourIdMinGuestsMaxGuestsCompoundUniqueInput = {
@@ -414,16 +424,6 @@ export type TourPricingSumOrderByAggregateInput = {
   pricePerHour?: Prisma.SortOrder
 }
 
-export type TourPricingListRelationFilter = {
-  every?: Prisma.TourPricingWhereInput
-  some?: Prisma.TourPricingWhereInput
-  none?: Prisma.TourPricingWhereInput
-}
-
-export type TourPricingOrderByRelationAggregateInput = {
-  _count?: Prisma.SortOrder
-}
-
 export type TourPricingCreateNestedManyWithoutTourInput = {
   create?: Prisma.XOR<Prisma.TourPricingCreateWithoutTourInput, Prisma.TourPricingUncheckedCreateWithoutTourInput> | Prisma.TourPricingCreateWithoutTourInput[] | Prisma.TourPricingUncheckedCreateWithoutTourInput[]
   connectOrCreate?: Prisma.TourPricingCreateOrConnectWithoutTourInput | Prisma.TourPricingCreateOrConnectWithoutTourInput[]
@@ -466,20 +466,28 @@ export type TourPricingUncheckedUpdateManyWithoutTourNestedInput = {
   deleteMany?: Prisma.TourPricingScalarWhereInput | Prisma.TourPricingScalarWhereInput[]
 }
 
+export type DecimalFieldUpdateOperationsInput = {
+  set?: runtime.Decimal | runtime.DecimalJsLike | number | string
+  increment?: runtime.Decimal | runtime.DecimalJsLike | number | string
+  decrement?: runtime.Decimal | runtime.DecimalJsLike | number | string
+  multiply?: runtime.Decimal | runtime.DecimalJsLike | number | string
+  divide?: runtime.Decimal | runtime.DecimalJsLike | number | string
+}
+
 export type TourPricingCreateWithoutTourInput = {
   id?: string
-  minGuests: number
-  maxGuests: number
-  pricePerHour: number
+  minGuests?: number
+  maxGuests?: number
+  pricePerHour: runtime.Decimal | runtime.DecimalJsLike | number | string
   createdAt?: Date | string
   updatedAt?: Date | string
 }
 
 export type TourPricingUncheckedCreateWithoutTourInput = {
   id?: string
-  minGuests: number
-  maxGuests: number
-  pricePerHour: number
+  minGuests?: number
+  maxGuests?: number
+  pricePerHour: runtime.Decimal | runtime.DecimalJsLike | number | string
   createdAt?: Date | string
   updatedAt?: Date | string
 }
@@ -518,16 +526,16 @@ export type TourPricingScalarWhereInput = {
   tourId?: Prisma.StringFilter<"TourPricing"> | string
   minGuests?: Prisma.IntFilter<"TourPricing"> | number
   maxGuests?: Prisma.IntFilter<"TourPricing"> | number
-  pricePerHour?: Prisma.FloatFilter<"TourPricing"> | number
+  pricePerHour?: Prisma.DecimalFilter<"TourPricing"> | runtime.Decimal | runtime.DecimalJsLike | number | string
   createdAt?: Prisma.DateTimeFilter<"TourPricing"> | Date | string
   updatedAt?: Prisma.DateTimeFilter<"TourPricing"> | Date | string
 }
 
 export type TourPricingCreateManyTourInput = {
   id?: string
-  minGuests: number
-  maxGuests: number
-  pricePerHour: number
+  minGuests?: number
+  maxGuests?: number
+  pricePerHour: runtime.Decimal | runtime.DecimalJsLike | number | string
   createdAt?: Date | string
   updatedAt?: Date | string
 }
@@ -536,7 +544,7 @@ export type TourPricingUpdateWithoutTourInput = {
   id?: Prisma.StringFieldUpdateOperationsInput | string
   minGuests?: Prisma.IntFieldUpdateOperationsInput | number
   maxGuests?: Prisma.IntFieldUpdateOperationsInput | number
-  pricePerHour?: Prisma.FloatFieldUpdateOperationsInput | number
+  pricePerHour?: Prisma.DecimalFieldUpdateOperationsInput | runtime.Decimal | runtime.DecimalJsLike | number | string
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
 }
@@ -545,7 +553,7 @@ export type TourPricingUncheckedUpdateWithoutTourInput = {
   id?: Prisma.StringFieldUpdateOperationsInput | string
   minGuests?: Prisma.IntFieldUpdateOperationsInput | number
   maxGuests?: Prisma.IntFieldUpdateOperationsInput | number
-  pricePerHour?: Prisma.FloatFieldUpdateOperationsInput | number
+  pricePerHour?: Prisma.DecimalFieldUpdateOperationsInput | runtime.Decimal | runtime.DecimalJsLike | number | string
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
 }
@@ -554,7 +562,7 @@ export type TourPricingUncheckedUpdateManyWithoutTourInput = {
   id?: Prisma.StringFieldUpdateOperationsInput | string
   minGuests?: Prisma.IntFieldUpdateOperationsInput | number
   maxGuests?: Prisma.IntFieldUpdateOperationsInput | number
-  pricePerHour?: Prisma.FloatFieldUpdateOperationsInput | number
+  pricePerHour?: Prisma.DecimalFieldUpdateOperationsInput | runtime.Decimal | runtime.DecimalJsLike | number | string
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
 }
@@ -625,7 +633,7 @@ export type $TourPricingPayload<ExtArgs extends runtime.Types.Extensions.Interna
     tourId: string
     minGuests: number
     maxGuests: number
-    pricePerHour: number
+    pricePerHour: runtime.Decimal
     createdAt: Date
     updatedAt: Date
   }, ExtArgs["result"]["tourPricing"]>
@@ -1056,7 +1064,7 @@ export interface TourPricingFieldRefs {
   readonly tourId: Prisma.FieldRef<"TourPricing", 'String'>
   readonly minGuests: Prisma.FieldRef<"TourPricing", 'Int'>
   readonly maxGuests: Prisma.FieldRef<"TourPricing", 'Int'>
-  readonly pricePerHour: Prisma.FieldRef<"TourPricing", 'Float'>
+  readonly pricePerHour: Prisma.FieldRef<"TourPricing", 'Decimal'>
   readonly createdAt: Prisma.FieldRef<"TourPricing", 'DateTime'>
   readonly updatedAt: Prisma.FieldRef<"TourPricing", 'DateTime'>
 }

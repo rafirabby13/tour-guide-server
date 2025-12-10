@@ -76,18 +76,17 @@ const getGuideBookings = catchAsync(async (req: Request, res: Response) => {
 });
 
 const cancelBooking = catchAsync(async (req: Request, res: Response) => {
-  const { id } = req.params;
+  const {bookingId} = req.params;
   const userId = (req as any).user?.id;
-  const userRole = (req as any).user?.role;
-  const { reason } = req.body;
-
-  const result = await BookingServices.cancelBooking(id, userId, userRole, reason);
+  console.log(bookingId)
+  // const result = await BookingServices.cancelBooking(bookingId, userId);
 
   sendResponse(res, {
     statusCode: 200,
     success: true,
     message: "Booking cancelled successfully",
-    data: result,
+    data: {},
+    // data: result,
   });
 });
 

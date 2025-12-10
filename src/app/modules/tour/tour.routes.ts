@@ -1,10 +1,10 @@
 import express, { NextFunction, Request, Response } from "express"
 import { TourController } from "./tour.controller"
 import { fileUploader } from "../../helpers/fileUploader"
-import { checkAvailabilitySchema, createTourSchema, updateTourSchema, uuidParamSchema } from "./tour.validation"
 import validateRequest from "../../middlewares/validateRequest"
 import auth from "../../middlewares/auth"
 import { UserRole } from "../../../../prisma/generated/prisma/enums"
+import { createTourZodSchema, updateTourZodSchema } from "./tour.validation"
 const router = express.Router()
 
 
@@ -14,29 +14,38 @@ router.get(
     //   validateRequest(uuidParamSchema),
     TourController.getSingleTour
 );
+// router.post("/create-tour",
+//     // fileUploader.upload.array("files"),
+//     TourController.createTour)
 router.post("/create-tour",
     fileUploader.upload.array("files"),
+    auth(UserRole.GUIDE),
     (req: Request, res: Response, next: NextFunction) => {
-        req.body = createTourSchema.parse(JSON.parse(req.body.data))
+        const parsedData = JSON.parse(req.body.data);
+
+        req.body = createTourZodSchema.shape.body.parse(parsedData);
         return TourController.createTour(req, res, next)
 
     })
 router.post(
     "/:id/check-availability",
-    validateRequest(uuidParamSchema),
-    validateRequest(checkAvailabilitySchema),
+    // validateRequest(checkAvailabilitySchema),
     TourController.checkAvailability
 );
 router.patch("/update-tour/:id",
     fileUploader.upload.array("files"),
     auth(UserRole.GUIDE),
     (req: Request, res: Response, next: NextFunction) => {
-        req.body = updateTourSchema.parse(JSON.parse(req.body.data))
+        req.body = updateTourZodSchema.shape.body.parse(JSON.parse(req.body.data))
         return TourController.updateTour(req, res, next)
 
     })
+router.patch("/update-tour-status",
+    auth(UserRole.ADMIN),
+    TourController.updatetourStatus)
+
 router.delete(
-    "/:id",
+    "/delete/:id",
     auth(UserRole.GUIDE),
     TourController.deleteTour
 );

@@ -6,7 +6,7 @@ import { Request } from "express";
 import { fileUploader } from "../../helpers/fileUploader";
 import { IOptions, paginationHelper } from "../../helpers/paginationHelper";
 import { userSearchableFields } from "./user.constant";
-import { Admin, Guide, Prisma, UserRole } from "../../../../prisma/generated/prisma/client";
+import { Admin, Guide, Prisma, UserRole, UserStatus } from "../../../../prisma/generated/prisma/client";
 import { AppError } from "../../errors/AppError";
 
 
@@ -21,7 +21,12 @@ const createTourist = async (req: Request) => {
 
     console.log({ payload })
     const hashedPassword = await bcrypt.hash(payload.password, 10)
-
+    const languages =
+        Array.isArray(payload.languages)
+            ? payload.languages
+            : payload.languages
+                ? [payload.languages]
+                : [];
 
     const result = await prisma.$transaction(async (tnx) => {
         const createdUser = await tnx.user.create({
@@ -32,19 +37,23 @@ const createTourist = async (req: Request) => {
 
             }
         })
-        await tnx.tourist.create({
+        const createdTourist = await tnx.tourist.create({
             data: {
                 userId: createdUser.id,
                 name: payload.name,
                 contactNumber: payload.contactNumber,
                 gender: payload.gender,
                 category: payload.category,
-                languages: payload.languages,
+                languages,
                 profilePhoto: req.body.profilePhoto
 
 
             }
         })
+        return {
+            user: createdUser,
+            tourist: createdTourist,
+        };
 
     })
 
@@ -93,19 +102,66 @@ const createAdmin = async (req: Request): Promise<Admin> => {
     return result;
 };
 
-const createGuide = async (req: Request): Promise<Guide> => {
+// const createGuide = async (req: Request): Promise<Guide> => {
 
-    const file = req.file;
+//     const file = req.file;
 
-    if (file) {
-        const uploadToCloudinary = await fileUploader.uploadToCloudinary(file);
-        console.log(uploadToCloudinary)
-        req.body.profilePhoto = uploadToCloudinary?.secure_url
-    }
-    const hashedPassword: string = await bcrypt.hash(req.body.password, 10)
+//     if (file) {
+//         const uploadToCloudinary = await fileUploader.uploadToCloudinary(file);
+//         console.log(uploadToCloudinary)
+//         req.body.profilePhoto = uploadToCloudinary?.secure_url
+//     }
+//     const hashedPassword: string = await bcrypt.hash(req.body.password, 10)
+
+//     const userData = {
+//         email: req.body.email,
+//         password: hashedPassword,
+//         role: UserRole.GUIDE
+//     }
+
+//     const result = await prisma.$transaction(async (transactionClient) => {
+//         const createdGuideUser = await transactionClient.user.create({
+//             data: userData
+//         });
+
+//         const createdGuideData = await transactionClient.guide.create({
+//             data: {
+//                 userId: createdGuideUser.id,
+//                 contactNumber: req.body.contactNumber,
+//                 name: req.body.name,
+//                 gender: req.body.gender,
+//                 bio: req.body.bio,
+//                 category: req.body.category,
+//                 city: req.body.city,
+//                 country: req.body.country,
+//                 experienceLevel: req.body.experienceLevel,
+//                 isAvailable: req.body.isAvailable,
+//                 profilePhoto: req.body.profilePhoto,
+//                 experience: req.body.experience,
+//                 languages: req.body.languages
+//             }
+//         });
+
+//         return createdGuideData;
+//     });
+
+//     return result;
+// };
+
+const createGuide = async (payload: { email: string, password: string }) => {
+    console.log({ payload })
+
+    // const file = req.file;
+
+    // if (file) {
+    //     const uploadToCloudinary = await fileUploader.uploadToCloudinary(file);
+    //     console.log(uploadToCloudinary)
+    //     req.body.profilePhoto = uploadToCloudinary?.secure_url
+    // }
+    const hashedPassword: string = await bcrypt.hash(payload.password, 10)
 
     const userData = {
-        email: req.body.email,
+        email: payload.email,
         password: hashedPassword,
         role: UserRole.GUIDE
     }
@@ -117,19 +173,7 @@ const createGuide = async (req: Request): Promise<Guide> => {
 
         const createdGuideData = await transactionClient.guide.create({
             data: {
-                userId: createdGuideUser.id,
-                contactNumber: req.body.contactNumber,
-                name: req.body.name,
-                gender: req.body.gender,
-                bio: req.body.bio,
-                category: req.body.category,
-                city: req.body.city,
-                country: req.body.country,
-                experienceLevel: req.body.experienceLevel,
-                isAvailable: req.body.isAvailable,
-                profilePhoto: req.body.profilePhoto,
-                experience: req.body.experience,
-                languages: req.body.languages
+                userId: createdGuideUser.id
             }
         });
 
@@ -138,7 +182,6 @@ const createGuide = async (req: Request): Promise<Guide> => {
 
     return result;
 };
-
 
 const getAllFromDB = async (params: any, options: IOptions) => {
     const { page, limit, skip, sortBy, sortOrder } = paginationHelper.calculatePagination(options)
@@ -157,15 +200,37 @@ const getAllFromDB = async (params: any, options: IOptions) => {
         })
     }
 
+    // if (Object.keys(filterData).length > 0) {
+    //     andConditions.push({
+    //         AND: Object.keys(filterData).map(key => ({
+
+    //             [key]: {
+    //                 equals: (filterData as any)[key]
+    //             }
+    //         }))
+    //     })
+    // }
     if (Object.keys(filterData).length > 0) {
-        andConditions.push({
-            AND: Object.keys(filterData).map(key => ({
-                [key]: {
-                    equals: (filterData as any)[key]
-                }
-            }))
-        })
+  const formattedFilters = Object.keys(filterData).map((key) => {
+    let value = filterData[key];
+
+    // Convert boolean strings
+    if (value === "true") value = true;
+    if (value === "false") value = false;
+
+    // Convert numeric strings
+    if (!isNaN(value) && value !== "" && typeof value === "string") {
+      value = Number(value);
     }
+
+    return {
+      [key]: { equals: value },
+    };
+  });
+
+  andConditions.push({ AND: formattedFilters });
+}
+
 
     const whereConditions: Prisma.UserWhereInput = andConditions.length > 0 ? {
         AND: andConditions
@@ -255,8 +320,9 @@ const getUserProfile = async (userId: string) => {
 
 
 // ✅ NEW: Update user profile
-const updateUserProfile = async (userId: string, req: Request) => {
+const updateMyProfile = async (userId: string, req: Request) => {
     // Check if user exists
+    console.log(req.body)
     const existingUser = await prisma.user.findUnique({
         where: {
             id: userId
@@ -369,9 +435,11 @@ const updateUserProfile = async (userId: string, req: Request) => {
 
 // ✅ NEW: Soft delete user (Admin only)
 const deleteUser = async (userId: string) => {
+    console.log(userId)
     const user = await prisma.user.findUnique({
         where: { id: userId }
     });
+    console.log({ user })
 
     if (!user) {
         throw new AppError(httpStatus.NOT_FOUND, "User not found");
@@ -465,7 +533,7 @@ const updateUserRole = async (userId: string, newRole: UserRole) => {
 
 
 // ✅ NEW: Suspend/Activate user (Admin only)
-const toggleUserStatus = async (userId: string) => {
+const UpdateUserStatus = async (userId: string, userStatus: UserStatus) => {
     const user = await prisma.user.findUnique({
         where: { id: userId }
     });
@@ -477,7 +545,7 @@ const toggleUserStatus = async (userId: string) => {
     const result = await prisma.user.update({
         where: { id: userId },
         data: {
-            isDeleted: !user.isDeleted
+            status: userStatus
         }
     });
 
@@ -489,10 +557,10 @@ export const UserServices = {
     createGuide,
     getAllFromDB,
     getUserProfile,
-    updateUserProfile,
+    updateMyProfile,
     deleteUser,
     changePassword,
     getUserByEmail,
     updateUserRole,
-    toggleUserStatus
+    UpdateUserStatus
 }

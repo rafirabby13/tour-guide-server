@@ -529,6 +529,10 @@ export type TouristUpdatelanguagesInput = {
   push?: string | string[]
 }
 
+export type EnumGenderFieldUpdateOperationsInput = {
+  set?: $Enums.Gender
+}
+
 export type TouristCreateWithoutBookingsInput = {
   id?: string
   name: string

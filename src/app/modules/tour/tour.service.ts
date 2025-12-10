@@ -8,181 +8,189 @@ import { prisma } from "../../shared/prisma";
 import { BlockedDateInput, TourAvailabilityInput, TourPricingInput } from "./tour.interface";
 import { IOptions, paginationHelper } from "../../helpers/paginationHelper";
 import { DEFAULT_TOUR_INCLUDES, tourSearchableFields } from "./tour.constant";
-import { Prisma } from "../../../../prisma/generated/prisma/client";
+import { Prisma, TourStatus } from "../../../../prisma/generated/prisma/client";
+import { timeToMinutes } from "./tour.lib";
 
 
 
 const createTour = async (req: Request) => {
-    console.log(req.files)
-    if (req.files && Array.isArray(req.files)) {
-        const uploadedResult = await fileUploader.uploadMMultipleFilesToCloudinary(req.files)
-        // req.body.images = uploadedResult?.secure_url
-        uploadedResult.forEach(element => {
-            req.body.images.push(element)
-        });
-        console.log(req.body.images)
+  // console.log(req.files)
+  if (req.files && Array.isArray(req.files)) {
+    const uploadedResult = await fileUploader.uploadMMultipleFilesToCloudinary(req.files)
+    // req.body.images = uploadedResult?.secure_url
+    uploadedResult.forEach(element => {
+      req.body.images.push(element)
+    });
+    console.log(req.body.images)
 
-    }
-    const payload = req.body
+  }
+  const payload = req.body
 
-    const guideId = req.body.guideId;
+  const guideId = req.body.guideId;
 
-    if (!payload.tourPricings || payload.tourPricings.length === 0) {
-        throw new AppError(400, "Tour must have at least one pricing tier");
-    }
-
-    if (!payload.tourAvailabilities || payload.tourAvailabilities.length === 0) {
-        throw new AppError(400, "Tour must have at least one availability slot");
-    }
-
-    validatePricingOverlaps(payload.tourPricings);
-    const availableDates = payload.availableDates
-        ? payload.availableDates.map((date: string | number | Date) => new Date(date))
-        : [];
-    console.log({ payload })
-    const result = await prisma.$transaction(async (tx) => {
-        // 1. Create tour
-        const tour = await tx.tour.create({
-            data: {
-                guideId,
-                title: payload.title,
-                description: payload.description,
-                location: payload.location,
-                availableDates,
-                images: payload.images,
-            }
-        });
-
-        // 2. Create tour availabilities
-        await tx.tourAvailability.createMany({
-            data: payload.tourAvailabilities.map((slot: TourAvailabilityInput) => ({
-                tourId: tour.id,
-                dayOfWeek: slot.dayOfWeek,
-                startTime: slot.startTime,
-                endTime: slot.endTime,
-                maxBookings: slot.maxBookings,
-            }))
-        });
-
-        // 3. Create tour pricings
-        await tx.tourPricing.createMany({
-            data: payload.tourPricings.map((tier: TourPricingInput) => ({
-                tourId: tour.id,
-                minGuests: tier.minGuests,
-                maxGuests: tier.maxGuests,
-                pricePerHour: tier.pricePerHour,
-            }))
-        });
-
-        // 4. Create blocked dates if provided
-        if (payload.blockedDates && payload.blockedDates.length > 0) {
-            await tx.blockedDate.createMany({
-                data: payload.blockedDates.map((blocked: BlockedDateInput) => ({
-                    tourId: tour.id,
-                    guideId,
-                    blockedDate: new Date(blocked.blockedDate),
-                    startTime: blocked.startTime,
-                    endTime: blocked.endTime,
-                    isAllDay: blocked.isAllDay,
-                    reason: blocked.reason,
-                }))
-            });
-        }
- 
-        // 5. Return complete tour with relations
-        return tx.tour.findUnique({
-            where: { id: tour.id },
-            include: {
-                guide: {
-                    select: {
-                        id: true,
-                        name: true,
-                        profilePhoto: true
-                    }
-                },
-                tourAvailabilities: {
-                    orderBy: { dayOfWeek: 'asc' }
-                },
-                tourPricings: {
-                    orderBy: { minGuests: 'asc' }
-                },
-                blockedDates: {
-                    where: {
-                        blockedDate: {
-                            gte: new Date() // Only future blocked dates
-                        }
-                    },
-                    orderBy: { blockedDate: 'asc' }
-                },
-                _count: {
-                    select: {
-                        bookings: true,
-                        reviews: true
-                    }
-                }
-            }
-        });
+  const guide = await prisma.guide.findUnique({
+      where:{
+        userId: guideId
+      }
     });
 
 
+  if (!guide) {
+    throw new AppError(400, "Guide Not found");
+  }
+  if (!payload.tourPricings || payload.tourPricings.length === 0) {
+    throw new AppError(400, "Tour must have at least one pricing tier");
+  }
+
+  if (!payload.tourAvailabilities || payload.tourAvailabilities.length === 0) {
+    throw new AppError(400, "Tour must have at least one availability slot");
+  }
+
+  // validatePricingOverlaps(payload.tourPricings);
+ 
+  console.log({ payload })
+  const result = await prisma.$transaction(async (tx) => {
+  
+    const tour = await tx.tour.create({
+      data: {
+        guideId:guide.id,
+        title: payload.title,
+        description: payload.description,
+        location: payload.location,
+        images: payload.images,
+      
+      }
+    });
+
+    
+    await tx.tourAvailability.createMany({
+      data: payload.tourAvailabilities.map((slot: TourAvailabilityInput) => ({
+        tourId: tour.id,
+        startTimeMinutes: timeToMinutes(slot.startTime), 
+        endTimeMinutes: timeToMinutes(slot.endTime),
+        maxBookings: slot.maxBookings,
+        dayOfWeek: slot.dayOfWeek
+        
+
+      }))
+    });
+
+    
+    await tx.tourPricing.createMany({
+      data: payload.tourPricings.map((tier: TourPricingInput) => ({
+        tourId: tour.id,
+        minGuests: tier.minGuests,
+        maxGuests: tier.maxGuests,
+        pricePerHour: tier.pricePerHour,
+      }))
+    });
+
+  
+    if (payload.blockedDates && payload.blockedDates.length > 0) {
+      await tx.blockedDate.createMany({
+        data: payload.blockedDates.map((blocked: BlockedDateInput) => ({
+          tourId: tour.id,
+          guideId,
+          blockedDate: new Date(blocked.blockedDate)
+        }))
+      });
+    }
+
+    
+    return tx.tour.findUnique({
+      where: { id: tour.id },
+      include: {
+        guide: {
+          select: {
+            id: true,
+            name: true,
+            profilePhoto: true
+          }
+        },
+        tourAvailabilities: {
+          orderBy: { dayOfWeek: 'asc' }
+        },
+        tourPricings: {
+          orderBy: { minGuests: 'asc' }
+        },
+        blockedDates: {
+          where: {
+            blockedDate: {
+              gte: new Date() 
+            }
+          },
+          orderBy: { blockedDate: 'asc' }
+        },
+        _count: {
+          select: {
+            bookings: true,
+            reviews: true
+          }
+        }
+      }
+    });
+  });
 
 
-    // return {}
-    return result
+
+
+  // return {}
+  // return {}
+  return result
 }
 
 const getAllFromDB = async (params: any, options: IOptions) => {
-    const { page, limit, skip, sortBy, sortOrder } = paginationHelper.calculatePagination(options)
-    const { searchTerm, ...filterData } = params;
+  const { page, limit, skip, sortBy, sortOrder } = paginationHelper.calculatePagination(options)
+  const { searchTerm, ...filterData } = params;
 
-    const andConditions: Prisma.TourWhereInput[] = [];
+  const andConditions: Prisma.TourWhereInput[] = [];
 
-    if (searchTerm) {
-        andConditions.push({
-            OR: tourSearchableFields.map(field => ({
-                [field]: {
-                    contains: searchTerm,
-                    mode: "insensitive"
-                }
-            }))
-        })
-    }
-
-    if (Object.keys(filterData).length > 0) {
-        andConditions.push({
-            AND: Object.keys(filterData).map(key => ({
-                [key]: {
-                    equals: (filterData as any)[key]
-                }
-            }))
-        })
-    }
-
-    const whereConditions: Prisma.TourWhereInput = andConditions.length > 0 ? {
-        AND: andConditions
-    } : {}
-
-    const result = await prisma.tour.findMany({
-        skip,
-        take: limit,
-
-        where: whereConditions,
-        orderBy: {
-            [sortBy]: sortOrder
+  if (searchTerm) {
+    andConditions.push({
+      OR: tourSearchableFields.map(field => ({
+        [field]: {
+          contains: searchTerm,
+          mode: "insensitive"
         }
-    });
+      }))
+    })
+  }
 
-    const total = await prisma.tour.count({
-        where: whereConditions
-    });
-    return {
-        meta: {
-            page,
-            limit,
-            total
-        },
-        data: result
-    };
+  if (Object.keys(filterData).length > 0) {
+    andConditions.push({
+      AND: Object.keys(filterData).map(key => ({
+        [key]: {
+          equals: (filterData as any)[key]
+        }
+      }))
+    })
+  }
+
+  const whereConditions: Prisma.TourWhereInput = andConditions.length > 0 ? {
+    AND: andConditions
+  } : {}
+
+  const result = await prisma.tour.findMany({
+    skip,
+    take: limit,
+
+    where: whereConditions,
+    orderBy: {
+      [sortBy]: sortOrder
+    }
+  });
+
+  const total = await prisma.tour.count({
+    where: whereConditions
+  });
+  return {
+    meta: {
+      page,
+      limit,
+      total
+    },
+    data: result
+  };
 }
 const getSingleFromDB = async (id: string) => {
   const tour = await prisma.tour.findUnique({
@@ -288,11 +296,7 @@ const updateIntoDB = async (id: string, req: Request) => {
         data: payload.blockedDates.map((blocked: BlockedDateInput) => ({
           tourId: id,
           guideId: existingTour.guideId,
-          blockedDate: new Date(blocked.blockedDate),
-          startTime: blocked.startTime,
-          endTime: blocked.endTime,
-          isAllDay: blocked.isAllDay,
-          reason: blocked.reason,
+          blockedDate: new Date(blocked.blockedDate)
         }))
       });
     }
@@ -361,8 +365,7 @@ const checkAvailability = async (tourId: string, date: Date, guestCount: number)
   if (tour.blockedDates.length > 0) {
     return {
       available: false,
-      reason: "Date is blocked",
-      blockedReason: tour.blockedDates[0].reason
+      reason: "Date is blocked"
     };
   }
 
@@ -422,8 +425,6 @@ const checkAvailability = async (tourId: string, date: Date, guestCount: number)
       maxGuests: pricing.maxGuests
     },
     availability: {
-      startTime: dayAvailability.startTime,
-      endTime: dayAvailability.endTime,
       spotsRemaining: dayAvailability.maxBookings - existingBookings
     }
   };
@@ -433,8 +434,17 @@ const checkAvailability = async (tourId: string, date: Date, guestCount: number)
 const getMyTours = async (guideId: string, options: IOptions) => {
   const { page, limit, skip, sortBy, sortOrder } = paginationHelper.calculatePagination(options);
 
+  console.log({guideId})
+  const guide = await prisma.guide.findUnique({
+    where: { userId: guideId }
+  });
+  if (!guide) {
+    throw new AppError(404, "Guide not found");
+    
+  }
+
   const result = await prisma.tour.findMany({
-    where: { guideId },
+    where: { guideId: guide.id },
     skip,
     take: limit,
     include: DEFAULT_TOUR_INCLUDES,
@@ -453,12 +463,34 @@ const getMyTours = async (guideId: string, options: IOptions) => {
   };
 };
 
+const updatetourStatus = async (tourId: string, status: TourStatus) => {
+  const tour = await prisma.tour.findUnique({
+    where: { id: tourId }
+  });
+
+  if (!tour) {
+    throw new AppError(404, "Tour not found");
+  }
+  const result = await prisma.tour.update({
+    where: {
+      id: tourId,
+
+    },
+    data: {
+
+      status
+    }
+  });
+  return result
+}
+
 export const TourServices = {
-    createTour,
+  createTour,
   getAllFromDB,
   getSingleFromDB,
   updateIntoDB,
   deleteFromDB,
   checkAvailability,
-  getMyTours
+  getMyTours,
+  updatetourStatus
 }
