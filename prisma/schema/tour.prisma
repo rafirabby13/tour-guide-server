@@ -11,6 +11,7 @@ model Tour {
   location    String     @db.VarChar(255)
   images      String[]
   status      TourStatus @default(DRAFT)
+  // totalPriceCalculated       String?
 
   guideId String
   guide   Guide  @relation("GuideTours", fields: [guideId], references: [id], onDelete: Cascade)

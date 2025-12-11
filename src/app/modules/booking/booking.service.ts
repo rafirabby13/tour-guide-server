@@ -7,6 +7,7 @@ import { CANCELLATION_POLICY, DEFAULT_BOOKING_INCLUDES } from "./booking.constan
 import { IOptions, paginationHelper } from "../../helpers/paginationHelper";
 import { Prisma } from "../../../../prisma/generated/prisma/client";
 import { PaymentService } from "../payment/payment.service";
+import { timeToMinutes } from "./booking.lib";
 
 
 const updatePastBookings = async () => {
@@ -22,10 +23,11 @@ const updatePastBookings = async () => {
   });
 };
 const createBooking = async (payload: CreateBookingPayload, touristId: string) => {
-  const { tourId, date, duration, numGuests, startTime, endTime } = payload;
+  const { tourId, date, duration, numGuests, startTime } = payload;
   const bookingDate = new Date(date);
-
-  const startDateTime = new Date(`${date}T${startTime}:00`);
+  const dateString = bookingDate.toISOString().split("T")[0];
+  const startDateTime = new Date(`${dateString}T${startTime}:00`);
+  // const startDateTime = new Date(`${date}T${startTime}:00`);
   console.log({ startDateTime })
   // Calculate End Time
   const durationInMs = duration * 60 * 60 * 1000;
@@ -69,10 +71,19 @@ const createBooking = async (payload: CreateBookingPayload, touristId: string) =
   }
 
 
-  const bookingTimeStr = payload.startTime
+  // const bookingTimeStr = payload.startTime
+  const bookingStartMinutes = timeToMinutes(startTime);
+  const bookingEndMinutes = bookingStartMinutes + duration * 60;
 
-  if (bookingTimeStr < dayAvailability.startTime || bookingTimeStr >= dayAvailability.endTime) {
-    throw new AppError(400, `Tour only available between ${dayAvailability.startTime} - ${dayAvailability.endTime}`);
+  // if (bookingTimeStr < dayAvailability.startTime || bookingTimeStr >= dayAvailability.endTime) {
+  //   throw new AppError(400, `Tour only available between ${dayAvailability.startTime} - ${dayAvailability.endTime}`);
+  // }
+  if (bookingStartMinutes < dayAvailability.startTimeMinutes) {
+    throw new AppError(400, "Tour starts too early for this guide's schedule");
+  }
+
+  if (bookingEndMinutes > dayAvailability.endTimeMinutes) {
+    throw new AppError(400, "Tour duration exceeds guide's working hours");
   }
 
   const existingBookings = await prisma.booking.count({
@@ -97,7 +108,7 @@ const createBooking = async (payload: CreateBookingPayload, touristId: string) =
     throw new AppError(400, `No pricing available for ${numGuests} guests`);
   }
 
-  const totalPrice = pricing.pricePerHour * duration * numGuests;
+  const totalPrice = Number(pricing.pricePerHour) * duration * numGuests;
 
   const tourist = await prisma.tourist.findUnique({
     where: { userId: touristId },
@@ -115,11 +126,11 @@ const createBooking = async (payload: CreateBookingPayload, touristId: string) =
     const booking = await tx.booking.create({
       data: {
         date: bookingDate,
+        startTime: startDateTime,
+        endTime: endDateTime,
         duration,
         numGuests,
-        startTime: startDateTime,
         totalPrice,
-        endTime: endDateTime,
         tourId,
         touristId: tourist.id,
         guideId: tour.guideId
@@ -335,9 +346,9 @@ const calculateRefund = (booking: any): RefundCalculation => {
   };
 };
 
-const cancelBooking = async (bookingId: string, userId: string ) => {
+const cancelBooking = async (bookingId: string, userId: string) => {
   const booking = await prisma.booking.findUnique({
-    where: { id:bookingId },
+    where: { id: bookingId },
     include: {
       tourist: {
         include: {
@@ -390,7 +401,7 @@ const cancelBooking = async (bookingId: string, userId: string ) => {
   const result = await prisma.$transaction(async (tx) => {
     // Update booking status
     const updatedBooking = await tx.booking.update({
-      where: { id : bookingId},
+      where: { id: bookingId },
       data: {
         status: isGuide ? BookingStatus.CANCELED_BY_GUIDE : BookingStatus.CANCELED_BY_TOURIST
       },

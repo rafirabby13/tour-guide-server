@@ -177,6 +177,10 @@ const getAllFromDB = async (params: any, options: IOptions) => {
     where: whereConditions,
     orderBy: {
       [sortBy]: sortOrder
+    },
+    include:{
+      tourAvailabilities: true,
+      tourPricings: true
     }
   });
 
@@ -200,7 +204,8 @@ const getSingleFromDB = async (id: string) => {
       reviews: {
         orderBy: { createdAt: 'desc' },
         take: 10
-      }
+      },
+      
     }
   });
 
@@ -263,8 +268,9 @@ const updateIntoDB = async (id: string, req: Request) => {
         data: payload.tourAvailabilities.map((slot: TourAvailabilityInput) => ({
           tourId: id,
           dayOfWeek: slot.dayOfWeek,
-          startTime: slot.startTime,
-          endTime: slot.endTime,
+          startTimeMinutes: timeToMinutes(slot.startTime),
+          
+          endTimeMinutes: timeToMinutes(slot.endTime),
           maxBookings: slot.maxBookings,
         }))
       });

@@ -14,12 +14,14 @@ import { BookingStatus, PaymentStatus } from '../../../../prisma/generated/prism
 // 1. Initiate Payment Controller
 const initiatePayment = catchAsync(async (req: Request, res: Response) => {
   const { bookingId } = req.params;
+  console.log(bookingId)
   const result = await PaymentService.initiatePayment(bookingId);
 
   sendResponse(res, {
     statusCode: httpStatus.OK,
     success: true,
     message: 'Payment session initiated',
+    // data: {},
     data: result,
   });
 });
@@ -44,28 +46,28 @@ const handleWebhook = async (req: Request, res: Response) => {
   // Handle the event
 
   console.log("🔥 Webhook HIT");
-console.log("Event type:", event.type);
+  console.log("Event type:", event.type);
   if (event.type === 'checkout.session.completed') {
     const session = event.data.object as Stripe.Checkout.Session;
-    console.log({session})
+    console.log({ session })
     const bookingId = session.metadata?.bookingId;
 
     if (bookingId) {
       // Use Transaction to update both Booking and Payment tables safely
       await prisma.$transaction(async (tx) => {
         // Update Booking Status
-        console.log({bookingId})
+        console.log("booking id from webhook event....", { bookingId })
         await tx.booking.update({
           where: { id: bookingId },
           data: {
             paymentStatus: PaymentStatus.SUCCESS,
-            status: BookingStatus.CONFIRMED,  
+            status: BookingStatus.CONFIRMED,
           },
         });
 
-       
+
         await tx.payment.update({
-          where: {bookingId},
+          where: { bookingId },
           data: {
             status: PaymentStatus.SUCCESS,
             paymentGatewayData: session as any, // Store full json for debugging

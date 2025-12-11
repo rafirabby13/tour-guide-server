@@ -7,7 +7,8 @@ const createReviewSchema = z.object({
             .min(1, "Rating must be at least 1")
             .max(5, "Rating must be at most 5"),
         comment: z.string().optional(),
-        bookingId: z.string().uuid("Invalid booking ID")
+        bookingId: z.string().uuid("Invalid booking ID"),
+        tourId: z.string().uuid("Invalid tour ID")
     })
 });
 

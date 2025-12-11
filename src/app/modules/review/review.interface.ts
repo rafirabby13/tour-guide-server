@@ -2,6 +2,7 @@ export interface ICreateReview {
     rating: number;
     comment?: string;
     bookingId: string;
+    tourId: string;
 }
 
 export interface IUpdateReview {

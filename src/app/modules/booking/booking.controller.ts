@@ -7,13 +7,14 @@ import pick from "../../helpers/pick";
 
 const createBooking = catchAsync(async (req: Request, res: Response) => {
   const touristId = (req as any).user.id; 
-  console.log({touristId})
+  // console.log({touristId}, req.body)
   const result = await BookingServices.createBooking(req.body, touristId);
 
   sendResponse(res, {
     statusCode: 201,
     success: true,
     message: "Booking created successfully. Please complete payment.",
+    // data: {},
     data: result,
   });
 });

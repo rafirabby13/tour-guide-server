@@ -28,9 +28,17 @@ const createReview = async (touristId: string, payload: ICreateReview) => {
             tour: true
         }
     });
+    const tour = await prisma.tour.findUnique({
+        where: {
+            id: payload.tourId
+        }
+    });
 
     if (!booking) {
         throw new AppError(httpStatus.NOT_FOUND, "Booking not found");
+    }
+    if (!tour) {
+        throw new AppError(httpStatus.NOT_FOUND, "Tour not found");
     }
     if (!tourist) {
         throw new AppError(httpStatus.NOT_FOUND, "Tourist not found");
@@ -46,60 +54,57 @@ const createReview = async (touristId: string, payload: ICreateReview) => {
         throw new AppError(httpStatus.BAD_REQUEST, "You can only review confirme tours");
     }
 
-    // Check if review already exists
-    if (booking.reviews) {
-        throw new AppError(httpStatus.CONFLICT, "Review already exists for this booking");
-    }
+    
 
     
-    // const result = await prisma.$transaction(async (tnx) => {
+    const result = await prisma.$transaction(async (tnx) => {
        
-    //     const review = await tnx.review.create({
-    //         data: {
-    //             rating: payload.rating,
-    //             comment: payload.comment,
-    //             tourId: booking.tourId,
-    //             touristId: booking.touristId,
-    //             guideId: booking.guideId,
-    //             bookingId: payload.bookingId
-    //         },
-    //         include: {
-    //             tourist: {
-    //                 select: {
-    //                     id: true,
-    //                     name: true,
-    //                     profilePhoto: true
-    //                 }
-    //             },
-    //             guide: {
-    //                 select: {
-    //                     id: true,
-    //                     name: true,
-    //                     profilePhoto: true
-    //                 }
-    //             },
-    //             booking: {
-    //                 select: {
-    //                     id: true,
-    //                     date: true,
-    //                     tour: {
-    //                         select: {
-    //                             id: true,
-    //                             title: true
-    //                         }
-    //                     }
-    //                 }
-    //             }
-    //         }
-    //     });
+        const review = await tnx.review.create({
+            data: {
+                rating: payload.rating,
+                comment: payload.comment,
+                tourId: payload.tourId,
+                touristId: tourist.id,
+                guideId: booking.guideId,
+                bookingId: payload.bookingId
+            },
+            include: {
+                tourist: {
+                    select: {
+                        id: true,
+                        name: true,
+                        profilePhoto: true
+                    }
+                },
+                guide: {
+                    select: {
+                        id: true,
+                        name: true,
+                        profilePhoto: true
+                    }
+                },
+                booking: {
+                    select: {
+                        id: true,
+                        date: true,
+                        tour: {
+                            select: {
+                                id: true,
+                                title: true
+                            }
+                        }
+                    }
+                }
+            }
+        });
 
       
-    //     await updateGuideRating(tnx, booking.guideId);
+        await updateGuideRating(tnx, booking.guideId);
 
-    //     return review;
-    // });
+        return review;
+    });
 
-    // return result;
+    return result;
 };
 
 
@@ -491,17 +496,19 @@ const updateGuideRating = async (tnx: any, guideId: string) => {
         where: { guideId },
         select: { rating: true }
     });
+    console.log({reviews})
 
     const totalReviews = reviews.length;
     const averageRating = totalReviews > 0
-        ? reviews.reduce((sum: number, review: number) => sum + review, 0) / totalReviews
+        ? reviews.reduce((sum: number, rating: {rating:number}) => sum + rating.rating, 0) / totalReviews
         : 0;
-
+console.log({averageRating})
     // Update guide
     await tnx.guide.update({
         where: { id: guideId },
         data: {
-            averageRating: Number(averageRating.toFixed(1)),
+
+            rating: Number(averageRating.toFixed(1)),
             totalReviews
         }
     });

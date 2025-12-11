@@ -13,6 +13,11 @@ const router = express.Router()
 router.get("/all-users",
     auth(UserRole.ADMIN),
     UserController.getAllFromDB)
+router.get(
+    "/my-profile/me",
+    auth(UserRole.TOURIST, UserRole.GUIDE, UserRole.ADMIN),
+    UserController.getMyProfile
+);
 router.post("/create-tourist",
     fileUploader.upload.single('file'),
     (req: Request, res: Response, next: NextFunction) => {
@@ -21,7 +26,7 @@ router.post("/create-tourist",
     }
 )
 router.post("/create-admin",
-    // auth(UserRole.ADMIN),
+    auth(UserRole.ADMIN),
     fileUploader.upload.single('file'),
     (req: Request, res: Response, next: NextFunction) => {
         req.body = CreateAdminSchema.parse(JSON.parse(req.body.data))
@@ -56,11 +61,7 @@ router.delete(
 );
 
 // Authenticated User Routes
-router.get(
-    "/me",
-    auth(UserRole.TOURIST, UserRole.GUIDE, UserRole.ADMIN),
-    UserController.getMyProfile
-);
+
 
 router.patch(
     "/update-profile",
@@ -76,7 +77,7 @@ router.patch(
 
 router.post(
     "/change-password",
-    auth( UserRole.GUIDE),
+    auth(UserRole.GUIDE),
     validateRequest(UserValidation.changePasswordSchema),
     UserController.changePassword
 );
