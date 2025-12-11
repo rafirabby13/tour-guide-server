@@ -1,21 +1,16 @@
-
-import { BookingStatus, PaymentStatus, UserRole } from "../../../prisma/generated/prisma/enums";
+import { BookingStatus, UserRole } from "../../../prisma/generated/prisma/enums";
 import { prisma } from "../shared/prisma";
-import { IDateRange } from "./stats.interface";
-
 // ========================================
 // BOOKING STATS
 // ========================================
-const getBookingStats = async (dateRange?: IDateRange) => {
-    const whereCondition: any = {};
-
+const getBookingStats = async (dateRange) => {
+    const whereCondition = {};
     if (dateRange?.startDate && dateRange?.endDate) {
         whereCondition.createdAt = {
             gte: dateRange.startDate,
             lte: dateRange.endDate
         };
     }
-
     // Total bookings by status
     const totalBookings = await prisma.booking.count({ where: whereCondition });
     const pendingBookings = await prisma.booking.count({
@@ -28,9 +23,8 @@ const getBookingStats = async (dateRange?: IDateRange) => {
         where: { ...whereCondition, status: BookingStatus.COMPLETED }
     });
     const cancelledBookings = await prisma.booking.count({
-        where: { ...whereCondition, status: BookingStatus.CANCELED_BY_TOURIST  }
+        where: { ...whereCondition, status: BookingStatus.CANCELED_BY_TOURIST }
     });
-
     // Revenue calculations
     const revenueData = await prisma.booking.aggregate({
         where: {
@@ -46,15 +40,12 @@ const getBookingStats = async (dateRange?: IDateRange) => {
             totalPrice: true
         }
     });
-
     const totalRevenue = revenueData._sum.totalPrice || 0;
     const averageBookingValue = revenueData._avg.totalPrice || 0;
-
     // Bookings by month (last 6 months)
     const sixMonthsAgo = new Date();
     sixMonthsAgo.setMonth(sixMonthsAgo.getMonth() - 6);
-
-    const bookingsByMonth = await prisma.$queryRaw<Array<any>>`
+    const bookingsByMonth = await prisma.$queryRaw `
         SELECT 
             TO_CHAR(DATE_TRUNC('month', "createdAt"), 'Mon YYYY') as month,
             COUNT(*)::int as count,
@@ -64,7 +55,6 @@ const getBookingStats = async (dateRange?: IDateRange) => {
         GROUP BY DATE_TRUNC('month', "createdAt")
         ORDER BY DATE_TRUNC('month', "createdAt") ASC
     `;
-
     // Bookings by status (percentage)
     const bookingsByStatus = [
         {
@@ -88,7 +78,6 @@ const getBookingStats = async (dateRange?: IDateRange) => {
             percentage: totalBookings > 0 ? (cancelledBookings / totalBookings) * 100 : 0
         }
     ];
-
     // Top guides by bookings and revenue
     const topGuides = await prisma.booking.groupBy({
         by: ['guideId'],
@@ -106,23 +95,19 @@ const getBookingStats = async (dateRange?: IDateRange) => {
         },
         take: 10
     });
-
-    const topGuidesWithDetails = await Promise.all(
-        topGuides.map(async (item) => {
-            const guide = await prisma.guide.findUnique({
-                where: { id: item.guideId },
-                select: { id: true, name: true, profilePhoto: true }
-            });
-            return {
-                guideId: item.guideId,
-                guideName: guide?.name || 'Unknown',
-                profilePhoto: guide?.profilePhoto,
-                bookingCount: item._count.id,
-                totalRevenue: item._sum.totalPrice || 0
-            };
-        })
-    );
-
+    const topGuidesWithDetails = await Promise.all(topGuides.map(async (item) => {
+        const guide = await prisma.guide.findUnique({
+            where: { id: item.guideId },
+            select: { id: true, name: true, profilePhoto: true }
+        });
+        return {
+            guideId: item.guideId,
+            guideName: guide?.name || 'Unknown',
+            profilePhoto: guide?.profilePhoto,
+            bookingCount: item._count.id,
+            totalRevenue: item._sum.totalPrice || 0
+        };
+    }));
     // Recent bookings
     const recentBookings = await prisma.booking.findMany({
         where: whereCondition,
@@ -140,7 +125,6 @@ const getBookingStats = async (dateRange?: IDateRange) => {
             }
         }
     });
-
     return {
         totalBookings,
         pendingBookings,
@@ -155,54 +139,46 @@ const getBookingStats = async (dateRange?: IDateRange) => {
         recentBookings
     };
 };
-
-
 // ========================================
 // PAYMENT STATS
 // ========================================
-const getPaymentStats = async (dateRange?: IDateRange) => {
-    const whereCondition: any = {};
-
+const getPaymentStats = async (dateRange) => {
+    const whereCondition = {};
     if (dateRange?.startDate && dateRange?.endDate) {
         whereCondition.createdAt = {
             gte: dateRange.startDate,
             lte: dateRange.endDate
         };
     }
-
     // Total payments by status
     const totalPayments = await prisma.payment.count({ where: whereCondition });
-
     const paymentsByStatus = await prisma.payment.groupBy({
         by: ['status'],
         where: whereCondition,
         _count: { id: true },
         _sum: { amount: true }
     });
-
     let successfulPayments = 0;
     let pendingPayments = 0;
     let failedPayments = 0;
     let totalRevenue = 0;
-
     paymentsByStatus.forEach(payment => {
-        if (payment.status === 'SUCCESS' ) {
+        if (payment.status === 'SUCCESS') {
             successfulPayments += payment._count.id;
             totalRevenue += payment._sum.amount || 0;
-        } else if (payment.status === 'PENDING') {
+        }
+        else if (payment.status === 'PENDING') {
             pendingPayments += payment._count.id;
-        } else if (payment.status === 'FAILED') {
+        }
+        else if (payment.status === 'FAILED') {
             failedPayments += payment._count.id;
         }
     });
-
     const averagePaymentAmount = totalPayments > 0 ? totalRevenue / successfulPayments : 0;
-
     // Revenue by month (last 6 months)
     const sixMonthsAgo = new Date();
     sixMonthsAgo.setMonth(sixMonthsAgo.getMonth() - 6);
-
-    const revenueByMonth = await prisma.$queryRaw<Array<any>>`
+    const revenueByMonth = await prisma.$queryRaw `
         SELECT 
             TO_CHAR(DATE_TRUNC('month', "createdAt"), 'Mon YYYY') as month,
             COALESCE(SUM(amount), 0)::float as revenue,
@@ -213,7 +189,6 @@ const getPaymentStats = async (dateRange?: IDateRange) => {
         GROUP BY DATE_TRUNC('month', "createdAt")
         ORDER BY DATE_TRUNC('month', "createdAt") ASC
     `;
-
     // Top paying tourists
     const topPayingTourists = await prisma.payment.groupBy({
         by: ['bookingId'],
@@ -223,15 +198,12 @@ const getPaymentStats = async (dateRange?: IDateRange) => {
         },
         _sum: { amount: true }
     });
-
-    const touristPayments = new Map<string, { totalSpent: number; bookingCount: number }>();
-
+    const touristPayments = new Map();
     for (const payment of topPayingTourists) {
         const booking = await prisma.booking.findUnique({
             where: { id: payment.bookingId },
             select: { touristId: true }
         });
-
         if (booking) {
             const current = touristPayments.get(booking.touristId) || { totalSpent: 0, bookingCount: 0 };
             touristPayments.set(booking.touristId, {
@@ -240,26 +212,22 @@ const getPaymentStats = async (dateRange?: IDateRange) => {
             });
         }
     }
-
-    const topTourists = await Promise.all(
-        Array.from(touristPayments.entries())
-            .sort((a, b) => b[1].totalSpent - a[1].totalSpent)
-            .slice(0, 10)
-            .map(async ([touristId, data]) => {
-                const tourist = await prisma.tourist.findUnique({
-                    where: { id: touristId },
-                    select: { id: true, name: true, profilePhoto: true }
-                });
-                return {
-                    touristId,
-                    touristName: tourist?.name || 'Unknown',
-                    profilePhoto: tourist?.profilePhoto,
-                    totalSpent: Number(data.totalSpent.toFixed(2)),
-                    bookingCount: data.bookingCount
-                };
-            })
-    );
-
+    const topTourists = await Promise.all(Array.from(touristPayments.entries())
+        .sort((a, b) => b[1].totalSpent - a[1].totalSpent)
+        .slice(0, 10)
+        .map(async ([touristId, data]) => {
+        const tourist = await prisma.tourist.findUnique({
+            where: { id: touristId },
+            select: { id: true, name: true, profilePhoto: true }
+        });
+        return {
+            touristId,
+            touristName: tourist?.name || 'Unknown',
+            profilePhoto: tourist?.profilePhoto,
+            totalSpent: Number(data.totalSpent.toFixed(2)),
+            bookingCount: data.bookingCount
+        };
+    }));
     return {
         totalPayments,
         successfulPayments,
@@ -276,21 +244,17 @@ const getPaymentStats = async (dateRange?: IDateRange) => {
         topPayingTourists: topTourists
     };
 };
-
-
 // ========================================
 // TOUR STATS
 // ========================================
-const getTourStats = async (dateRange?: IDateRange) => {
-    const whereCondition: any = {};
-
+const getTourStats = async (dateRange) => {
+    const whereCondition = {};
     if (dateRange?.startDate && dateRange?.endDate) {
         whereCondition.createdAt = {
             gte: dateRange.startDate,
             lte: dateRange.endDate
         };
     }
-
     // Total tours
     const totalTours = await prisma.tour.count({ where: whereCondition });
     const activeTours = await prisma.tour.count({
@@ -299,18 +263,8 @@ const getTourStats = async (dateRange?: IDateRange) => {
     const inactiveTours = await prisma.tour.count({
         where: { ...whereCondition, isDeleted: true }
     });
-
     // Total bookings for all tours
     const totalBookings = await prisma.booking.count();
-
-  
-   
-    
-  
-
-    
-
-
     return {
         totalTours,
         activeTours,
@@ -318,21 +272,17 @@ const getTourStats = async (dateRange?: IDateRange) => {
         totalBookings
     };
 };
-
-
 // ========================================
 // USER STATS
 // ========================================
-const getUserStats = async (dateRange?: IDateRange) => {
-    const whereCondition: any = {};
-
+const getUserStats = async (dateRange) => {
+    const whereCondition = {};
     if (dateRange?.startDate && dateRange?.endDate) {
         whereCondition.createdAt = {
             gte: dateRange.startDate,
             lte: dateRange.endDate
         };
     }
-
     // Total users by role
     const totalUsers = await prisma.user.count({ where: whereCondition });
     const totalTourists = await prisma.user.count({
@@ -344,14 +294,12 @@ const getUserStats = async (dateRange?: IDateRange) => {
     const totalAdmins = await prisma.user.count({
         where: { ...whereCondition, role: UserRole.ADMIN }
     });
-
     const activeUsers = await prisma.user.count({
         where: { ...whereCondition, isDeleted: false }
     });
     const deletedUsers = await prisma.user.count({
         where: { ...whereCondition, isDeleted: true }
     });
-
     // Users by role (percentage)
     const usersByRole = [
         {
@@ -370,23 +318,19 @@ const getUserStats = async (dateRange?: IDateRange) => {
             percentage: totalUsers > 0 ? (totalAdmins / totalUsers) * 100 : 0
         }
     ];
-
     // New users this month
     const startOfMonth = new Date();
     startOfMonth.setDate(1);
     startOfMonth.setHours(0, 0, 0, 0);
-
     const newUsersThisMonth = await prisma.user.count({
         where: {
             createdAt: { gte: startOfMonth }
         }
     });
-
     // User growth by month (last 6 months)
     const sixMonthsAgo = new Date();
     sixMonthsAgo.setMonth(sixMonthsAgo.getMonth() - 6);
-
-    const userGrowthByMonth = await prisma.$queryRaw<Array<any>>`
+    const userGrowthByMonth = await prisma.$queryRaw `
         SELECT 
             TO_CHAR(DATE_TRUNC('month', "createdAt"), 'Mon YYYY') as month,
             COUNT(*) FILTER (WHERE role = 'TOURIST')::int as tourists,
@@ -397,7 +341,6 @@ const getUserStats = async (dateRange?: IDateRange) => {
         GROUP BY DATE_TRUNC('month', "createdAt")
         ORDER BY DATE_TRUNC('month', "createdAt") ASC
     `;
-
     // Top guides (by rating, reviews, bookings, revenue)
     const topGuides = await prisma.guide.findMany({
         where: {
@@ -427,7 +370,6 @@ const getUserStats = async (dateRange?: IDateRange) => {
         },
         take: 10
     });
-
     const topGuidesFormatted = topGuides.map(guide => ({
         guideId: guide.id,
         guideName: guide.name,
@@ -436,11 +378,8 @@ const getUserStats = async (dateRange?: IDateRange) => {
         averageRating: guide.averageRating,
         totalReviews: guide.totalReviews,
         totalBookings: guide._count.bookings,
-        totalRevenue: Number(
-            guide.bookings.reduce((sum, b) => sum + b.totalPrice, 0).toFixed(2)
-        )
+        totalRevenue: Number(guide.bookings.reduce((sum, b) => sum + b.totalPrice, 0).toFixed(2))
     }));
-
     return {
         totalUsers,
         totalTourists,
@@ -454,8 +393,6 @@ const getUserStats = async (dateRange?: IDateRange) => {
         topGuides: topGuidesFormatted
     };
 };
-
-
 // ========================================
 // DASHBOARD OVERVIEW STATS
 // ========================================
@@ -470,7 +407,6 @@ const getDashboardStats = async () => {
     });
     const totalTours = await prisma.tour.count({ where: { isDeleted: false } });
     const totalBookings = await prisma.booking.count();
-
     // Total revenue
     const revenueData = await prisma.booking.aggregate({
         where: {
@@ -479,13 +415,11 @@ const getDashboardStats = async () => {
         _sum: { totalPrice: true }
     });
     const totalRevenue = revenueData._sum.totalPrice || 0;
-
     // Average rating across all guides
     const ratingData = await prisma.guide.aggregate({
         _avg: { averageRating: true }
     });
     const averageRating = ratingData._avg.averageRating || 0;
-
     // Recent bookings
     const recentBookings = await prisma.booking.findMany({
         take: 5,
@@ -502,7 +436,6 @@ const getDashboardStats = async () => {
             }
         }
     });
-
     // Recent reviews
     const recentReviews = await prisma.review.findMany({
         take: 5,
@@ -516,7 +449,6 @@ const getDashboardStats = async () => {
             }
         }
     });
-
     // Recent users
     const recentUsers = await prisma.user.findMany({
         take: 5,
@@ -535,13 +467,11 @@ const getDashboardStats = async () => {
             }
         }
     });
-
     // Calculate trends (comparing last month vs previous month)
     const lastMonth = new Date();
     lastMonth.setMonth(lastMonth.getMonth() - 1);
     const twoMonthsAgo = new Date();
     twoMonthsAgo.setMonth(twoMonthsAgo.getMonth() - 2);
-
     const lastMonthBookings = await prisma.booking.count({
         where: { createdAt: { gte: lastMonth } }
     });
@@ -550,7 +480,6 @@ const getDashboardStats = async () => {
             createdAt: { gte: twoMonthsAgo, lt: lastMonth }
         }
     });
-
     const lastMonthRevenue = await prisma.booking.aggregate({
         where: {
             createdAt: { gte: lastMonth },
@@ -565,7 +494,6 @@ const getDashboardStats = async () => {
         },
         _sum: { totalPrice: true }
     });
-
     const lastMonthUsers = await prisma.user.count({
         where: { createdAt: { gte: lastMonth } }
     });
@@ -574,7 +502,6 @@ const getDashboardStats = async () => {
             createdAt: { gte: twoMonthsAgo, lt: lastMonth }
         }
     });
-
     return {
         overview: {
             totalUsers,
@@ -606,38 +533,30 @@ const getDashboardStats = async () => {
         }
     };
 };
-
-
 // ========================================
 // GUIDE SPECIFIC STATS
 // ========================================
-const getGuideStats = async (guideId: string) => {
+const getGuideStats = async (guideId) => {
     // Check if guide exists
     const guide = await prisma.guide.findUnique({
         where: { id: guideId }
     });
-
     if (!guide) {
         throw new Error("Guide not found");
     }
-
     // Total bookings
     const totalBookings = await prisma.booking.count({
         where: { guideId }
     });
-
     const completedBookings = await prisma.booking.count({
         where: { guideId, status: BookingStatus.COMPLETED }
     });
-
     const pendingBookings = await prisma.booking.count({
         where: { guideId, status: BookingStatus.PENDING }
     });
-
     const confirmedBookings = await prisma.booking.count({
         where: { guideId, status: BookingStatus.CONFIRMED }
     });
-
     // Total earnings
     const earningsData = await prisma.booking.aggregate({
         where: {
@@ -647,12 +566,10 @@ const getGuideStats = async (guideId: string) => {
         _sum: { totalPrice: true }
     });
     const totalEarnings = earningsData._sum.totalPrice || 0;
-
     // Earnings by month
     const sixMonthsAgo = new Date();
     sixMonthsAgo.setMonth(sixMonthsAgo.getMonth() - 6);
-
-    const earningsByMonth = await prisma.$queryRaw<Array<any>>`
+    const earningsByMonth = await prisma.$queryRaw `
         SELECT 
             TO_CHAR(DATE_TRUNC('month', "createdAt"), 'Mon YYYY') as month,
             COALESCE(SUM("totalPrice"), 0)::float as earnings,
@@ -664,7 +581,6 @@ const getGuideStats = async (guideId: string) => {
         GROUP BY DATE_TRUNC('month', "createdAt")
         ORDER BY DATE_TRUNC('month', "createdAt") ASC
     `;
-
     // Recent bookings
     const recentBookings = await prisma.booking.findMany({
         where: { guideId },
@@ -679,7 +595,6 @@ const getGuideStats = async (guideId: string) => {
             }
         }
     });
-
     return {
         guide: {
             id: guide.id,
@@ -699,9 +614,8 @@ const getGuideStats = async (guideId: string) => {
         },
         recentBookings
     };
-}
-
-const getTouristStats = async (touristId: string) => {
+};
+const getTouristStats = async (touristId) => {
     // Check if tourist exists
     const tourist = await prisma.tourist.findUnique({
         where: { id: touristId }
@@ -709,23 +623,19 @@ const getTouristStats = async (touristId: string) => {
     if (!tourist) {
         throw new Error("Tourist not found");
     }
-
     // Total bookings
     const totalBookings = await prisma.booking.count({
         where: { touristId }
     });
-
     const completedBookings = await prisma.booking.count({
         where: { touristId, status: BookingStatus.COMPLETED }
     });
-
     const upcomingBookings = await prisma.booking.count({
         where: {
             touristId,
             status: { in: [BookingStatus.PENDING, BookingStatus.CONFIRMED] }
         }
     });
-
     // Total spent
     const spentData = await prisma.booking.aggregate({
         where: {
@@ -735,12 +645,10 @@ const getTouristStats = async (touristId: string) => {
         _sum: { totalPrice: true }
     });
     const totalSpent = spentData._sum.totalPrice || 0;
-
     // Total reviews written
     const totalReviews = await prisma.review.count({
         where: { touristId }
     });
-
     // Recent bookings
     const recentBookings = await prisma.booking.findMany({
         where: { touristId },
@@ -755,7 +663,6 @@ const getTouristStats = async (touristId: string) => {
             }
         }
     });
-
     return {
         tourist: {
             id: tourist.id,
@@ -771,15 +678,13 @@ const getTouristStats = async (touristId: string) => {
         totalReviews,
         recentBookings
     };
-}
-
-
+};
 export const StatsService = {
-getBookingStats,
-getPaymentStats,
-getTourStats,
-getUserStats,
-getDashboardStats,
-getGuideStats,
-getTouristStats
+    getBookingStats,
+    getPaymentStats,
+    getTourStats,
+    getUserStats,
+    getDashboardStats,
+    getGuideStats,
+    getTouristStats
 };

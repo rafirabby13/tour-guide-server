@@ -1,0 +1,12 @@
+export class AppError extends Error {
+    statusCode;
+    status;
+    message;
+    constructor(statusCode, message) {
+        super(message);
+        this.statusCode = statusCode;
+        this.status = `${statusCode}`.startsWith("4") ? "fail" : "error";
+        this.message = message; // distinguishes expected errors vs programming errors
+        Error.captureStackTrace(this, this.constructor);
+    }
+}
