@@ -549,7 +549,7 @@ const getTopGuides = async () => {
         orderBy: {
             // Assuming you might have a calculated rating field, 
             // or we sort by created date for now if rating isn't cached
-            createdAt: 'desc',
+            totalReviews: "desc"
         },
         include: {
             _count: {

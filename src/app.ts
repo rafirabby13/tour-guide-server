@@ -9,7 +9,7 @@ import { PaymentController } from './app/modules/payment/payment.controller';
 const app: Application = express();
 app.post(
   '/webhook',
-  express.raw({ type: 'application/json' }), // Parses raw body for signature verification
+  express.raw({ type: 'application/json' }), 
   PaymentController.handleWebhook
 );
 app.use(cors({

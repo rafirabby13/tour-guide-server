@@ -8,13 +8,13 @@ const router = express.Router();
 // Admin Routes
 router.get(
     "/dashboard",
-    auth(UserRole.ADMIN),
+    // auth(UserRole.ADMIN),
     StatsControllers.getDashboardStats
 );
 
 router.get(
     "/bookings",
-    auth(UserRole.ADMIN),
+    // auth(UserRole.ADMIN),
     StatsControllers.getBookingStats
 );
 
@@ -38,7 +38,7 @@ router.get(
 
 // Guide Routes
 router.get(
-    "/my-stats",
+    "/my/stats",
     auth(UserRole.GUIDE),
     StatsControllers.getMyGuideStats
 );
