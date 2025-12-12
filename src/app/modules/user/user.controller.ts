@@ -213,6 +213,19 @@ const becomeAGuide = catchAsync(async (req: Request, res: Response) => {
         data: result
     });
 });
+const getAllGuides = catchAsync(async (req: Request, res: Response) => {
+    // 1. Get the ID of the currently logged-in user (from Auth Middleware)
+    const userId = (req as any).user.id;
+    const result = await UserServices.getAllGuides(userId);
+
+    sendResponse(res, {
+        statusCode: httpStatus.OK,
+        success: true,
+        message: "Congratulations! You have successfully got all Guide.",
+        // data: {}
+        data: result
+    });
+});
 export const UserController = {
     createTourist,
     createAdmin,
@@ -227,5 +240,6 @@ export const UserController = {
     updateUserRole,
     UpdateUserStatus,
     getTopGuides,
-    becomeAGuide
+    becomeAGuide,
+    getAllGuides
 }

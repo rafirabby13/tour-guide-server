@@ -22,6 +22,8 @@ export const config = {
         password: process.env.SUPER_ADMIN_PASSWORD || 'superadmin123',
         name: process.env.SUPER_ADMIN_NAME || 'Super Admin',
         contactNo: process.env.SUPER_ADMIN_CONTACT_NO || '+1234567890',
-    }
+    },
+    jwt_secret:process.env.JWT_SECRET,
+    jwt_refresh_sercret:process.env.JWT_REFRESH_SECRET
 
 }

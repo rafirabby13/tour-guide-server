@@ -5,7 +5,7 @@ import { AuthService } from "./auth.service";
 
 const login = catchAsync(async (req: Request, res: Response) => {
     const result = await AuthService.login(req.body);
-    const { accessToken, refreshToken, needPasswordChange } = result;
+    const { accessToken, refreshToken, needPasswordChange, isVerifiedGuide } = result;
 
     res.cookie("accessToken", accessToken, {
         secure: true,
@@ -25,7 +25,8 @@ const login = catchAsync(async (req: Request, res: Response) => {
         success: true,
         message: "User loggedin successfully!",
         data: {
-            needPasswordChange
+            needPasswordChange,
+            isVerifiedGuide
         }
     })
 })

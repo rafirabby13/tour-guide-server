@@ -15,6 +15,9 @@ router.get("/all-users",
     UserController.getAllFromDB)
 router.get("/top-guides",
     UserController.getTopGuides)
+router.get("/get/guides",
+    auth(UserRole.ADMIN),
+    UserController.getAllGuides)
 router.get(
     "/my-profile/me",
     auth(UserRole.TOURIST, UserRole.GUIDE, UserRole.ADMIN),

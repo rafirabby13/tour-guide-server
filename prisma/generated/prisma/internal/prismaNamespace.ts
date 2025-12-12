@@ -1415,6 +1415,7 @@ export const GuideScalarFieldEnum = {
   country: 'country',
   city: 'city',
   gender: 'gender',
+  isVerified: 'isVerified',
   isAvailable: 'isAvailable',
   rating: 'rating',
   totalReviews: 'totalReviews',

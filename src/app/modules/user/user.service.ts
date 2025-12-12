@@ -289,7 +289,8 @@ const getUserProfile = async (userId: string) => {
                     profilePhoto: true,
                     isAvailable: true,
                     rating: true,
-                    totalReviews: true
+                    totalReviews: true,
+                    isVerified: true
                 }
             },
             admin: {
@@ -573,14 +574,17 @@ const becomeAGuide = async (userId: string, payload: any) => {
         throw new AppError(httpStatus.BAD_REQUEST, "You are already a guide!");
     }
 
-    const existingApplication = await prisma.guide.findUnique({
+    const existingGuide = await prisma.guide.findUnique({
         where: { userId: userId }
     });
 
-    if (existingApplication) {
-        throw new AppError(httpStatus.CONFLICT, "You have already submitted an application. Please wait for admin approval.");
+    if (existingGuide) {
+        if (existingGuide.isVerified) {
+            throw new AppError(httpStatus.BAD_REQUEST, "You are already a verified guide!");
+        } else {
+            throw new AppError(httpStatus.CONFLICT, "You have already submitted an application. Please wait for admin approval.");
+        }
     }
-
 
     const newApplication = await prisma.guide.create({
         data: {
@@ -591,11 +595,32 @@ const becomeAGuide = async (userId: string, payload: any) => {
             country,
             city,
             contactNumber: contactNo,
-            isAvailable: false
+            isAvailable: true,
+            isVerified: false
         }
     });
 
     return newApplication;
+
+
+
+};
+const getAllGuides = async (userId: string) => {
+
+if (!userId) {
+    throw new AppError(404, "user not found")
+}
+
+
+    const guides = await prisma.guide.findMany(
+        {
+            where: {
+                isVerified: false
+            }
+        }
+    );
+
+    return guides;
 
 
 
@@ -613,5 +638,6 @@ export const UserServices = {
     updateUserRole,
     UpdateUserStatus,
     getTopGuides,
-    becomeAGuide
+    becomeAGuide,
+    getAllGuides
 }
