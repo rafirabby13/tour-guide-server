@@ -13,7 +13,7 @@ app.post(
   PaymentController.handleWebhook
 );
 app.use(cors({
-    origin: 'http://localhost:3000',
+    origin: ['http://localhost:3000', 'https://tour-guide-client-lake.vercel.app'],
     credentials: true
 }));
 
