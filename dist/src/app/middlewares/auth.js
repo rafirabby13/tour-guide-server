@@ -1,6 +1,11 @@
-import { jwtHelper } from "../helpers/jwtHelper";
-import httpStatus from "http-status";
-import { AppError } from "../errors/AppError";
+"use strict";
+var __importDefault = (this && this.__importDefault) || function (mod) {
+    return (mod && mod.__esModule) ? mod : { "default": mod };
+};
+Object.defineProperty(exports, "__esModule", { value: true });
+const jwtHelper_1 = require("../helpers/jwtHelper");
+const http_status_1 = __importDefault(require("http-status"));
+const AppError_1 = require("../errors/AppError");
 const auth = (...roles) => {
     return async (req, res, next) => {
         try {
@@ -8,9 +13,9 @@ const auth = (...roles) => {
             const token = await req.cookies?.accessToken;
             // console.log({token})
             if (!token) {
-                throw new AppError(httpStatus.BAD_REQUEST, "You are not authorized!");
+                throw new AppError_1.AppError(http_status_1.default.BAD_REQUEST, "You are not authorized!");
             }
-            const verifyUser = jwtHelper.verifyToken(token, "abcd");
+            const verifyUser = jwtHelper_1.jwtHelper.verifyToken(token, "abcd");
             req.user = verifyUser;
             if (roles.length && !roles.includes(verifyUser.role)) {
                 throw new Error("You are not authorized!");
@@ -22,4 +27,4 @@ const auth = (...roles) => {
         }
     };
 };
-export default auth;
+exports.default = auth;

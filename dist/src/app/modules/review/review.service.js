@@ -1,20 +1,26 @@
-import { prisma } from "../../shared/prisma";
-import httpStatus from "http-status";
-import { paginationHelper } from "../../helpers/paginationHelper";
-import { reviewSearchableFields } from "./review.constant";
-import { AppError } from "../../errors/AppError";
+"use strict";
+var __importDefault = (this && this.__importDefault) || function (mod) {
+    return (mod && mod.__esModule) ? mod : { "default": mod };
+};
+Object.defineProperty(exports, "__esModule", { value: true });
+exports.ReviewServices = void 0;
+const prisma_1 = require("../../shared/prisma");
+const http_status_1 = __importDefault(require("http-status"));
+const paginationHelper_1 = require("../../helpers/paginationHelper");
+const review_constant_1 = require("./review.constant");
+const AppError_1 = require("../../errors/AppError");
 const createReview = async (touristId, payload) => {
     // Validate rating
     if (payload.rating < 1 || payload.rating > 5) {
-        throw new AppError(httpStatus.BAD_REQUEST, "Rating must be between 1 and 5");
+        throw new AppError_1.AppError(http_status_1.default.BAD_REQUEST, "Rating must be between 1 and 5");
     }
     console.log(touristId, payload);
-    const tourist = await prisma.tourist.findUnique({
+    const tourist = await prisma_1.prisma.tourist.findUnique({
         where: {
             userId: touristId
         }
     });
-    const booking = await prisma.booking.findUnique({
+    const booking = await prisma_1.prisma.booking.findUnique({
         where: {
             id: payload.bookingId
         },
@@ -23,29 +29,29 @@ const createReview = async (touristId, payload) => {
             tour: true
         }
     });
-    const tour = await prisma.tour.findUnique({
+    const tour = await prisma_1.prisma.tour.findUnique({
         where: {
             id: payload.tourId
         }
     });
     if (!booking) {
-        throw new AppError(httpStatus.NOT_FOUND, "Booking not found");
+        throw new AppError_1.AppError(http_status_1.default.NOT_FOUND, "Booking not found");
     }
     if (!tour) {
-        throw new AppError(httpStatus.NOT_FOUND, "Tour not found");
+        throw new AppError_1.AppError(http_status_1.default.NOT_FOUND, "Tour not found");
     }
     if (!tourist) {
-        throw new AppError(httpStatus.NOT_FOUND, "Tourist not found");
+        throw new AppError_1.AppError(http_status_1.default.NOT_FOUND, "Tourist not found");
     }
     // Check if booking belongs to the tourist
     if (booking.touristId !== tourist.id) {
-        throw new AppError(httpStatus.FORBIDDEN, "You can only review your own bookings");
+        throw new AppError_1.AppError(http_status_1.default.FORBIDDEN, "You can only review your own bookings");
     }
     // Check if booking is completed
     if (booking.status !== "CONFIRMED") {
-        throw new AppError(httpStatus.BAD_REQUEST, "You can only review confirme tours");
+        throw new AppError_1.AppError(http_status_1.default.BAD_REQUEST, "You can only review confirme tours");
     }
-    const result = await prisma.$transaction(async (tnx) => {
+    const result = await prisma_1.prisma.$transaction(async (tnx) => {
         const review = await tnx.review.create({
             data: {
                 rating: payload.rating,
@@ -91,15 +97,15 @@ const createReview = async (touristId, payload) => {
 };
 // ✅ Get Reviews by Guide
 const getReviewsByGuide = async (guideId, options) => {
-    const { page, limit, skip, sortBy, sortOrder } = paginationHelper.calculatePagination(options);
+    const { page, limit, skip, sortBy, sortOrder } = paginationHelper_1.paginationHelper.calculatePagination(options);
     // Check if guide exists
-    const guide = await prisma.guide.findUnique({
+    const guide = await prisma_1.prisma.guide.findUnique({
         where: { id: guideId }
     });
     if (!guide) {
-        throw new AppError(httpStatus.NOT_FOUND, "Guide not found");
+        throw new AppError_1.AppError(http_status_1.default.NOT_FOUND, "Guide not found");
     }
-    const result = await prisma.review.findMany({
+    const result = await prisma_1.prisma.review.findMany({
         where: {
             guideId
         },
@@ -130,11 +136,11 @@ const getReviewsByGuide = async (guideId, options) => {
             }
         }
     });
-    const total = await prisma.review.count({
+    const total = await prisma_1.prisma.review.count({
         where: { guideId }
     });
     // Calculate rating distribution
-    const ratingDistribution = await prisma.review.groupBy({
+    const ratingDistribution = await prisma_1.prisma.review.groupBy({
         by: ['rating'],
         where: { guideId },
         _count: {
@@ -157,15 +163,15 @@ const getReviewsByGuide = async (guideId, options) => {
 };
 // ✅ Get Reviews by Tourist
 const getReviewsByTourist = async (touristId, options) => {
-    const { page, limit, skip, sortBy, sortOrder } = paginationHelper.calculatePagination(options);
+    const { page, limit, skip, sortBy, sortOrder } = paginationHelper_1.paginationHelper.calculatePagination(options);
     // Check if tourist exists
-    const tourist = await prisma.tourist.findUnique({
+    const tourist = await prisma_1.prisma.tourist.findUnique({
         where: { id: touristId }
     });
     if (!tourist) {
-        throw new AppError(httpStatus.NOT_FOUND, "Tourist not found");
+        throw new AppError_1.AppError(http_status_1.default.NOT_FOUND, "Tourist not found");
     }
-    const result = await prisma.review.findMany({
+    const result = await prisma_1.prisma.review.findMany({
         where: {
             touristId
         },
@@ -198,7 +204,7 @@ const getReviewsByTourist = async (touristId, options) => {
             }
         }
     });
-    const total = await prisma.review.count({
+    const total = await prisma_1.prisma.review.count({
         where: { touristId }
     });
     return {
@@ -212,7 +218,7 @@ const getReviewsByTourist = async (touristId, options) => {
 };
 // ✅ Get Single Review
 const getSingleReview = async (reviewId) => {
-    const review = await prisma.review.findUnique({
+    const review = await prisma_1.prisma.review.findUnique({
         where: {
             id: reviewId
         },
@@ -249,19 +255,19 @@ const getSingleReview = async (reviewId) => {
         }
     });
     if (!review) {
-        throw new AppError(httpStatus.NOT_FOUND, "Review not found");
+        throw new AppError_1.AppError(http_status_1.default.NOT_FOUND, "Review not found");
     }
     return review;
 };
 // ✅ Get All Reviews (Admin, with filters)
 const getAllReviews = async (params, options) => {
-    const { page, limit, skip, sortBy, sortOrder } = paginationHelper.calculatePagination(options);
+    const { page, limit, skip, sortBy, sortOrder } = paginationHelper_1.paginationHelper.calculatePagination(options);
     const { searchTerm, ...filterData } = params;
     const andConditions = [];
     // Search
     if (searchTerm) {
         andConditions.push({
-            OR: reviewSearchableFields.map(field => ({
+            OR: review_constant_1.reviewSearchableFields.map(field => ({
                 [field]: {
                     contains: searchTerm,
                     mode: "insensitive"
@@ -282,7 +288,7 @@ const getAllReviews = async (params, options) => {
     const whereConditions = andConditions.length > 0 ? {
         AND: andConditions
     } : {};
-    const result = await prisma.review.findMany({
+    const result = await prisma_1.prisma.review.findMany({
         where: whereConditions,
         skip,
         take: limit,
@@ -318,7 +324,7 @@ const getAllReviews = async (params, options) => {
             }
         }
     });
-    const total = await prisma.review.count({
+    const total = await prisma_1.prisma.review.count({
         where: whereConditions
     });
     return {
@@ -334,21 +340,21 @@ const getAllReviews = async (params, options) => {
 const updateReview = async (reviewId, touristId, payload) => {
     // Validate rating if provided
     if (payload.rating && (payload.rating < 1 || payload.rating > 5)) {
-        throw new AppError(httpStatus.BAD_REQUEST, "Rating must be between 1 and 5");
+        throw new AppError_1.AppError(http_status_1.default.BAD_REQUEST, "Rating must be between 1 and 5");
     }
     // Check if review exists
-    const review = await prisma.review.findUnique({
+    const review = await prisma_1.prisma.review.findUnique({
         where: { id: reviewId }
     });
     if (!review) {
-        throw new AppError(httpStatus.NOT_FOUND, "Review not found");
+        throw new AppError_1.AppError(http_status_1.default.NOT_FOUND, "Review not found");
     }
     // Check if review belongs to the tourist
     if (review.touristId !== touristId) {
-        throw new AppError(httpStatus.FORBIDDEN, "You can only update your own reviews");
+        throw new AppError_1.AppError(http_status_1.default.FORBIDDEN, "You can only update your own reviews");
     }
     // Update review in transaction
-    const result = await prisma.$transaction(async (tnx) => {
+    const result = await prisma_1.prisma.$transaction(async (tnx) => {
         // Update review
         const updatedReview = await tnx.review.update({
             where: { id: reviewId },
@@ -392,7 +398,7 @@ const updateReview = async (reviewId, touristId, payload) => {
 };
 // ✅ Delete Review
 const deleteReview = async (reviewId, userId, userRole) => {
-    const review = await prisma.review.findUnique({
+    const review = await prisma_1.prisma.review.findUnique({
         where: { id: reviewId },
         include: {
             tourist: {
@@ -403,14 +409,14 @@ const deleteReview = async (reviewId, userId, userRole) => {
         }
     });
     if (!review) {
-        throw new AppError(httpStatus.NOT_FOUND, "Review not found");
+        throw new AppError_1.AppError(http_status_1.default.NOT_FOUND, "Review not found");
     }
     // Check permissions: Tourist can delete own review, Admin can delete any
     if (userRole !== "ADMIN" && review.tourist.userId !== userId) {
-        throw new AppError(httpStatus.FORBIDDEN, "You can only delete your own reviews");
+        throw new AppError_1.AppError(http_status_1.default.FORBIDDEN, "You can only delete your own reviews");
     }
     // Delete review in transaction
-    const result = await prisma.$transaction(async (tnx) => {
+    const result = await prisma_1.prisma.$transaction(async (tnx) => {
         // Delete review
         await tnx.review.delete({
             where: { id: reviewId }
@@ -445,7 +451,7 @@ const updateGuideRating = async (tnx, guideId) => {
 };
 // ✅ Get Guide Rating Stats
 const getGuideRatingStats = async (guideId) => {
-    const guide = await prisma.guide.findUnique({
+    const guide = await prisma_1.prisma.guide.findUnique({
         where: { id: guideId },
         select: {
             rating: true,
@@ -453,10 +459,10 @@ const getGuideRatingStats = async (guideId) => {
         }
     });
     if (!guide) {
-        throw new AppError(httpStatus.NOT_FOUND, "Guide not found");
+        throw new AppError_1.AppError(http_status_1.default.NOT_FOUND, "Guide not found");
     }
     // Get rating distribution
-    const ratingDistribution = await prisma.review.groupBy({
+    const ratingDistribution = await prisma_1.prisma.review.groupBy({
         by: ['rating'],
         where: { guideId },
         _count: {
@@ -480,7 +486,7 @@ const getGuideRatingStats = async (guideId) => {
         ratingDistribution: distribution
     };
 };
-export const ReviewServices = {
+exports.ReviewServices = {
     createReview,
     getReviewsByGuide,
     getReviewsByTourist,

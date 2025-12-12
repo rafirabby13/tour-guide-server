@@ -1,26 +1,32 @@
-import bcrypt from "bcryptjs";
-import httpStatus from "http-status";
-import { prisma } from "../../shared/prisma";
-import { fileUploader } from "../../helpers/fileUploader";
-import { paginationHelper } from "../../helpers/paginationHelper";
-import { userSearchableFields } from "./user.constant";
-import { UserRole } from "../../../../prisma/generated/prisma/client";
-import { AppError } from "../../errors/AppError";
+"use strict";
+var __importDefault = (this && this.__importDefault) || function (mod) {
+    return (mod && mod.__esModule) ? mod : { "default": mod };
+};
+Object.defineProperty(exports, "__esModule", { value: true });
+exports.UserServices = void 0;
+const bcryptjs_1 = __importDefault(require("bcryptjs"));
+const http_status_1 = __importDefault(require("http-status"));
+const prisma_1 = require("../../shared/prisma");
+const fileUploader_1 = require("../../helpers/fileUploader");
+const paginationHelper_1 = require("../../helpers/paginationHelper");
+const user_constant_1 = require("./user.constant");
+const client_1 = require("../../../../prisma/generated/prisma/client");
+const AppError_1 = require("../../errors/AppError");
 const createTourist = async (req) => {
     if (req.file) {
-        const uploadedResult = await fileUploader.uploadToCloudinary(req.file);
+        const uploadedResult = await fileUploader_1.fileUploader.uploadToCloudinary(req.file);
         console.log({ uploadedResult });
         req.body.profilePhoto = uploadedResult?.secure_url;
     }
     const payload = req.body;
     console.log({ payload });
-    const hashedPassword = await bcrypt.hash(payload.password, 10);
+    const hashedPassword = await bcryptjs_1.default.hash(payload.password, 10);
     const languages = Array.isArray(payload.languages)
         ? payload.languages
         : payload.languages
             ? [payload.languages]
             : [];
-    const result = await prisma.$transaction(async (tnx) => {
+    const result = await prisma_1.prisma.$transaction(async (tnx) => {
         const createdUser = await tnx.user.create({
             data: {
                 email: payload.email,
@@ -47,30 +53,27 @@ const createTourist = async (req) => {
     // return {}
     return result;
 };
-const createAdmin = async (req) => {
-    const file = req.file;
-    console.log({ data: req.body });
-    if (file) {
-        const uploadToCloudinary = await fileUploader.uploadToCloudinary(file);
-        console.log(uploadToCloudinary);
-        req.body.profilePhoto = uploadToCloudinary?.secure_url;
-    }
-    const hashedPassword = await bcrypt.hash(req.body.password, 10);
+const createAdmin = async (payload) => {
+    // const file = req.file;
+    // console.log({ data: req.body })
+    // if (file) {
+    //     const uploadToCloudinary = await fileUploader.uploadToCloudinary(file);
+    //     console.log(uploadToCloudinary)
+    //     req.body.profilePhoto = uploadToCloudinary?.secure_url
+    // }
+    const hashedPassword = await bcryptjs_1.default.hash(payload.password, 10);
     const userData = {
-        email: req.body.email,
+        email: payload.email,
         password: hashedPassword,
-        role: UserRole.ADMIN
+        role: client_1.UserRole.ADMIN
     };
-    const result = await prisma.$transaction(async (transactionClient) => {
+    const result = await prisma_1.prisma.$transaction(async (transactionClient) => {
         const createdAdminUser = await transactionClient.user.create({
             data: userData
         });
         const createdAdminData = await transactionClient.admin.create({
             data: {
-                contactNumber: req.body.contactNumber,
-                name: req.body.name,
-                userId: createdAdminUser.id,
-                profilePhoto: req.body.profilePhoto
+                userId: createdAdminUser.id
             }
         });
         return createdAdminData;
@@ -117,19 +120,13 @@ const createAdmin = async (req) => {
 // };
 const createGuide = async (payload) => {
     console.log({ payload });
-    // const file = req.file;
-    // if (file) {
-    //     const uploadToCloudinary = await fileUploader.uploadToCloudinary(file);
-    //     console.log(uploadToCloudinary)
-    //     req.body.profilePhoto = uploadToCloudinary?.secure_url
-    // }
-    const hashedPassword = await bcrypt.hash(payload.password, 10);
+    const hashedPassword = await bcryptjs_1.default.hash(payload.password, 10);
     const userData = {
         email: payload.email,
         password: hashedPassword,
-        role: UserRole.GUIDE
+        role: client_1.UserRole.GUIDE
     };
-    const result = await prisma.$transaction(async (transactionClient) => {
+    const result = await prisma_1.prisma.$transaction(async (transactionClient) => {
         const createdGuideUser = await transactionClient.user.create({
             data: userData
         });
@@ -143,12 +140,12 @@ const createGuide = async (payload) => {
     return result;
 };
 const getAllFromDB = async (params, options) => {
-    const { page, limit, skip, sortBy, sortOrder } = paginationHelper.calculatePagination(options);
+    const { page, limit, skip, sortBy, sortOrder } = paginationHelper_1.paginationHelper.calculatePagination(options);
     const { searchTerm, ...filterData } = params;
     const andConditions = [];
     if (searchTerm) {
         andConditions.push({
-            OR: userSearchableFields.map(field => ({
+            OR: user_constant_1.userSearchableFields.map(field => ({
                 [field]: {
                     contains: searchTerm,
                     mode: "insensitive"
@@ -186,7 +183,7 @@ const getAllFromDB = async (params, options) => {
     const whereConditions = andConditions.length > 0 ? {
         AND: andConditions
     } : {};
-    const result = await prisma.user.findMany({
+    const result = await prisma_1.prisma.user.findMany({
         skip,
         take: limit,
         where: whereConditions,
@@ -194,7 +191,7 @@ const getAllFromDB = async (params, options) => {
             [sortBy]: sortOrder
         }
     });
-    const total = await prisma.user.count({
+    const total = await prisma_1.prisma.user.count({
         where: whereConditions
     });
     return {
@@ -207,7 +204,7 @@ const getAllFromDB = async (params, options) => {
     };
 };
 const getUserProfile = async (userId) => {
-    const user = await prisma.user.findUnique({
+    const user = await prisma_1.prisma.user.findUnique({
         where: {
             id: userId,
         },
@@ -244,7 +241,8 @@ const getUserProfile = async (userId) => {
                     profilePhoto: true,
                     isAvailable: true,
                     rating: true,
-                    totalReviews: true
+                    totalReviews: true,
+                    isVerified: true
                 }
             },
             admin: {
@@ -258,7 +256,7 @@ const getUserProfile = async (userId) => {
         }
     });
     if (!user) {
-        throw new AppError(httpStatus.NOT_FOUND, "User not found");
+        throw new AppError_1.AppError(http_status_1.default.NOT_FOUND, "User not found");
     }
     return user;
 };
@@ -266,7 +264,7 @@ const getUserProfile = async (userId) => {
 const updateMyProfile = async (userId, req) => {
     // Check if user exists
     console.log(req.body);
-    const existingUser = await prisma.user.findUnique({
+    const existingUser = await prisma_1.prisma.user.findUnique({
         where: {
             id: userId
         },
@@ -277,23 +275,23 @@ const updateMyProfile = async (userId, req) => {
         }
     });
     if (!existingUser) {
-        throw new AppError(httpStatus.NOT_FOUND, "User not found");
+        throw new AppError_1.AppError(http_status_1.default.NOT_FOUND, "User not found");
     }
     // Handle file upload
     if (req.file) {
-        const uploadedResult = await fileUploader.uploadToCloudinary(req.file);
+        const uploadedResult = await fileUploader_1.fileUploader.uploadToCloudinary(req.file);
         req.body.profilePhoto = uploadedResult?.secure_url;
     }
     const payload = req.body;
     // Update based on user role
-    const result = await prisma.$transaction(async (tnx) => {
+    const result = await prisma_1.prisma.$transaction(async (tnx) => {
         // Update User table (email, password if provided)
         const userUpdateData = {};
         if (payload.email) {
             userUpdateData.email = payload.email;
         }
         if (payload.password) {
-            userUpdateData.password = await bcrypt.hash(payload.password, 10);
+            userUpdateData.password = await bcryptjs_1.default.hash(payload.password, 10);
         }
         if (Object.keys(userUpdateData).length > 0) {
             await tnx.user.update({
@@ -302,7 +300,7 @@ const updateMyProfile = async (userId, req) => {
             });
         }
         // Update role-specific data
-        if (existingUser.role === UserRole.TOURIST && existingUser.tourist) {
+        if (existingUser.role === client_1.UserRole.TOURIST && existingUser.tourist) {
             const touristUpdateData = {};
             if (payload.name)
                 touristUpdateData.name = payload.name;
@@ -321,7 +319,7 @@ const updateMyProfile = async (userId, req) => {
                 data: touristUpdateData
             });
         }
-        if (existingUser.role === UserRole.GUIDE && existingUser.guide) {
+        if (existingUser.role === client_1.UserRole.GUIDE && existingUser.guide) {
             const guideUpdateData = {};
             if (payload.name)
                 guideUpdateData.name = payload.name;
@@ -352,7 +350,7 @@ const updateMyProfile = async (userId, req) => {
                 data: guideUpdateData
             });
         }
-        if (existingUser.role === UserRole.ADMIN && existingUser.admin) {
+        if (existingUser.role === client_1.UserRole.ADMIN && existingUser.admin) {
             const adminUpdateData = {};
             if (payload.name)
                 adminUpdateData.name = payload.name;
@@ -380,17 +378,17 @@ const updateMyProfile = async (userId, req) => {
 // ✅ NEW: Soft delete user (Admin only)
 const deleteUser = async (userId) => {
     console.log(userId);
-    const user = await prisma.user.findUnique({
+    const user = await prisma_1.prisma.user.findUnique({
         where: { id: userId }
     });
     console.log({ user });
     if (!user) {
-        throw new AppError(httpStatus.NOT_FOUND, "User not found");
+        throw new AppError_1.AppError(http_status_1.default.NOT_FOUND, "User not found");
     }
     // if (user.isDeleted) {
     //     throw new AppError(httpStatus.BAD_REQUEST, "User already deleted");
     // }
-    const result = await prisma.user.update({
+    const result = await prisma_1.prisma.user.update({
         where: { id: userId },
         data: {
             isDeleted: true
@@ -400,23 +398,23 @@ const deleteUser = async (userId) => {
 };
 // ✅ NEW: Change password
 const changePassword = async (userId, oldPassword, newPassword) => {
-    const user = await prisma.user.findUnique({
+    const user = await prisma_1.prisma.user.findUnique({
         where: {
             id: userId
         }
     });
     if (!user) {
-        throw new AppError(httpStatus.NOT_FOUND, "User not found");
+        throw new AppError_1.AppError(http_status_1.default.NOT_FOUND, "User not found");
     }
     // Verify old password
-    const isPasswordCorrect = await bcrypt.compare(oldPassword, user.password);
+    const isPasswordCorrect = await bcryptjs_1.default.compare(oldPassword, user.password);
     if (!isPasswordCorrect) {
-        throw new AppError(httpStatus.UNAUTHORIZED, "Old password is incorrect");
+        throw new AppError_1.AppError(http_status_1.default.UNAUTHORIZED, "Old password is incorrect");
     }
     // Hash new password
-    const hashedNewPassword = await bcrypt.hash(newPassword, 10);
+    const hashedNewPassword = await bcryptjs_1.default.hash(newPassword, 10);
     // Update password
-    await prisma.user.update({
+    await prisma_1.prisma.user.update({
         where: { id: userId },
         data: {
             password: hashedNewPassword
@@ -426,7 +424,7 @@ const changePassword = async (userId, oldPassword, newPassword) => {
 };
 // ✅ NEW: Get user by email (for login/validation)
 const getUserByEmail = async (email) => {
-    const user = await prisma.user.findUnique({
+    const user = await prisma_1.prisma.user.findUnique({
         where: {
             email
         },
@@ -440,13 +438,13 @@ const getUserByEmail = async (email) => {
 };
 // ✅ NEW: Update user role (Admin only)
 const updateUserRole = async (userId, newRole) => {
-    const user = await prisma.user.findUnique({
+    const user = await prisma_1.prisma.user.findUnique({
         where: { id: userId }
     });
     if (!user) {
-        throw new AppError(httpStatus.NOT_FOUND, "User not found");
+        throw new AppError_1.AppError(http_status_1.default.NOT_FOUND, "User not found");
     }
-    const result = await prisma.user.update({
+    const result = await prisma_1.prisma.user.update({
         where: { id: userId },
         data: {
             role: newRole
@@ -456,13 +454,13 @@ const updateUserRole = async (userId, newRole) => {
 };
 // ✅ NEW: Suspend/Activate user (Admin only)
 const UpdateUserStatus = async (userId, userStatus) => {
-    const user = await prisma.user.findUnique({
+    const user = await prisma_1.prisma.user.findUnique({
         where: { id: userId }
     });
     if (!user) {
-        throw new AppError(httpStatus.NOT_FOUND, "User not found");
+        throw new AppError_1.AppError(http_status_1.default.NOT_FOUND, "User not found");
     }
-    const result = await prisma.user.update({
+    const result = await prisma_1.prisma.user.update({
         where: { id: userId },
         data: {
             status: userStatus
@@ -470,7 +468,70 @@ const UpdateUserStatus = async (userId, userStatus) => {
     });
     return result;
 };
-export const UserServices = {
+const getTopGuides = async () => {
+    const guides = await prisma_1.prisma.guide.findMany({
+        take: 4,
+        orderBy: {
+            // Assuming you might have a calculated rating field, 
+            // or we sort by created date for now if rating isn't cached
+            totalReviews: "desc"
+        },
+        include: {
+            _count: {
+                select: { reviews: true }
+            }
+        }
+    });
+    return guides;
+};
+const becomeAGuide = async (userId, payload) => {
+    const { bio, experience, country, city, contactNo } = payload;
+    // 1. Check if user exists
+    const user = await prisma_1.prisma.user.findUnique({ where: { id: userId } });
+    if (!user)
+        throw new AppError_1.AppError(404, "User not found");
+    // 2. Check if already a guide
+    if (user.role === client_1.UserRole.GUIDE) {
+        throw new AppError_1.AppError(http_status_1.default.BAD_REQUEST, "You are already a guide!");
+    }
+    const existingGuide = await prisma_1.prisma.guide.findUnique({
+        where: { userId: userId }
+    });
+    if (existingGuide) {
+        if (existingGuide.isVerified) {
+            throw new AppError_1.AppError(http_status_1.default.BAD_REQUEST, "You are already a verified guide!");
+        }
+        else {
+            throw new AppError_1.AppError(http_status_1.default.CONFLICT, "You have already submitted an application. Please wait for admin approval.");
+        }
+    }
+    const newApplication = await prisma_1.prisma.guide.create({
+        data: {
+            userId: userId,
+            name: user.email.split('@')[0], // Default name or from payload
+            bio: bio,
+            experience: Number(experience), // Ensure int
+            country,
+            city,
+            contactNumber: contactNo,
+            isAvailable: true,
+            isVerified: false
+        }
+    });
+    return newApplication;
+};
+const getAllGuides = async (userId) => {
+    if (!userId) {
+        throw new AppError_1.AppError(404, "user not found");
+    }
+    const guides = await prisma_1.prisma.guide.findMany({
+        where: {
+            isVerified: false
+        }
+    });
+    return guides;
+};
+exports.UserServices = {
     createTourist,
     createAdmin,
     createGuide,
@@ -481,5 +542,8 @@ export const UserServices = {
     changePassword,
     getUserByEmail,
     updateUserRole,
-    UpdateUserStatus
+    UpdateUserStatus,
+    getTopGuides,
+    becomeAGuide,
+    getAllGuides
 };

@@ -1,10 +1,16 @@
-import app from './app';
+"use strict";
+var __importDefault = (this && this.__importDefault) || function (mod) {
+    return (mod && mod.__esModule) ? mod : { "default": mod };
+};
+Object.defineProperty(exports, "__esModule", { value: true });
+const app_1 = __importDefault(require("./app"));
+const seedSuperAdmin_1 = require("./app/shared/seedSuperAdmin");
 async function bootstrap() {
     // This variable will hold our server instance
     let server;
     try {
         // Start the server
-        server = app.listen(5000, () => {
+        server = app_1.default.listen(5000, () => {
             console.log(`🚀 Tour Guide.. Server is running on http://localhost:5000`);
         });
         // Function to gracefully shut down the server
@@ -38,4 +44,7 @@ async function bootstrap() {
         process.exit(1);
     }
 }
-bootstrap();
+(async () => {
+    await bootstrap();
+    await (0, seedSuperAdmin_1.seedSuperAdmin)();
+})();

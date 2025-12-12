@@ -1,36 +1,43 @@
-import { Router } from "express";
-import { UserRoutes } from "../modules/user/user.routes";
-import { authRoutes } from "../modules/auth/auth.routes";
-import { TourRoutes } from "../modules/tour/tour.routes";
-import { BookingRoutes } from "../modules/booking/booking.routes";
-import { ReviewRoutes } from "../modules/review/review.routes";
-import { PaymentRoutes } from "../modules/payment/payment.routes";
-const router = Router();
+"use strict";
+Object.defineProperty(exports, "__esModule", { value: true });
+const express_1 = require("express");
+const user_routes_1 = require("../modules/user/user.routes");
+const auth_routes_1 = require("../modules/auth/auth.routes");
+const tour_routes_1 = require("../modules/tour/tour.routes");
+const booking_routes_1 = require("../modules/booking/booking.routes");
+const review_routes_1 = require("../modules/review/review.routes");
+const payment_routes_1 = require("../modules/payment/payment.routes");
+const stats_routes_1 = require("../modules/stats/stats.routes");
+const router = (0, express_1.Router)();
 const moduleRoutes = [
     {
         path: '/user',
-        route: UserRoutes
+        route: user_routes_1.UserRoutes
     },
     {
         path: '/auth',
-        route: authRoutes
+        route: auth_routes_1.authRoutes
     },
     {
         path: '/tour',
-        route: TourRoutes
+        route: tour_routes_1.TourRoutes
     },
     {
         path: '/booking',
-        route: BookingRoutes
+        route: booking_routes_1.BookingRoutes
     },
     {
         path: '/review',
-        route: ReviewRoutes
+        route: review_routes_1.ReviewRoutes
     },
     {
         path: '/payment',
-        route: PaymentRoutes
+        route: payment_routes_1.PaymentRoutes
+    },
+    {
+        path: '/stats',
+        route: stats_routes_1.StatsRoutes
     }
 ];
 moduleRoutes.forEach(route => router.use(route.path, route.route));
-export default router;
+exports.default = router;

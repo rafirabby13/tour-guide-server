@@ -1,122 +1,128 @@
-import catchAsync from "../../shared/catchAsync";
-import sendResponse from "../../shared/sendResponse";
-import httpStatus from "http-status";
-import { StatsService } from "./stats.service";
+"use strict";
+var __importDefault = (this && this.__importDefault) || function (mod) {
+    return (mod && mod.__esModule) ? mod : { "default": mod };
+};
+Object.defineProperty(exports, "__esModule", { value: true });
+exports.StatsControllers = void 0;
+const catchAsync_1 = __importDefault(require("../../shared/catchAsync"));
+const sendResponse_1 = __importDefault(require("../../shared/sendResponse"));
+const http_status_1 = __importDefault(require("http-status"));
+const stats_service_1 = require("./stats.service");
 // Get Booking Stats
-const getBookingStats = catchAsync(async (req, res) => {
+const getBookingStats = (0, catchAsync_1.default)(async (req, res) => {
     const { startDate, endDate } = req.query;
     const dateRange = startDate && endDate ? {
         startDate: new Date(startDate),
         endDate: new Date(endDate)
     } : undefined;
-    const result = await StatsService.getBookingStats(dateRange);
-    sendResponse(res, {
-        statusCode: httpStatus.OK,
+    const result = await stats_service_1.StatsService.getBookingStats(dateRange);
+    (0, sendResponse_1.default)(res, {
+        statusCode: http_status_1.default.OK,
         success: true,
         message: "Booking statistics retrieved successfully",
         data: result
     });
 });
 // Get Payment Stats
-const getPaymentStats = catchAsync(async (req, res) => {
+const getPaymentStats = (0, catchAsync_1.default)(async (req, res) => {
     const { startDate, endDate } = req.query;
     const dateRange = startDate && endDate ? {
         startDate: new Date(startDate),
         endDate: new Date(endDate)
     } : undefined;
-    const result = await StatsService.getPaymentStats(dateRange);
-    sendResponse(res, {
-        statusCode: httpStatus.OK,
+    const result = await stats_service_1.StatsService.getPaymentStats(dateRange);
+    (0, sendResponse_1.default)(res, {
+        statusCode: http_status_1.default.OK,
         success: true,
         message: "Payment statistics retrieved successfully",
         data: result
     });
 });
 // Get Tour Stats
-const getTourStats = catchAsync(async (req, res) => {
+const getTourStats = (0, catchAsync_1.default)(async (req, res) => {
     const { startDate, endDate } = req.query;
     const dateRange = startDate && endDate ? {
         startDate: new Date(startDate),
         endDate: new Date(endDate)
     } : undefined;
-    const result = await StatsService.getTourStats(dateRange);
-    sendResponse(res, {
-        statusCode: httpStatus.OK,
+    const result = await stats_service_1.StatsService.getTourStats(dateRange);
+    (0, sendResponse_1.default)(res, {
+        statusCode: http_status_1.default.OK,
         success: true,
         message: "Tour statistics retrieved successfully",
         data: result
     });
 });
 // Get User Stats
-const getUserStats = catchAsync(async (req, res) => {
+const getUserStats = (0, catchAsync_1.default)(async (req, res) => {
     const { startDate, endDate } = req.query;
     const dateRange = startDate && endDate ? {
         startDate: new Date(startDate),
         endDate: new Date(endDate)
     } : undefined;
-    const result = await StatsService.getUserStats(dateRange);
-    sendResponse(res, {
-        statusCode: httpStatus.OK,
+    const result = await stats_service_1.StatsService.getUserStats(dateRange);
+    (0, sendResponse_1.default)(res, {
+        statusCode: http_status_1.default.OK,
         success: true,
         message: "User statistics retrieved successfully",
         data: result
     });
 });
 // Get Dashboard Stats
-const getDashboardStats = catchAsync(async (req, res) => {
-    const result = await StatsService.getDashboardStats();
-    sendResponse(res, {
-        statusCode: httpStatus.OK,
+const getDashboardStats = (0, catchAsync_1.default)(async (req, res) => {
+    const result = await stats_service_1.StatsService.getDashboardStats();
+    (0, sendResponse_1.default)(res, {
+        statusCode: http_status_1.default.OK,
         success: true,
         message: "Dashboard statistics retrieved successfully",
         data: result
     });
 });
 // Get Guide Stats
-const getGuideStats = catchAsync(async (req, res) => {
+const getGuideStats = (0, catchAsync_1.default)(async (req, res) => {
     const { guideId } = req.params;
-    const result = await StatsService.getGuideStats(guideId);
-    sendResponse(res, {
-        statusCode: httpStatus.OK,
+    const result = await stats_service_1.StatsService.getGuideStats(guideId);
+    (0, sendResponse_1.default)(res, {
+        statusCode: http_status_1.default.OK,
         success: true,
         message: "Guide statistics retrieved successfully",
         data: result
     });
 });
 // Get My Guide Stats (from JWT)
-const getMyGuideStats = catchAsync(async (req, res) => {
+const getMyGuideStats = (0, catchAsync_1.default)(async (req, res) => {
     const guideId = req.user.id; // From JWT
-    const result = await StatsService.getGuideStats(guideId);
-    sendResponse(res, {
-        statusCode: httpStatus.OK,
+    const result = await stats_service_1.StatsService.getGuideStats(guideId);
+    (0, sendResponse_1.default)(res, {
+        statusCode: http_status_1.default.OK,
         success: true,
         message: "My statistics retrieved successfully",
         data: result
     });
 });
 // Get Tourist Stats
-const getTouristStats = catchAsync(async (req, res) => {
+const getTouristStats = (0, catchAsync_1.default)(async (req, res) => {
     const { touristId } = req.params;
-    const result = await StatsService.getTouristStats(touristId);
-    sendResponse(res, {
-        statusCode: httpStatus.OK,
+    const result = await stats_service_1.StatsService.getTouristStats(touristId);
+    (0, sendResponse_1.default)(res, {
+        statusCode: http_status_1.default.OK,
         success: true,
         message: "Tourist statistics retrieved successfully",
         data: result
     });
 });
 // Get My Tourist Stats (from JWT)
-const getMyTouristStats = catchAsync(async (req, res) => {
+const getMyTouristStats = (0, catchAsync_1.default)(async (req, res) => {
     const touristId = req.user.id; // From JWT
-    const result = await StatsService.getTouristStats(touristId);
-    sendResponse(res, {
-        statusCode: httpStatus.OK,
+    const result = await stats_service_1.StatsService.getTouristStats(touristId);
+    (0, sendResponse_1.default)(res, {
+        statusCode: http_status_1.default.OK,
         success: true,
         message: "My statistics retrieved successfully",
         data: result
     });
 });
-export const StatsControllers = {
+exports.StatsControllers = {
     getBookingStats,
     getPaymentStats,
     getTourStats,

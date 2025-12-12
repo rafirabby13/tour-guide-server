@@ -1,24 +1,27 @@
-export const bookingFilterableFields = [
+"use strict";
+Object.defineProperty(exports, "__esModule", { value: true });
+exports.DEFAULT_BOOKING_INCLUDES = exports.CANCELLATION_POLICY = exports.bookingSortableFields = exports.bookingFilterableFields = void 0;
+exports.bookingFilterableFields = [
     "status",
     "tourId",
     "touristId",
     "startDate",
     "endDate"
 ];
-export const bookingSortableFields = [
+exports.bookingSortableFields = [
     "date",
     "createdAt",
     "totalPrice",
     "status"
 ];
-export const CANCELLATION_POLICY = {
+exports.CANCELLATION_POLICY = {
     FULL_REFUND_HOURS: 48,
     PARTIAL_REFUND_HOURS: 24,
     FULL_REFUND_PERCENT: 100,
     PARTIAL_REFUND_PERCENT: 50,
     NO_REFUND_PERCENT: 0,
 };
-export const DEFAULT_BOOKING_INCLUDES = {
+exports.DEFAULT_BOOKING_INCLUDES = {
     tour: {
         select: {
             id: true,

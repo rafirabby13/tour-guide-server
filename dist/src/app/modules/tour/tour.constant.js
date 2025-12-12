@@ -1,18 +1,23 @@
-export const tourSearchableFields = ["title", "description", "location"];
-export const tourFilterableFields = [
+"use strict";
+Object.defineProperty(exports, "__esModule", { value: true });
+exports.DEFAULT_TOUR_INCLUDES = exports.DAYS_OF_WEEK = exports.tourSortableFields = exports.tourFilterableFields = exports.tourSearchableFields = void 0;
+exports.tourSearchableFields = ["title", "description", "location"];
+exports.tourFilterableFields = [
+    "searchTerm",
     "location",
     "guideId",
     "minPrice",
     "maxPrice",
-    "minRating"
+    "minRating",
+    "status",
 ];
-export const tourSortableFields = [
+exports.tourSortableFields = [
     "createdAt",
     "updatedAt",
     "title",
     "location"
 ];
-export const DAYS_OF_WEEK = {
+exports.DAYS_OF_WEEK = {
     SUNDAY: 0,
     MONDAY: 1,
     TUESDAY: 2,
@@ -21,7 +26,7 @@ export const DAYS_OF_WEEK = {
     FRIDAY: 5,
     SATURDAY: 6,
 };
-export const DEFAULT_TOUR_INCLUDES = {
+exports.DEFAULT_TOUR_INCLUDES = {
     guide: {
         select: {
             id: true,

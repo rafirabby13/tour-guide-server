@@ -1,22 +1,25 @@
-import { config } from '../../../config/index.env';
-import { prisma } from '../../shared/prisma';
-import { AppError } from '../../errors/AppError';
-import { PaymentStatus } from '../../../../prisma/generated/prisma/enums';
-import { stripe } from './payment.lib';
+"use strict";
+Object.defineProperty(exports, "__esModule", { value: true });
+exports.PaymentService = void 0;
+const index_env_1 = require("../../../config/index.env");
+const prisma_1 = require("../../shared/prisma");
+const AppError_1 = require("../../errors/AppError");
+const enums_1 = require("../../../../prisma/generated/prisma/enums");
+const payment_lib_1 = require("./payment.lib");
 const initiatePayment = async (bookingId) => {
     // 1. Get Booking Data
-    const booking = await prisma.booking.findUnique({
+    const booking = await prisma_1.prisma.booking.findUnique({
         where: { id: bookingId },
         include: { tour: true, tourist: true },
     });
     if (!booking) {
-        throw new AppError(404, 'Booking not found');
+        throw new AppError_1.AppError(404, 'Booking not found');
     }
-    if (booking.paymentStatus === PaymentStatus.SUCCESS) {
-        throw new AppError(403, 'Booking is already paid');
+    if (booking.paymentStatus === enums_1.PaymentStatus.SUCCESS) {
+        throw new AppError_1.AppError(403, 'Booking is already paid');
     }
     // 2. Create Stripe Checkout Session
-    const session = await stripe.checkout.sessions.create({
+    const session = await payment_lib_1.stripe.checkout.sessions.create({
         payment_method_types: ['card'],
         mode: 'payment',
         // customer_email: booking.tourist., 
@@ -38,14 +41,14 @@ const initiatePayment = async (bookingId) => {
         metadata: {
             bookingId: booking.id,
         },
-        success_url: `${config.stripe.client_url}/payment/success?session_id={CHECKOUT_SESSION_ID}`,
-        cancel_url: `${config.stripe.client_url}/payment/failed`,
+        success_url: `${index_env_1.config.stripe.client_url}/payment/success?session_id={CHECKOUT_SESSION_ID}`,
+        cancel_url: `${index_env_1.config.stripe.client_url}/payment/failed`,
     });
     return {
         paymentUrl: session.url,
         sessionId: session.id,
     };
 };
-export const PaymentService = {
+exports.PaymentService = {
     initiatePayment,
 };

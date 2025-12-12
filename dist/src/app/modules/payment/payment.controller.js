@@ -1,18 +1,24 @@
-import { config } from '../../../config/index.env';
-import { prisma } from '../../shared/prisma';
-import catchAsync from '../../shared/catchAsync';
-import sendResponse from '../../shared/sendResponse';
-import { PaymentService } from './payment.service';
-import httpStatus from 'http-status';
-import { stripe } from './payment.lib';
-import { BookingStatus, PaymentStatus } from '../../../../prisma/generated/prisma/enums';
+"use strict";
+var __importDefault = (this && this.__importDefault) || function (mod) {
+    return (mod && mod.__esModule) ? mod : { "default": mod };
+};
+Object.defineProperty(exports, "__esModule", { value: true });
+exports.PaymentController = void 0;
+const index_env_1 = require("../../../config/index.env");
+const prisma_1 = require("../../shared/prisma");
+const catchAsync_1 = __importDefault(require("../../shared/catchAsync"));
+const sendResponse_1 = __importDefault(require("../../shared/sendResponse"));
+const payment_service_1 = require("./payment.service");
+const http_status_1 = __importDefault(require("http-status"));
+const payment_lib_1 = require("./payment.lib");
+const enums_1 = require("../../../../prisma/generated/prisma/enums");
 // 1. Initiate Payment Controller
-const initiatePayment = catchAsync(async (req, res) => {
+const initiatePayment = (0, catchAsync_1.default)(async (req, res) => {
     const { bookingId } = req.params;
     console.log(bookingId);
-    const result = await PaymentService.initiatePayment(bookingId);
-    sendResponse(res, {
-        statusCode: httpStatus.OK,
+    const result = await payment_service_1.PaymentService.initiatePayment(bookingId);
+    (0, sendResponse_1.default)(res, {
+        statusCode: http_status_1.default.OK,
         success: true,
         message: 'Payment session initiated',
         // data: {},
@@ -24,7 +30,7 @@ const handleWebhook = async (req, res) => {
     const sig = req.headers['stripe-signature'];
     let event;
     try {
-        event = stripe.webhooks.constructEvent(req.body, sig, config.stripe.stripe_webhook_secret);
+        event = payment_lib_1.stripe.webhooks.constructEvent(req.body, sig, index_env_1.config.stripe.stripe_webhook_secret);
     }
     catch (err) {
         console.error(`Webhook Error: ${err.message}`);
@@ -40,20 +46,20 @@ const handleWebhook = async (req, res) => {
         const bookingId = session.metadata?.bookingId;
         if (bookingId) {
             // Use Transaction to update both Booking and Payment tables safely
-            await prisma.$transaction(async (tx) => {
+            await prisma_1.prisma.$transaction(async (tx) => {
                 // Update Booking Status
                 console.log("booking id from webhook event....", { bookingId });
                 await tx.booking.update({
                     where: { id: bookingId },
                     data: {
-                        paymentStatus: PaymentStatus.SUCCESS,
-                        status: BookingStatus.CONFIRMED,
+                        paymentStatus: enums_1.PaymentStatus.SUCCESS,
+                        status: enums_1.BookingStatus.CONFIRMED,
                     },
                 });
                 await tx.payment.update({
                     where: { bookingId },
                     data: {
-                        status: PaymentStatus.SUCCESS,
+                        status: enums_1.PaymentStatus.SUCCESS,
                         paymentGatewayData: session, // Store full json for debugging
                     },
                 });
@@ -62,7 +68,7 @@ const handleWebhook = async (req, res) => {
     }
     res.json({ received: true });
 };
-export const PaymentController = {
+exports.PaymentController = {
     initiatePayment,
     handleWebhook,
 };

@@ -1,5 +1,11 @@
-import Stripe from "stripe";
-import { config } from "../../../config/index.env";
-export const stripe = new Stripe(config.stripe.stripe_secret_key, {
+"use strict";
+var __importDefault = (this && this.__importDefault) || function (mod) {
+    return (mod && mod.__esModule) ? mod : { "default": mod };
+};
+Object.defineProperty(exports, "__esModule", { value: true });
+exports.stripe = void 0;
+const stripe_1 = __importDefault(require("stripe"));
+const index_env_1 = require("../../../config/index.env");
+exports.stripe = new stripe_1.default(index_env_1.config.stripe.stripe_secret_key, {
     apiVersion: '2025-11-17.clover',
 });
