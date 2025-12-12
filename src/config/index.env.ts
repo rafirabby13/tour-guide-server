@@ -16,5 +16,12 @@ export const config = {
         stripe_secret_key: process.env.STRIPE_SECRET_KEY,
         stripe_webhook_secret: process.env.STRIPE_WEBHOOK_SECRET,
         client_url: process.env.CLIENT_URL,
+    },
+    superAdmin: {
+        email: process.env.SUPER_ADMIN_EMAIL || 'superadmin@gmail.com',
+        password: process.env.SUPER_ADMIN_PASSWORD || 'superadmin123',
+        name: process.env.SUPER_ADMIN_NAME || 'Super Admin',
+        contactNo: process.env.SUPER_ADMIN_CONTACT_NO || '+1234567890',
     }
+
 }
