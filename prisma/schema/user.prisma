@@ -34,10 +34,10 @@ model User {
 
 model Admin {
   id            String   @id @default(uuid())
-  name          String
+  name          String?
   userId        String   @unique
   profilePhoto  String?
-  contactNumber String
+  contactNumber String?
   isDeleted     Boolean  @default(false)
   createdAt     DateTime @default(now())
   updatedAt     DateTime @updatedAt

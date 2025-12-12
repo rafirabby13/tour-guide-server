@@ -115,6 +115,7 @@ const updatetourStatus = catchAsync(async (req: Request, res: Response) => {
         data: result,
     });
 });
+
 export const TourController = {
     createTour,
     getAllFromDB,

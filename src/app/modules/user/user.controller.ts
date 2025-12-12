@@ -23,7 +23,7 @@ const createTourist = catchAsync(async (req: Request, res: Response, next: NextF
 
 const createAdmin = catchAsync(async (req: Request, res: Response) => {
 
-    const result = await UserServices.createAdmin(req);
+    const result = await UserServices.createAdmin(req.body);
     sendResponse(res, {
         statusCode: 201,
         success: true,
@@ -61,9 +61,9 @@ const getAllFromDB = catchAsync(async (req: Request, res: Response) => {
 })
 const getUserProfile = catchAsync(async (req: Request, res: Response) => {
     const { userId } = req.params;
-    
+
     const result = await UserServices.getUserProfile(userId);
-    
+
     sendResponse(res, {
         statusCode: httpStatus.OK,
         success: true,
@@ -75,9 +75,9 @@ const getUserProfile = catchAsync(async (req: Request, res: Response) => {
 // ✅ Get My Profile (from JWT token)
 const getMyProfile = catchAsync(async (req: Request, res: Response) => {
     const userId = (req as any).user.id; // From JWT token
-    
+
     const result = await UserServices.getUserProfile(userId);
-    
+
     sendResponse(res, {
         statusCode: httpStatus.OK,
         success: true,
@@ -89,9 +89,9 @@ const getMyProfile = catchAsync(async (req: Request, res: Response) => {
 // ✅ Update User Profile
 // const updateUserProfile = catchAsync(async (req: Request, res: Response) => {
 //     const { userId } = req.params;
-    
+
 //     const result = await UserServices.updateUserProfile(userId, req);
-    
+
 //     sendResponse(res, {
 //         statusCode: httpStatus.OK,
 //         success: true,
@@ -103,11 +103,11 @@ const getMyProfile = catchAsync(async (req: Request, res: Response) => {
 // ✅ Update My Profile
 const updateMyProfile = catchAsync(async (req: Request, res: Response) => {
     const userId = (req as any).user.id; // From JWT token
-// console.log({userId})
+    // console.log({userId})
     console.log(req.file)
-    
+
     const result = await UserServices.updateMyProfile(userId, req);
-    
+
     sendResponse(res, {
         statusCode: httpStatus.OK,
         success: true,
@@ -120,9 +120,9 @@ const updateMyProfile = catchAsync(async (req: Request, res: Response) => {
 // ✅ Delete User (Admin only)
 const deleteUser = catchAsync(async (req: Request, res: Response) => {
     const { userId } = req.params;
-    
+
     const result = await UserServices.deleteUser(userId);
-    
+
     sendResponse(res, {
         statusCode: httpStatus.OK,
         success: true,
@@ -133,12 +133,12 @@ const deleteUser = catchAsync(async (req: Request, res: Response) => {
 
 // ✅ Change Password
 const changePassword = catchAsync(async (req: Request, res: Response) => {
-    const userId = (req as any).user.id; 
+    const userId = (req as any).user.id;
     const { oldPassword, newPassword } = req.body;
     // console.log(req.body)
-    
+
     const result = await UserServices.changePassword(userId, oldPassword, newPassword);
-    
+
     sendResponse(res, {
         statusCode: httpStatus.OK,
         success: true,
@@ -151,9 +151,9 @@ const changePassword = catchAsync(async (req: Request, res: Response) => {
 const updateUserRole = catchAsync(async (req: Request, res: Response) => {
     const { userId } = req.params;
     const { role } = req.body;
-    
+
     const result = await UserServices.updateUserRole(userId, role);
-    
+
     sendResponse(res, {
         statusCode: httpStatus.OK,
         success: true,
@@ -163,14 +163,28 @@ const updateUserRole = catchAsync(async (req: Request, res: Response) => {
 });
 
 // ✅ Toggle User Status (Admin only)
+const getTopGuides = catchAsync(async (req: Request, res: Response) => {
+
+
+    const result = await UserServices.getTopGuides();
+
+    sendResponse(res, {
+        statusCode: httpStatus.OK,
+        success: true,
+        // message: "User activated successfully",
+        message: "Top Guides Retrieve successfully",
+        data: result
+        // data: {}
+    });
+});
 const UpdateUserStatus = catchAsync(async (req: Request, res: Response) => {
     const { userId } = req.params;
-    const {status} = req.body 
+    const { status } = req.body
 
-    console.log("...............",userId, status)
-    
-    const result = await UserServices.UpdateUserStatus(userId,status);
-    
+    console.log("...............", userId, status)
+
+    const result = await UserServices.UpdateUserStatus(userId, status);
+
     sendResponse(res, {
         statusCode: httpStatus.OK,
         success: true,
@@ -180,17 +194,38 @@ const UpdateUserStatus = catchAsync(async (req: Request, res: Response) => {
         // data: {}
     });
 });
+
+const becomeAGuide = catchAsync(async (req: Request, res: Response) => {
+    // 1. Get the ID of the currently logged-in user (from Auth Middleware)
+    const userId = (req as any).user.id;
+    // 2. Get the form data (bio, experience, etc.)
+    const payload = req.body;
+    console.log(userId, payload)
+
+    // 3. Call the service
+    const result = await UserServices.becomeAGuide(userId, payload);
+
+    sendResponse(res, {
+        statusCode: httpStatus.OK,
+        success: true,
+        message: "Congratulations! You have successfully become a Guide.",
+        // data: {}
+        data: result
+    });
+});
 export const UserController = {
     createTourist,
     createAdmin,
     createGuide,
     getAllFromDB,
-      getUserProfile,
+    getUserProfile,
     getMyProfile,
     // updateUserProfile,
     updateMyProfile,
     deleteUser,
     changePassword,
     updateUserRole,
-    UpdateUserStatus
+    UpdateUserStatus,
+    getTopGuides,
+    becomeAGuide
 }

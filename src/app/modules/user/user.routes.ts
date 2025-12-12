@@ -13,6 +13,8 @@ const router = express.Router()
 router.get("/all-users",
     auth(UserRole.ADMIN),
     UserController.getAllFromDB)
+router.get("/top-guides",
+    UserController.getTopGuides)
 router.get(
     "/my-profile/me",
     auth(UserRole.TOURIST, UserRole.GUIDE, UserRole.ADMIN),
@@ -26,12 +28,9 @@ router.post("/create-tourist",
     }
 )
 router.post("/create-admin",
-    auth(UserRole.ADMIN),
-    fileUploader.upload.single('file'),
-    (req: Request, res: Response, next: NextFunction) => {
-        req.body = CreateAdminSchema.parse(JSON.parse(req.body.data))
-        return UserController.createAdmin(req, res, next)
-    }
+    auth(UserRole.ADMIN)
+    , UserController.createAdmin
+
 )
 router.post("/create-guide",
     auth(UserRole.ADMIN),
@@ -88,6 +87,12 @@ router.get(
     UserController.getUserProfile
 );
 
+
+router.post(
+    "/become-a-guide",
+    auth(UserRole.TOURIST),
+    UserController.becomeAGuide
+);
 // Admin can update any user
 // router.patch(
 //     "/:userId",

@@ -8,9 +8,9 @@ import { prisma } from "../../shared/prisma";
 import { BlockedDateInput, TourAvailabilityInput, TourPricingInput } from "./tour.interface";
 import { IOptions, paginationHelper } from "../../helpers/paginationHelper";
 import { DEFAULT_TOUR_INCLUDES, tourSearchableFields } from "./tour.constant";
-import { Prisma, TourStatus } from "../../../../prisma/generated/prisma/client";
+import { Prisma, TourStatus, UserRole } from "../../../../prisma/generated/prisma/client";
 import { timeToMinutes } from "./tour.lib";
-
+import httpStatus from "http-status"
 
 
 const createTour = async (req: Request) => {
@@ -29,10 +29,10 @@ const createTour = async (req: Request) => {
   const guideId = req.body.guideId;
 
   const guide = await prisma.guide.findUnique({
-      where:{
-        userId: guideId
-      }
-    });
+    where: {
+      userId: guideId
+    }
+  });
 
 
   if (!guide) {
@@ -47,35 +47,35 @@ const createTour = async (req: Request) => {
   }
 
   // validatePricingOverlaps(payload.tourPricings);
- 
+
   console.log({ payload })
   const result = await prisma.$transaction(async (tx) => {
-  
+
     const tour = await tx.tour.create({
       data: {
-        guideId:guide.id,
+        guideId: guide.id,
         title: payload.title,
         description: payload.description,
         location: payload.location,
         images: payload.images,
-      
+
       }
     });
 
-    
+
     await tx.tourAvailability.createMany({
       data: payload.tourAvailabilities.map((slot: TourAvailabilityInput) => ({
         tourId: tour.id,
-        startTimeMinutes: timeToMinutes(slot.startTime), 
+        startTimeMinutes: timeToMinutes(slot.startTime),
         endTimeMinutes: timeToMinutes(slot.endTime),
         maxBookings: slot.maxBookings,
         dayOfWeek: slot.dayOfWeek
-        
+
 
       }))
     });
 
-    
+
     await tx.tourPricing.createMany({
       data: payload.tourPricings.map((tier: TourPricingInput) => ({
         tourId: tour.id,
@@ -85,7 +85,7 @@ const createTour = async (req: Request) => {
       }))
     });
 
-  
+
     if (payload.blockedDates && payload.blockedDates.length > 0) {
       await tx.blockedDate.createMany({
         data: payload.blockedDates.map((blocked: BlockedDateInput) => ({
@@ -96,7 +96,7 @@ const createTour = async (req: Request) => {
       });
     }
 
-    
+
     return tx.tour.findUnique({
       where: { id: tour.id },
       include: {
@@ -116,7 +116,7 @@ const createTour = async (req: Request) => {
         blockedDates: {
           where: {
             blockedDate: {
-              gte: new Date() 
+              gte: new Date()
             }
           },
           orderBy: { blockedDate: 'asc' }
@@ -178,7 +178,7 @@ const getAllFromDB = async (params: any, options: IOptions) => {
     orderBy: {
       [sortBy]: sortOrder
     },
-    include:{
+    include: {
       tourAvailabilities: true,
       tourPricings: true
     }
@@ -205,7 +205,7 @@ const getSingleFromDB = async (id: string) => {
         orderBy: { createdAt: 'desc' },
         take: 10
       },
-      
+
     }
   });
 
@@ -269,7 +269,7 @@ const updateIntoDB = async (id: string, req: Request) => {
           tourId: id,
           dayOfWeek: slot.dayOfWeek,
           startTimeMinutes: timeToMinutes(slot.startTime),
-          
+
           endTimeMinutes: timeToMinutes(slot.endTime),
           maxBookings: slot.maxBookings,
         }))
@@ -440,13 +440,13 @@ const checkAvailability = async (tourId: string, date: Date, guestCount: number)
 const getMyTours = async (guideId: string, options: IOptions) => {
   const { page, limit, skip, sortBy, sortOrder } = paginationHelper.calculatePagination(options);
 
-  console.log({guideId})
+  console.log({ guideId })
   const guide = await prisma.guide.findUnique({
     where: { userId: guideId }
   });
   if (!guide) {
     throw new AppError(404, "Guide not found");
-    
+
   }
 
   const result = await prisma.tour.findMany({
@@ -489,6 +489,8 @@ const updatetourStatus = async (tourId: string, status: TourStatus) => {
   });
   return result
 }
+
+
 
 export const TourServices = {
   createTour,

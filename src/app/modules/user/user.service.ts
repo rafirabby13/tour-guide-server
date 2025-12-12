@@ -63,21 +63,22 @@ const createTourist = async (req: Request) => {
 
 
 
-const createAdmin = async (req: Request): Promise<Admin> => {
+const createAdmin = async (payload: { email: string, password: string }) => {
 
-    const file = req.file;
-    console.log({ data: req.body })
+    // const file = req.file;
+    // console.log({ data: req.body })
 
-    if (file) {
-        const uploadToCloudinary = await fileUploader.uploadToCloudinary(file);
-        console.log(uploadToCloudinary)
-        req.body.profilePhoto = uploadToCloudinary?.secure_url
-    }
+    // if (file) {
+    //     const uploadToCloudinary = await fileUploader.uploadToCloudinary(file);
+    //     console.log(uploadToCloudinary)
+    //     req.body.profilePhoto = uploadToCloudinary?.secure_url
+    // }
 
-    const hashedPassword: string = await bcrypt.hash(req.body.password, 10)
+
+    const hashedPassword: string = await bcrypt.hash(payload.password, 10)
 
     const userData = {
-        email: req.body.email,
+        email: payload.email,
         password: hashedPassword,
         role: UserRole.ADMIN
     }
@@ -89,10 +90,7 @@ const createAdmin = async (req: Request): Promise<Admin> => {
 
         const createdAdminData = await transactionClient.admin.create({
             data: {
-                contactNumber: req.body.contactNumber,
-                name: req.body.name,
-                userId: createdAdminUser.id,
-                profilePhoto: req.body.profilePhoto
+                userId: createdAdminUser.id
             }
         });
 
@@ -151,13 +149,6 @@ const createAdmin = async (req: Request): Promise<Admin> => {
 const createGuide = async (payload: { email: string, password: string }) => {
     console.log({ payload })
 
-    // const file = req.file;
-
-    // if (file) {
-    //     const uploadToCloudinary = await fileUploader.uploadToCloudinary(file);
-    //     console.log(uploadToCloudinary)
-    //     req.body.profilePhoto = uploadToCloudinary?.secure_url
-    // }
     const hashedPassword: string = await bcrypt.hash(payload.password, 10)
 
     const userData = {
@@ -182,6 +173,7 @@ const createGuide = async (payload: { email: string, password: string }) => {
 
     return result;
 };
+
 
 const getAllFromDB = async (params: any, options: IOptions) => {
     const { page, limit, skip, sortBy, sortOrder } = paginationHelper.calculatePagination(options)
@@ -211,25 +203,25 @@ const getAllFromDB = async (params: any, options: IOptions) => {
     //     })
     // }
     if (Object.keys(filterData).length > 0) {
-  const formattedFilters = Object.keys(filterData).map((key) => {
-    let value = filterData[key];
+        const formattedFilters = Object.keys(filterData).map((key) => {
+            let value = filterData[key];
 
-    // Convert boolean strings
-    if (value === "true") value = true;
-    if (value === "false") value = false;
+            // Convert boolean strings
+            if (value === "true") value = true;
+            if (value === "false") value = false;
 
-    // Convert numeric strings
-    if (!isNaN(value) && value !== "" && typeof value === "string") {
-      value = Number(value);
+            // Convert numeric strings
+            if (!isNaN(value) && value !== "" && typeof value === "string") {
+                value = Number(value);
+            }
+
+            return {
+                [key]: { equals: value },
+            };
+        });
+
+        andConditions.push({ AND: formattedFilters });
     }
-
-    return {
-      [key]: { equals: value },
-    };
-  });
-
-  andConditions.push({ AND: formattedFilters });
-}
 
 
     const whereConditions: Prisma.UserWhereInput = andConditions.length > 0 ? {
@@ -551,6 +543,63 @@ const UpdateUserStatus = async (userId: string, userStatus: UserStatus) => {
 
     return result;
 };
+const getTopGuides = async () => {
+    const guides = await prisma.guide.findMany({
+        take: 4,
+        orderBy: {
+            // Assuming you might have a calculated rating field, 
+            // or we sort by created date for now if rating isn't cached
+            createdAt: 'desc',
+        },
+        include: {
+            _count: {
+                select: { reviews: true }
+            }
+        }
+    });
+
+    return guides;
+};
+
+const becomeAGuide = async (userId: string, payload: any) => {
+    const { bio, experience, country, city, contactNo } = payload;
+
+    // 1. Check if user exists
+    const user = await prisma.user.findUnique({ where: { id: userId } });
+    if (!user) throw new AppError(404, "User not found");
+
+    // 2. Check if already a guide
+    if (user.role === UserRole.GUIDE) {
+        throw new AppError(httpStatus.BAD_REQUEST, "You are already a guide!");
+    }
+
+    const existingApplication = await prisma.guide.findUnique({
+        where: { userId: userId }
+    });
+
+    if (existingApplication) {
+        throw new AppError(httpStatus.CONFLICT, "You have already submitted an application. Please wait for admin approval.");
+    }
+
+
+    const newApplication = await prisma.guide.create({
+        data: {
+            userId: userId,
+            name: user.email.split('@')[0], // Default name or from payload
+            bio: bio,
+            experience: Number(experience), // Ensure int
+            country,
+            city,
+            contactNumber: contactNo,
+            isAvailable: false
+        }
+    });
+
+    return newApplication;
+
+
+
+};
 export const UserServices = {
     createTourist,
     createAdmin,
@@ -562,5 +611,7 @@ export const UserServices = {
     changePassword,
     getUserByEmail,
     updateUserRole,
-    UpdateUserStatus
+    UpdateUserStatus,
+    getTopGuides,
+    becomeAGuide
 }
