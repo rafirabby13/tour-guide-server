@@ -52,7 +52,7 @@ Ensure you have the following installed:
 
 Clone the repository and install dependencies:
 
-```bash
+
 git clone [https://github.com/rafirabby13/tour-guide-server.git](https://github.com/rafirabby13/tour-guide-server.git)
 cd tour-guide-server
 
@@ -61,7 +61,9 @@ bun install
 
 # Or using NPM
 npm install
+
 ## 📁 Project Structure
+
 
 
 ```
