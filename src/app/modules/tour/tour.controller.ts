@@ -115,7 +115,16 @@ const updatetourStatus = catchAsync(async (req: Request, res: Response) => {
         data: result,
     });
 });
+const getPopularDestinations = catchAsync(async (req: Request, res: Response) => {
+  const result = await TourServices.getPopularDestinations();
 
+  sendResponse(res, {
+    statusCode: 200,
+    success: true,
+    message: "Popular destinations retrieved successfully",
+    data: result,
+  });
+});
 export const TourController = {
     createTour,
     getAllFromDB,
@@ -124,5 +133,6 @@ export const TourController = {
     deleteTour,
     checkAvailability,
     getMyTours,
-    updatetourStatus
+    updatetourStatus,
+    getPopularDestinations
 }

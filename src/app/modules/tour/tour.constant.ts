@@ -1,11 +1,14 @@
 export const tourSearchableFields = ["title", "description", "location"];
 
 export const tourFilterableFields = [
-  "location", 
+  "searchTerm",
+  "location",
   "guideId",
-  "minPrice", 
-  "maxPrice", 
-  "minRating"
+  "minPrice",
+  "maxPrice",
+  "minRating",
+  "status",
+  
 ];
 
 export const tourSortableFields = [

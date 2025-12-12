@@ -141,7 +141,9 @@ const createTour = async (req: Request) => {
 
 const getAllFromDB = async (params: any, options: IOptions) => {
   const { page, limit, skip, sortBy, sortOrder } = paginationHelper.calculatePagination(options)
-  const { searchTerm, ...filterData } = params;
+  const { searchTerm, minPrice, maxPrice, ...filterData } = params;
+
+  console.log({searchTerm})
 
   const andConditions: Prisma.TourWhereInput[] = [];
 
@@ -165,7 +167,18 @@ const getAllFromDB = async (params: any, options: IOptions) => {
       }))
     })
   }
-
+if (minPrice || maxPrice) {
+    andConditions.push({
+      tourPricings: {
+        some: {
+          pricePerHour: { 
+            gte: minPrice ? Number(minPrice) : 0,
+            lte: maxPrice ? Number(maxPrice) : 1000000
+          }
+        }
+      }
+    });
+  }
   const whereConditions: Prisma.TourWhereInput = andConditions.length > 0 ? {
     AND: andConditions
   } : {}
@@ -492,6 +505,59 @@ const updatetourStatus = async (tourId: string, status: TourStatus) => {
 
 
 
+
+const getPopularDestinations = async () => {
+  // 1. Group tours by location to count them
+  const groupResult = await prisma.tour.groupBy({
+    by: ['location'], // Grouping by the existing 'location' field
+    _count: {
+      id: true, // Count number of tours in this location
+    },
+    where: {
+      status: 'PUBLISHED', // Only show active tours
+      isDeleted: false,    // Exclude deleted tours
+    },
+    orderBy: {
+      _count: {
+        id: 'desc', // Sort by most popular (highest count first)
+      },
+    },
+    take: 6, // Limit to top 6 destinations
+  });
+
+  // 2. Fetch a representative image for each location
+  const resultsWithImages = await Promise.all(
+    groupResult.map(async (group) => {
+      // Find one published tour from this location to grab an image
+      const representativeTour = await prisma.tour.findFirst({
+        where: {
+          location: group.location,
+          status: 'PUBLISHED',
+          isDeleted: false,
+          images: { isEmpty: false } // Ensure it has at least one image
+        },
+        select: { images: true }
+      });
+const slug = group.location
+        .toLowerCase()
+        .replace(/ /g, '_')       // Replace spaces with underscores
+        .replace(/,/g, '')        // Remove commas
+        .replace(/[^a-z0-9_]/g, '')
+      // Format the data for the frontend
+      return {
+        name: group.location, // e.g., "Kyoto, Japan"
+        count: group._count.id, // e.g., 42
+        // Use the first image found, or a fallback if none exist
+        image: representativeTour?.images[0] || "https://images.pexels.com/photos/466685/pexels-photo-466685.jpeg",
+        slug: slug// Use this for the search link
+      };
+    })
+  );
+
+  return resultsWithImages;
+};
+
+
 export const TourServices = {
   createTour,
   getAllFromDB,
@@ -500,5 +566,6 @@ export const TourServices = {
   deleteFromDB,
   checkAvailability,
   getMyTours,
-  updatetourStatus
+  updatetourStatus,
+  getPopularDestinations
 }

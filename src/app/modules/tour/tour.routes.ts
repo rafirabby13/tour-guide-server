@@ -7,7 +7,10 @@ import { UserRole } from "../../../../prisma/generated/prisma/enums"
 import { createTourZodSchema, updateTourZodSchema } from "./tour.validation"
 const router = express.Router()
 
-
+router.get(
+    '/popular/destinations', 
+    TourController.getPopularDestinations
+);
 router.get("/all-tours", TourController.getAllFromDB)
 router.get(
     "/:id",
@@ -54,4 +57,5 @@ router.get(
     auth(UserRole.GUIDE),
     TourController.getMyTours
 );
+
 export const TourRoutes = router

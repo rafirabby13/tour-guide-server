@@ -13,6 +13,7 @@ model Tour {
   status      TourStatus @default(DRAFT)
   // totalPriceCalculated       String?
 
+
   guideId String
   guide   Guide  @relation("GuideTours", fields: [guideId], references: [id], onDelete: Cascade)
 
